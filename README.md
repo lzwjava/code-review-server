@@ -3,7 +3,7 @@ LeanEngine Full Stack Generator
 
 ## 简介
 
-该项目为基于 LeanEngine 的 Web 全栈开发的技术解决方案。
+该项目为基于 [LeanCloud](http://leancloud.cn) 提供的 Nodejs 服务 [LeanEngine](https://leancloud.cn/docs/leanengine_guide-node.html) 的 Web 全栈开发的技术解决方案。
 
 ## 主要特点
 
