@@ -1,6 +1,6 @@
 {
-  "name": "webProject",
-  "version": "0.0.0",
+  "name": "LeanEngine-Full-Stack-Web",
+  "version": "1.0.0",
   "dependencies": {},
   "scripts": {
     "test": "gulp test"
