@@ -47,6 +47,7 @@ $ cd LeanEngine-Full-Stack
 
 * 当前项目中，服务端与 Web 端本地调试的域并不相同，所以前端与服务端基础代码中已经基于 HTML5 CORS 协议做了跨域支持，具体参考项目中代码
 * web-project 目录完全可以独立，是一套完整的 Web 前端开发结构，本身也支持跨域方案，所以也可以 Web 与 Server 分工开发
+* web-project 中要增加本地构建，请使用 npm install xxx --save-dev 安装到 devDependencies 里面（package.json）
 
 ## 目录结构
 
@@ -58,13 +59,13 @@ $ cd LeanEngine-Full-Stack
 │    ├── tool.js           // 工具方法
 │    └── hello.js          // 示例代码
 ├── web-project     // Web 前端项目目录
+│    ├── gulp           // 自动化构建的逻辑模块
+│    ├── dist           // 构建之后的源码目录
 │    └── src            // 源码目录
 └── app.js          // LeanEngine 服务端代码主入口
 ```
 
 ## 国际化方案
 
-Web 端版本直接支持国际化方案，具体配置都在 `web-project/src/app/i18n` 目录中，项目中界面内有基本示例。
-
-
+Web 端版本直接支持国际化方案，具体配置都在 `web-project/src/app/i18n` 目录中，项目中界面内有基本示例。可以实现通过纯 Web 前端实时切换语言，无需服务器切换。
 

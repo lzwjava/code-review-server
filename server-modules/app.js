@@ -52,7 +52,7 @@ app.use((req, res, next) => {
 
 // 跨域支持
 app.all('/api/*', (req, res, next) => {
-  var origin = req.headers.origin;
+  const origin = req.headers.origin;
   if (config.whiteOrigins.indexOf(origin) !== -1) {
     res.header('Access-Control-Allow-Origin', origin);
     res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
