@@ -1,0 +1,24 @@
+.auth-home-module {
+  .block1 {
+    position: relative;
+    height: 340px;
+    padding: 18px $screenLeft 0px $screenLeft;
+    background-color: $lcBlue;
+    .logo {
+      display: inline-block;
+      color: $standardWhite;
+      font-size: 20px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+    .btns {
+      position: absolute;
+      right: $screenLeft;
+      top: 15px;
+      color: $standardWhite;
+      .loginBtn, .registerBtn {
+        padding: 0px 18px;
+      }
+    }
+  }
+}

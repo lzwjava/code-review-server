@@ -1,0 +1,6 @@
+@mixin lcImage($name) {
+  background-image: url('../../assets/images/#{$name}.png');
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center center;
+}

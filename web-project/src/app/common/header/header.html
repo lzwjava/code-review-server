@@ -1,0 +1,38 @@
+<div class="common-header-module">
+  <div class="header-content">
+    <div class="logo" ng-click="goHome();">LeanEngine</div>
+
+  <!-- menu -->
+    <md-menu ng-if="user.username" class="account-menu" md-position-mode="target-right target" md-offset="0 48">
+      <md-button md-menu-origin class="lc-btn"
+      ng-click="openMenu($mdOpenMenu, $event)">
+        {{user.username}}
+      </md-button>
+      <md-menu-content>
+        <md-menu-item>
+          <md-button>{{i18n.header.setting}}</md-button>
+        </md-menu-item>
+        <md-menu-item>
+          <md-button>{{i18n.header.logout}}</md-button>
+        </md-menu-item>
+      </md-menu-content>
+    </md-menu>
+  <!-- menu end -->
+
+    <md-button ng-if="!user.username" class="loginBtn" ng-click="">{{i18n.auth.login}}</md-button>
+
+  <!-- search -->
+    <div class="search-input" ng-if="ui.showAskBtn">
+      <md-button class="md-icon-button searchBtn" ng-click="" aria-label="close">
+        <span></span>
+      </md-button>
+      <input class="search" type="text" placeholder="{{i18n.header.search}}">
+    </div>
+  <!-- search end -->
+
+    <md-button class="askBtn lc-btn md-raised" ng-click="creatTicket()" ng-if="ui.showAskBtn">
+      <span class="ask-icon"></span>
+      <span>{{i18n.header.ask}}</span>
+    </md-button>
+  </div>
+</div>
