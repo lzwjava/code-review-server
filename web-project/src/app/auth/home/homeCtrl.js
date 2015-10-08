@@ -5,13 +5,14 @@
 * @author wangxiao
 */
 
-export default ($scope, $window, authSer, commonSer) => {
+export default ($scope, $window, commonSer, helloSer) => {
   'ngInject';
-  $scope.login = () => {
-    authSer.login();
-  };
 
   $scope.goHome = () => {
     commonSer.goHome();
   };
+
+  helloSer.getData().then((data) => {
+    console.log(data);
+  });
 };

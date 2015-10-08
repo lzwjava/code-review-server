@@ -9,10 +9,10 @@ export default ($http, $window, lcConfig, $state) => {
   'ngInject';
   return {
     getData: () => {
-      const test = {
-        hello: 'It works.'
-      };
-      return test;
+      return $http({
+        method: 'get',
+        url: lcConfig.apiHost + '/api/hello'
+      });
     }
   };
 };
