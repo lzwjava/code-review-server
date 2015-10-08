@@ -1,0 +1,81 @@
+.common-header-module {
+  border-bottom: 1px solid $borderGray;
+  .header-content {
+    line-height: 60px;
+    height: $headerHigth - 1;
+    width: 100%;
+    position: relative;
+    max-width: $maxWidth;
+    margin: 0 auto;
+  }
+
+  .logo {
+    display: inline-block;
+    color: $wordGray;
+    font-size: 20px;
+    font-weight: bold;
+    cursor: pointer;
+    &:focus {
+      outline: none;
+    }
+  }
+
+  .account-menu {
+    position: absolute;
+    right: 0px;
+    top: -8px;
+  }
+
+  .loginBtn {
+    display: inline-block;
+    position: absolute;
+    right: 50px;
+    top: 11px;
+  }
+
+  .search-input {
+    display: inline-block;
+    position: relative;
+    margin-left: 10px;
+    margin-right: 10px;
+    vertical-align: bottom;
+    .searchBtn {
+      position: absolute;
+      right: -14px;
+      top: 4px;
+      span {
+        @include lcIcon('search');
+        @include lcTransition('opacity');
+        margin-top: 2px;
+        opacity: 0.5;
+        &:hover {
+          opacity: 0.8;
+        }
+      }
+    }
+    input {
+      @include lcTransition();
+      font-size: 14px;
+      padding-right: 28px;
+      &:focus::placeholder {
+        opacity: 0;
+      }
+    }
+  }
+
+  .askBtn {
+    height: 34px;
+    line-height: 34px;
+    font-size: 12px;
+    position: absolute;
+    top: 14px;
+    &.lc-btn {
+      padding: 0px 14px 0px 8px;
+    }
+    .ask-icon {
+      @include lcIcon('ask');
+      opacity: 0.5;
+      border-radius: 10px;
+    }
+  }
+};

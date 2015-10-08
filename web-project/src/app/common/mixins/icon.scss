@@ -1,0 +1,15 @@
+@mixin lcIcon($name) {
+  width: 16px;
+  height: 16px;
+  display: inline-block;
+  background-image: url('../../assets/icons/glyphicons-#{$name}.png');
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center center;
+  vertical-align: text-top;
+  @include lcTransition(opacity);
+  opacity: 0.6;
+  &:hover {
+    opacity: 1;
+  }
+}
