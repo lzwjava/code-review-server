@@ -16,9 +16,9 @@ const AV = require('leanengine');
 const app = express();
 
 // 各个模块
-const apiRouter = require('./server-modules/api-router');
-const tool = require('./server-modules/tool');
-const config = require('./server-modules/config');
+const apiRouter = require('./api-router');
+const tool = require('./tool');
+const config = require('./config');
 
 // 设置 view 引擎
 // app.set('views', path.join(__dirname, 'views'));
