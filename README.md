@@ -8,11 +8,9 @@
 
 ## 技术栈
 
-JavaScript 全部代码基于 ECMAScript6（ES6）。
-
-后端运行环境基于 LeanEngine Nodejs 环境，依赖安装通过 npm，服务框架主要基于 Express 4.x 。
-
-Web 前端自动化方案主要基于 Gulp，框架基于 Angular 1.4.x，UI 框架主要基于 Angular Material，依赖安装通过 bower，样式通过编写 SASS 而非直接写 CSS 文件。
+* JavaScript 全部代码基于 ECMAScript6（ES6）
+* 后端运行环境基于 LeanEngine Nodejs 环境，依赖安装通过 npm，服务框架主要基于 Express 4.x
+* Web 前端自动化方案主要基于 Gulp，框架基于 Angular 1.4.x，UI 框架主要基于 Angular Material，依赖安装通过 bower，样式通过编写 SASS 而非直接写 CSS 文件
 
 ## 开发方式
 
