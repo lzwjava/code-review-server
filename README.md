@@ -42,6 +42,7 @@ $ cd LeanEngine-Full-Stack
 * 在 `web-project 目录`中执行 `gulp build`，构建系统会自动打包，自动压缩合并代码，发布到 public 目录中
 * 将最新代码，连同 public 目录中的代码，全部提交到对应的 GitHub 仓库中
 * 在根目录执行 `avoscloud -g deploy` 可以部署到 LeanEngine 的测试环境中，通过配置的测试地址访问
+（* 在根目录执行 `avoscloud publish` 发布）
 
 ### 其他开发说明
 
@@ -55,6 +56,7 @@ $ cd LeanEngine-Full-Stack
 .
 ├── public          // LeanEngine Web 前端发布目录，前端（HTML\CSS\JavaScript）构建后放在此目录中
 ├── server-modules  // 服务器端代码模块目录
+│    ├── app.js            // LeanEngine 服务端代码主入口
 │    ├── api-router.js     // API 接口路由配置
 │    ├── tool.js           // 工具方法
 │    └── hello.js          // 示例代码
@@ -62,7 +64,7 @@ $ cd LeanEngine-Full-Stack
 │    ├── gulp           // 自动化构建的逻辑模块
 │    ├── dist           // 构建之后的源码目录
 │    └── src            // 源码目录
-└── app.js          // LeanEngine 服务端代码主入口
+└── server.js       // LeanEngine 的环境配置
 ```
 
 ## 国际化方案
