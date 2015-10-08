@@ -47,4 +47,18 @@ $ cd LeanEngine-Full-Stack
 * 将项目代码最新代码，连同 public 目录中的代码，全部提交到对应的 GitHub 仓库中
 * 在根目录执行 `avoscloud -g deploy` 可以部署到 LeanEngine 的测试环境中，通过配置的测试地址访问
 
+### 目录结构
+
+```
+.
+├── public          // LeanEngine Web 前端发布目录，前端（HTML\CSS\JavaScript）构建后放在此目录中
+├── server-modules  // 服务器端代码模块目录
+│    ├── api-router.js     // API 接口路由配置
+│    ├── tool.js           // 工具方法
+│    └── hello.js          // 示例代码
+├── web-project     // Web 前端项目目录
+│    └── src            // 源码目录
+└── app.js          // LeanEngine 服务端代码主入口
+```
+
 
