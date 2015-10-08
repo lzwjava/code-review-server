@@ -9,7 +9,9 @@
 
 'use strict';
 
-const tool = require('tool');
+const tool = require('./tool');
+
+let pub = {};
 
 pub.hello = (req, res) => {
   tool.l('It works.');
