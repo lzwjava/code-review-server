@@ -4,13 +4,55 @@
 
 ## 主要特点
 
-基于通用技术方案，与 LeanEngine 紧密结合，将基础架构、自动化构建、国际化方案等底层技术问题的解决方案都已经组织在一起。用户可以通过最简单的方式，直接开始自己的开发。
+LeanEngine-Full-Stack 是基于 LeanEngine Nodejs 服务的 Web 全栈开发技术解决方案。整合当前 Web 技术中通用的技术方案，与 LeanEngine 紧密结合，将基础架构、自动化构建、国际化方案等底层技术问题的解决方案都已经组织在一起。用户可以通过最简单的方式，直接开始的全栈开发，不用再次纠结那些底层技术选型。
 
 ## 技术栈
 
-* JavaScript 全部代码基于 ECMAScript6（ES6）
-* 后端运行环境基于 LeanEngine Nodejs 环境，依赖安装通过 npm，服务框架主要基于 Express 4.x
-* Web 前端自动化方案主要基于 Gulp，框架基于 Angular 1.4.x，UI 框架主要基于 Angular Material，依赖安装通过 bower，样式通过编写 SASS 而非直接写 CSS 文件
+* 语言层面，整套方案 JavaScript 代码全部使用 ECMAScript 6
+* Server 端运行环境基于 LeanEngine Nodejs 环境，依赖安装通过 npm，服务框架主要基于 Express 4.x
+* Web 前端自动化方案主要基于 Gulp，框架基于 Angular 1.4.x，UI 框架主要基于 Angular Material，构建依赖基于 npm，Web 前端依赖通过 bower 安装，样式通过编写 SASS 而非直接写 CSS 文件
+
+## 技术选型
+
+整个脚手架 Server 端完全基于 LeanEngine，底层已经将 API 路由的基础结构做好，并且将一些常规处理也整合在内，已选型的技术方案主要包括：
+
+* 服务端基本代码结构、组织结构
+* 基础的路由分层，默认在 /api/ 路由下
+* 对 API 的 HTML5 CORS 跨域协议的设置
+* 对访问域白名单控制，集成的可配置文件
+* 常规错误处理等
+
+Web 前端从整体技术栈选择上，可以看出这是一个稳健并且有一定前瞻性的技术方案。基于已经非常成熟的 Angular 架构体系，UI 设计层面基于 Google 积累多年而发布的设计语言 Material Design，所以前端 UI 框架基于 Angular Material 框架。Angular 1.4 版本在性能上提升了很多，完全面向现代浏览器，可以直接使用 ECMAScript 6 来开发。内部已经写好并整合的方案主要包括：
+
+* 代码基本组织结构，趋向于 HTML5 Web Compoment 的组织方式
+* 底层配置，包括 HTML5 CORS 协议的底层支持、域名白名单等配置
+* 纯前端路由方案，基于 HTML5 History API 和 ui-router
+* 自动构建系统，基础的代码压缩、合并、ECMAScript 和 SASS 编译等过程，也会将构建后的生成代码拷贝到 public 目录中，供发布使用
+* SASS 的基本结构，以及一些 Mixin 和基础单元的处理方式
+* 纯前端的国际化方案，可以实时切换语言资源
+
+## 目录结构
+
+```
+.
+├── public          // LeanEngine Web 前端发布目录，前端（HTML\CSS\JavaScript）构建后放在此目录中
+├── server-modules  // 服务器端代码模块目录
+│    ├── app.js            // LeanEngine 服务端代码主入口
+│    ├── api-router.js     // API 接口路由配置
+│    ├── tool.js           // 工具方法
+│    └── hello.js          // 示例代码
+├── web-project     // Web 前端项目目录
+│    ├── gulp           // 自动化构建的逻辑模块
+│    ├── dist           // 构建之后的源码目录
+│    └── src            // 源码目录
+└── server.js       // LeanEngine 的环境配置
+```
+
+整套架构 Server 端与 Web 前端是完全分离，在 Server 端编写 REST API，Web 项目则是完全的 Web App，而不是通过模板来耦合。web-project 中是 Web 项目的全部代码，是完全独立的一套体系，也可以提出去，单独项目维护。
+
+## 国际化方案
+
+Web 端版本直接支持国际化方案，具体配置都在 `web-project/src/app/i18n` 目录中，项目中界面内有基本示例。可以实现通过纯 Web 前端实时切换语言，无需服务器切换。
 
 ## 开发方式
 
@@ -47,25 +89,4 @@ $ cd LeanEngine-Full-Stack
 * 当前项目中，服务端与 Web 端本地调试的域并不相同，所以前端与服务端基础代码中已经基于 HTML5 CORS 协议做了跨域支持，具体参考项目中代码
 * web-project 目录完全可以独立，是一套完整的 Web 前端开发结构，本身也支持跨域方案，所以也可以 Web 与 Server 分工开发
 * web-project 中要增加本地构建，请使用 npm install xxx --save-dev 安装到 devDependencies 里面（package.json）
-
-## 目录结构
-
-```
-.
-├── public          // LeanEngine Web 前端发布目录，前端（HTML\CSS\JavaScript）构建后放在此目录中
-├── server-modules  // 服务器端代码模块目录
-│    ├── app.js            // LeanEngine 服务端代码主入口
-│    ├── api-router.js     // API 接口路由配置
-│    ├── tool.js           // 工具方法
-│    └── hello.js          // 示例代码
-├── web-project     // Web 前端项目目录
-│    ├── gulp           // 自动化构建的逻辑模块
-│    ├── dist           // 构建之后的源码目录
-│    └── src            // 源码目录
-└── server.js       // LeanEngine 的环境配置
-```
-
-## 国际化方案
-
-Web 端版本直接支持国际化方案，具体配置都在 `web-project/src/app/i18n` 目录中，项目中界面内有基本示例。可以实现通过纯 Web 前端实时切换语言，无需服务器切换。
 
