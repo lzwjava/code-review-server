@@ -26,7 +26,7 @@ export default {
     success: '完成',
     submit: '提交',
     edit: '修改',
-    delete: '删除',
+    delete: '删除'
   },
   auth: {
     register: '注册',
