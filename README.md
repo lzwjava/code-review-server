@@ -54,7 +54,7 @@ Web 前端从整体技术栈选择上，可以看出这是一个稳健并且有�
 
 Web 端版本直接支持国际化方案，具体配置都在 `web-project/src/app/i18n` 目录中，项目中界面内有基本示例。可以实现通过纯 Web 前端实时切换语言，无需服务器切换。
 
-## 开发方式
+## 使用方式
 
 首先确认本机已经安装 [Node.js](http://nodejs.org/) 运行环境和 [LeanCloud 命令行工具](https://leancloud.cn/docs/cloud_code_commandline.html)，之后按照以下方式开始您的开发：
 
@@ -84,7 +84,7 @@ $ cd LeanEngine-Full-Stack
 * 在根目录执行 `avoscloud -g deploy` 可以部署到 LeanEngine 的测试环境中，通过配置的测试地址访问
 （* 在根目录执行 `avoscloud publish` 发布）
 
-### 其他开发说明
+### 其他说明
 
 * 当前项目中，服务端与 Web 端本地调试的域并不相同，所以前端与服务端基础代码中已经基于 HTML5 CORS 协议做了跨域支持，具体参考项目中代码
 * web-project 目录完全可以独立，是一套完整的 Web 前端开发结构，本身也支持跨域方案，所以也可以 Web 与 Server 分工开发
