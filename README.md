@@ -82,7 +82,7 @@ $ npm install
 
 * 在 `web-project 目录`中执行
 ```
-bower install
+$ bower install
 ```
 安装 Web 端基础库
 
@@ -116,15 +116,15 @@ $ gulp build
 
 * 在根目录执行
 ```
-avoscloud -g deploy
+$ avoscloud -g deploy
 ```
 可以部署到 LeanEngine 的测试环境中，通过配置的测试地址访问
 
 * （ 在根目录执行
 ```
-avoscloud publish
+$ avoscloud publish
 ```
-发布）
+发布整个项目到线上环境）
 
 ### 其他说明
 
