@@ -67,19 +67,22 @@ Web 端版本直接支持国际化方案，具体配置都在 `web-project/src/a
 $ git clone git@github.com:leancloud/LeanEngine-Full-Stack.git
 $ cd LeanEngine-Full-Stack
 ```
-* 在该项目`根目录`执行
+
+* 再在该项目`根目录`执行
 ```
 $ npm install
 ```
 安装服务端环境依赖
+
 * 在 `web-project 目录`中执行
 ```
 $ npm install
 ```
 安装 Web 端构建依赖
+
 * 在 `web-project 目录`中执行
 ```
-bower install
+$ bower install
 ```
 安装 Web 端基础库
 
@@ -90,11 +93,13 @@ bower install
 $ avoscloud
 ```
 运行服务器端环境，通过 `http://localhost:3000/api/hello` 可以测试
+
 * 在 web-project 目录中执行
 ```
 $ gulp serve
 ```
 运行 web 端环境，通过 `http://localhost:9000` 可以调试
+
 * 开发时需要同时运行这两个任务（开两个 terminal），就可以同时调试 Server 与 Web
 
 ### 部署
@@ -106,24 +111,30 @@ $ gulp serve
 $ gulp build
 ```
 构建系统会自动打包，自动压缩合并代码，发布到 public 目录中
+
 * 将最新代码，连同 public 目录中的代码，全部提交到对应的 GitHub 仓库中
+
 * 在根目录执行
 ```
-avoscloud -g deploy
+$ avoscloud -g deploy
 ```
 可以部署到 LeanEngine 的测试环境中，通过配置的测试地址访问
+
 * （ 在根目录执行
 ```
-avoscloud publish
-``` 发布）
+$ avoscloud publish
+```
+发布整个项目到线上环境）
 
 ### 其他说明
 
 * 当前项目中，服务端与 Web 端本地调试的域并不相同，所以前端与服务端基础代码中已经基于 HTML5 CORS 协议做了跨域支持，具体参考项目中代码
+
 * web-project 目录完全可以独立，是一套完整的 Web 前端开发结构，本身也支持跨域方案，所以也可以 Web 与 Server 分工开发
+
 * web-project 中要增加本地构建，请使用
 ```
-npm install xxx --save-dev
+$ npm install xxx --save-dev
 ```
 安装到 devDependencies 里面（package.json）
 
