@@ -12,11 +12,18 @@ let config = {
 
   // Api 的请求地址
   apiHost: 'http://localhost:3000',
+
+  // LeanCloud 账号注册地址
+  registerUrl: 'https://leancloud.cn/login.html#/signin',
+
+  // 运行环境的 host
+  host: 'http://localhost:9000'
 };
 
 // 判断是否为开发环境
-if (window.location.host !== 'localhost:9000') {
-  config.apiHost = 'http://' + window.location.host;
+const host = window.location.host;
+if (('http://' + host) !== config.host) {
+  config.apiHost = 'http://' + host;
 }
 
 export default config;
