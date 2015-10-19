@@ -62,6 +62,7 @@ Web 端版本直接支持国际化方案，具体配置都在 `web-project/src/a
 
 ### 依赖安装
 
+* 系统依赖 nodejs 环境为 0.12.x 版本，如果启动遇到错误，请首先确保 nodejs 版本
 * 首先 clone 这个代码库到本地目录中
 ```
 $ git clone git@github.com:leancloud/LeanEngine-Full-Stack.git
