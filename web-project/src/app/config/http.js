@@ -35,14 +35,10 @@ export default ($httpProvider, lcConfig) => {
           } else {
               return response.data;
           }
+      },
+      responseError: function(response) {
+        return Promise.reject(response.data);
       }
-      // 'responseError': function(response) {
-      //     console.log(response.status);
-      //     if (response.status !== 200) {
-      //         $location.path('/index');
-      //     }
-      //     return response;
-      // }
     };
   }]);
 
