@@ -3,7 +3,7 @@
   <div class="block1">
     <div class="logo">Code Review</div>
     <div class="btns">
-      <md-button class="registerBtn lc-btn">{{i18n.auth.register}}</md-button>
+      <md-button class="registerBtn lc-btn" ng-click="showRegisterModel()">{{i18n.auth.register}}</md-button>
       <md-button class="loginBtn lc-btn md-raised light">{{i18n.auth.login}}</md-button>
     </div>
   </div>
@@ -29,4 +29,19 @@
     </a>
   </div>
 
+</div>
+
+<!-- Modals -->
+<div class="modal fade" id="modal-register" tabindex="-1" role="dialog" aria-labelledby="modal-register-label" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <h4 class="modal-title" id="modal-register-label">Register</h4>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+      </div>
+    </div>
+  </div>
 </div>

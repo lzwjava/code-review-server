@@ -13,6 +13,10 @@ export default ($scope, $window, commonSer, helloSer) => {
     commonSer.goHome();
   };
 
+  $scope.showRegisterModel = () => {
+
+  };
+
   helloSer.getData().then((data) => {
     $scope.reviewers = data;
   });
