@@ -1,7 +1,7 @@
 .auth-home-module {
   .block1 {
     position: relative;
-    height: 340px;
+    height: 60px;
     padding: 18px $screenLeft 0px $screenLeft;
     background-color: $lcBlue;
     .logo {
@@ -18,6 +18,24 @@
       color: $standardWhite;
       .loginBtn, .registerBtn {
         padding: 0px 18px;
+      }
+    }
+  }
+
+  .reviewer {
+    width: 257px;
+    position: relative;
+    text-align: left;
+    display: inline-block;
+    vertical-align: top;
+    background-color: #ffffff;
+    padding: 10px;
+    margin: 15px;
+
+    .reviewer-image {
+      img {
+        width: 100%;
+        height: 100%;
       }
     }
   }
