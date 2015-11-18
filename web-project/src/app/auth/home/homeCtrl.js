@@ -7,12 +7,17 @@
 
 export default ($scope, $window, commonSer, helloSer) => {
   'ngInject';
+  $scope.reviewers = [];
 
   $scope.goHome = () => {
     commonSer.goHome();
   };
 
   helloSer.getData().then((data) => {
-    console.log(data);
+    $scope.reviewers = data;
   });
+
+  $scope.getReviewer = (index) => {
+    return $scope.reviewers[index];
+  }
 };
