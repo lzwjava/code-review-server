@@ -20,6 +20,8 @@ const user = require('./user');
 router.get('/hello', hello.hello);
 router.get('/reviewers', reviewers.reviewers);
 router.get('/register', user.register);
-router.get('/login', user.login);
+
+router.get('/login/github/callback', user.gitHubCallback);
+router.get('/login/github', user.loginByGitHubAuth);
 
 module.exports = router;

@@ -31,14 +31,21 @@
 
 </div>
 
+
 <!-- Modals -->
 <div class="modal fade" id="modal-register" tabindex="-1" role="dialog" aria-labelledby="modal-register-label" aria-hidden="true">
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-        <h4 class="modal-title" id="modal-register-label">Register</h4>
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+        <h4 class="modal-title" id="modal-register-label">注册</h4>
       </div>
+      <form class="signup-form" ng-submit="registerSite()">
+        <div class="error" style="display:none"></div>
+        <input type="text" id="signup-username" placeholder="Username" ng-model="username"/>
+        <input type="password" id="signup-password" placeholder="Create a Password" ng-model="password"/>
+        <md-button>注册</md-button>
+      </form>
       <div class="modal-footer">
         <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
       </div>

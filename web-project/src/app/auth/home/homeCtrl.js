@@ -5,7 +5,7 @@
 * @author wangxiao
 */
 
-export default ($scope, $window, commonSer, helloSer) => {
+export default ($scope, $window, $http, commonSer, helloSer) => {
   'ngInject';
   $scope.reviewers = [];
 
@@ -14,7 +14,13 @@ export default ($scope, $window, commonSer, helloSer) => {
   };
 
   $scope.showRegisterModel = () => {
-
+    $http({
+      method: 'get',
+      url: '/api/login/github'
+    }).then((data) => {
+      console.log(data);
+      $window.location.href = data.url;
+    });
   };
 
   helloSer.getData().then((data) => {
@@ -23,5 +29,11 @@ export default ($scope, $window, commonSer, helloSer) => {
 
   $scope.getReviewer = (index) => {
     return $scope.reviewers[index];
-  }
+  };
+
+  $scope.registerSite = () => {
+    var username = $scope.username;
+    var password = $scope.password;
+    console.log(username);
+  };
 };
