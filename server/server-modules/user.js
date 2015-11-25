@@ -96,8 +96,8 @@ var domain = () => {
 
 pub.loginByGitHubAuth = (req, res) => {
   var state = randomString();
-  var codeRedirectUri = domain() + '/login/github/code';
-  res.send({url: 'https://github.com/login/oauth/authorize?client_id=' + gitHubClientId + '&redirect_uri=' + codeRedirectUri + '&scope=user&state=' + state});
+  var redirectUri = encodeURI(domain() + '/api/login/github/callback');
+  res.send({url: 'https://github.com/login/oauth/authorize?client_id=' + gitHubClientId + '&redirect_uri=' + redirectUri + '&scope=&state=' + state});
 };
 
 module.exports = pub;
