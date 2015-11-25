@@ -49,7 +49,7 @@ function randomString() {
 
 pub.gitHubCallback = (req, res) => {
   var code = req.query.code;
-  var access = req.query.access_token;
+  var token = req.query.access_token;
   if (code) {
     if (!code) {
       console.log('no oauth code');
@@ -63,21 +63,22 @@ pub.gitHubCallback = (req, res) => {
           code: code
         }
       }).then((response) => {
-        console.log('oauth access token request result:' + response);
+        console.log('oauth access token request succeed');
       }, (response) => {
         console.log('error: ' + response.status);
       });
     }
-  } else if (access) {
+  } else if (token) {
     var type = req.query.token_type;
-    if (!access) {
+    console.log('get access token' + token);
+    if (!token) {
       console.log('no access token');
     } else {
       AV.Cloud.httpRequest({
         method: 'GET',
-        url: 'https://api.github.com/user?access_token=' + access
+        url: 'https://api.github.com/user?access_token=' + token
       }).then((response) => {
-        console.log(response);
+        console.log('user result:' + response);
       });
     }
   } else {
