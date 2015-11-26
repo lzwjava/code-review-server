@@ -11,14 +11,11 @@ const Reviwer = AV.Object.extend("Reviewer");
 
 let pub = {};
 
-pub.reviewers = (req, res) => {
+pub.reviewers = async (req, res) => {
   tool.l('reviewers');
-  let query = new AV.Query(Reviwer);
-  query.find().then(function(reviewers) {
-    res.send(reviewers);
-  }, function (error) {
-
-  });
+  const query = new AV.Query(Reviwer);
+  const reviewers = await query.find();
+  res.send(reviewers);
 };
 
 module.exports = pub;

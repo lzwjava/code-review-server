@@ -15,6 +15,9 @@ const bodyParser = require('body-parser');
 const AV = require('leanengine');
 const app = express();
 
+// babel 编译
+require('babel-core/register');
+
 // 各个模块
 const apiRouter = require('./api-router');
 const tool = require('./tool');
