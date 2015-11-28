@@ -6,19 +6,18 @@
 </head>
 <body>
 
-<p>sms</p>
+<p>请输入您的手机号码, 将发送验证码到你的手机上</p>
 
 <form action="http://localhost:3000/api/requestSmsCode" method="post">
   <input name="mobilePhoneNumber" value="13261630925">
   <input type="submit">
 </form>
 
-<p>register</p>
+<p>请输入刚刚发送的验证码, 进行注册或登录</p>
 
 <form action="http://localhost:3000/api/register" method="post">
-  <input name="password" title="password" placeholder="password" value="123456">
   <input name="mobilePhoneNumber" title="mobilePhoneNumber" placeholder="mobilePhoneNumber" value="13261630925">
-  <input name="smsCode" title="code">
+  <input name="smsCode" title="code" placeholder="smsCode">
 
   <input type="submit">
 </form>
