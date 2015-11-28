@@ -5,11 +5,20 @@
 
 const AV = require('leanengine');
 const util = require('util');
+var debug = require('debug')('user');
+var fs = require('fs');
 
 const gitHubClientId = '2fdb38b952b9aacf0174';
 const gitHubClientSecret = 'e2d00d34749f75b89565b1afcecd275fff81021e';
 
 let pub = {};
+let MissTypeOrWrongType = 1;
+let MissNickname = 2;
+
+let TypeReviewer = 1;
+let TypeLearner = 2;
+
+debug('debugging user now');
 
 let inspectError = (error) => {
   if (error == null) {
@@ -26,34 +35,98 @@ var createError = function (code, desc) {
 
 let failErrorFn = (res) => {
   return (error) => {
-    res.status(400).send(inspectError(error));
+    failError(res, error);
   };
 };
 
-pub.requestSmsCode = (req, res) => {
-  AV.Cloud.requestSmsCode(req.body.mobilePhoneNumber).then(() => {
+let failError = (res, error) => {
+  res.status(400).send(inspectError(error));
+};
+
+pub.requestSmsCode = async (req, res) => {
+  try {
+    await AV.Cloud.requestSmsCode(req.body.mobilePhoneNumber);
     res.sendStatus(200);
-  }, failErrorFn(res));
+  } catch (error) {
+    failErrorFn(res, error);
+  }
+};
+
+var registerOrLogin = async (info, res) => {
+  var user = new AV.User();
+  try {
+    await user.signUpOrlogInWithMobilePhone(info);
+    res.send(user);
+  } catch (error) {
+    failError(res, error);
+  }
 };
 
 pub.register = (req, res) => {
   var info = {
     mobilePhoneNumber: req.body.mobilePhoneNumber,
-    smsCode: req.body.smsCode
+    smsCode: req.body.smsCode,
+    nickname: req.body.nickname,
+    type: parseInt(req.body.type)
   };
-  var user = new AV.User();
-  user.signUpOrlogInWithMobilePhone(info).then((user) => {
-    res.sendStatus(201);
-  }, failErrorFn(res));
+  if (info.type == null && info.type != TypeLearner && info.type != TypeReviewer) {
+    res.send(400, createError(MissTypeOrWrongType, 'Miss type or type is wrong.'));
+  } else if (info.nickname == null || info.nickname.trim().length == 0) {
+    res.send(400, createError(MissNickname, 'Miss nickname or nickname is empty.'));
+  } else {
+    registerOrLogin(info, res);
+  }
 };
 
 pub.login = (req, res) => {
-  var username = req.body.username;
-  var password = req.body.password;
-  //AV.User.logIn(username, password).then((user) => {
-  //  res.redirect('/');
-  //});
-  loginByGitHubAuth(req, res);
+  var info = {
+    mobilePhoneNumber: req.body.mobilePhoneNumber,
+    smsCode: req.body.smsCode
+  };
+  registerOrLogin(info, res);
+};
+
+var saveFile = async (file) => {
+  if (file == null || file.name.length == 0) {
+    return AV.Promise.as();
+  } else {
+    try {
+      let data = await fs.readFile(file.path);
+      debug('get data succeed');
+      var theFile = new AV.File(file.name, data);
+      await theFile.save();
+      debug('save file succeed');
+      return AV.Promise.as(theFile);
+    } catch (err) {
+      return AV.Promise.error(err);
+    }
+  }
+};
+
+let getUserBySessionToken = (sessionToken) => {
+  return AV.User.become(sessionToken);
+};
+
+pub.updateInfo = async (req, res) => {
+  debug('updating info now');
+  let nickname = req.body.nickname;
+  let avatar = req.files.avatar;
+  debug('avatar is ' + avatar);
+  let avatarFile = await saveFile(avatar);
+  var updateInfo = {};
+  if (nickname && nickname.trim().length > 0) {
+    updateInfo.nickname = nickname;
+  }
+  if (avatarFile) {
+    updateInfo.avatar = avatarFile;
+  }
+  let sessionToken = req.header('X-CR-Session');
+  var user = await getUserBySessionToken(sessionToken);
+  try {
+    await user.save(updateInfo);
+  } catch (error) {
+    failError(res, error);
+  }
 };
 
 function randomString() {

@@ -20,8 +20,9 @@ const user = require('./user');
 router.get('/hello', hello.hello);
 router.get('/reviewers', reviewers.reviewers);
 router.post('/register', user.register);
-
+router.post('/login', user.login);
 router.post('/requestSmsCode', user.requestSmsCode);
+router.post('/user', user.updateInfo);
 
 router.get('/login/github/callback', user.gitHubCallback);
 router.get('/login/github', user.loginByGitHubAuth);

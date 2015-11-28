@@ -6,20 +6,49 @@
 </head>
 <body>
 
+<p>线上环境请将 https://localhost:3000 替换成 https://codereview.avosapps.com</p>
+
 <p>请输入您的手机号码, 将发送验证码到你的手机上</p>
 
 <form action="http://localhost:3000/api/requestSmsCode" method="post">
   <input name="mobilePhoneNumber" value="13261630925">
+
   <input type="submit">
 </form>
 
-<p>请输入刚刚发送的验证码, 进行注册或登录</p>
+<p>请输入刚刚发送的验证码, 进行登录</p>
 
-<form action="http://localhost:3000/api/register" method="post">
+<form action="http://localhost:3000/api/login" method="post">
   <input name="mobilePhoneNumber" title="mobilePhoneNumber" placeholder="mobilePhoneNumber" value="13261630925">
   <input name="smsCode" title="code" placeholder="smsCode">
 
   <input type="submit">
 </form>
+
+
+<p>请输入刚刚发送的验证码, 进行注册</p>
+
+<form action="http://localhost:3000/api/register" method="post">
+  <input name="mobilePhoneNumber" title="mobilePhoneNumber" placeholder="mobilePhoneNumber" value="13261630925">
+  <input name="smsCode" placeholder="smsCode">
+  <input name="nickname" placeholder="nickname" value="lzwjava">
+
+  <select name="type">
+    <option value="1">大神</option>
+    <option value="2">新手</option>
+  </select>
+
+  <input type="submit">
+</form>
+
+<p>更新信息</p>
+
+<form action="http://localhost:3000/api/user" method="post">
+  <input type="file" name="avatar" accept="*"/>
+  <input name="nickname" placeholder="nickname">
+  <input type="submit">
+</form>
+
+
 </body>
 </html>
