@@ -4,35 +4,52 @@
 'use strict';
 
 const AV = require('leanengine');
+const util = require('util');
 
 const gitHubClientId = '2fdb38b952b9aacf0174';
 const gitHubClientSecret = 'e2d00d34749f75b89565b1afcecd275fff81021e';
 
 let pub = {};
 
-pub.register = (req, res) => {
-  var username = req.body.username;
-  var password = req.body.password;
-  var email = req.body.email;
-  if (username && password && email) {
-    var user = new AV.User();
-    user.set('username', username);
-    user.set('password', password);
-    user.set('email', email);
-    user.signUp().then((user) => {
-      res.redirect('/');
-      // login.renderEmailVerify(res, email);
-    }, (error) => {
-      //renderInfo(res, util.inspect(error));
-    });
-  } else {
-    //mutil.renderError(res, '不能为空');
+let inspectError = (error) => {
+  if (error == null) {
+    error = "Unknown error";
   }
+  if (typeof error != 'string')
+    error = util.inspect(error);
+  return error;
+};
+
+var createError = function (code, desc) {
+  return {"error": desc, "code": code};
+};
+
+let failErrorFn = (res) => {
+  return (error) => {
+    res.status(400).send(inspectError(error));
+  };
+};
+
+pub.requestSmsCode = (req, res) => {
+  AV.Cloud.requestSmsCode(req.body.mobilePhoneNumber).then(() => {
+    res.sendStatus(200);
+  }, failErrorFn(res));
+};
+
+pub.register = (req, res) => {
+  var info = {
+    mobilePhoneNumber: req.body.mobilePhoneNumber,
+    smsCode: req.body.smsCode
+  };
+  var user = new AV.User();
+  user.signUpOrlogInWithMobilePhone(info).then((user) => {
+    res.sendStatus(201);
+  }, failErrorFn(res));
 };
 
 pub.login = (req, res) => {
-  //var username = req.body.username;
-  //var password = req.body.password;
+  var username = req.body.username;
+  var password = req.body.password;
   //AV.User.logIn(username, password).then((user) => {
   //  res.redirect('/');
   //});
@@ -98,7 +115,7 @@ var domain = () => {
 pub.loginByGitHubAuth = (req, res) => {
   var state = randomString();
   var redirectUri = encodeURI(domain() + '/api/login/github/callback');
-  res.send({url: 'https://github.com/login/oauth/authorize?client_id=' + gitHubClientId + '&redirect_uri=' + redirectUri + '&scope=&state=' + state});
+  res.redirect('https://github.com/login/oauth/authorize?client_id=' + gitHubClientId + '&redirect_uri=' + redirectUri + '&scope=&state=' + state)
 };
 
 module.exports = pub;

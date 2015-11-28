@@ -19,7 +19,9 @@ const user = require('./user');
 // 一个 API 路由下的 hello 接口，访问 /api/hello
 router.get('/hello', hello.hello);
 router.get('/reviewers', reviewers.reviewers);
-router.get('/register', user.register);
+router.post('/register', user.register);
+
+router.post('/requestSmsCode', user.requestSmsCode);
 
 router.get('/login/github/callback', user.gitHubCallback);
 router.get('/login/github', user.loginByGitHubAuth);

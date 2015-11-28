@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Title</title>
+</head>
+<body>
+
+<p>sms</p>
+
+<form action="http://localhost:3000/api/requestSmsCode" method="post">
+  <input name="mobilePhoneNumber" value="13261630925">
+  <input type="submit">
+</form>
+
+<p>register</p>
+
+<form action="http://localhost:3000/api/register" method="post">
+  <input name="password" title="password" placeholder="password" value="123456">
+  <input name="mobilePhoneNumber" title="mobilePhoneNumber" placeholder="mobilePhoneNumber" value="13261630925">
+  <input name="smsCode" title="code">
+
+  <input type="submit">
+</form>
+</body>
+</html>
