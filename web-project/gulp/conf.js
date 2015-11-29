@@ -16,7 +16,7 @@ exports.paths = {
   dist: 'dist',
   tmp: '.tmp',
   e2e: 'e2e',
-  public: '../server/public',
+  public: './public',
   app: 'src/app'
 };
 
