@@ -22,4 +22,8 @@ pub.fail = (res, err) => {
   });
 };
 
+pub.isDevelopment = () => {
+  return !process.env.LC_APP_ENV || process.env.LC_APP_ENV == 'development';
+};
+
 module.exports = pub;

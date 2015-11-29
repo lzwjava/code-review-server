@@ -67,6 +67,8 @@ module.exports = function(options) {
       debug('set-cookie %j', cookie);
       return res.setHeader('Set-Cookie', val);
     });
+    debug('uid %j', uid);
+    debug('sessionToken %j', sessionToken);
     if ((uid != null) && (sessionToken != null)) {
       user = new AV.User;
       user.id = uid;

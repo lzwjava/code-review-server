@@ -7,6 +7,7 @@ const AV = require('leanengine');
 const util = require('util');
 var debug = require('debug')('user');
 var fs = require('fs');
+const tool = require('./tool');
 
 const gitHubClientId = '2fdb38b952b9aacf0174';
 const gitHubClientSecret = 'e2d00d34749f75b89565b1afcecd275fff81021e';
@@ -62,6 +63,7 @@ var registerOrLogin = async (res, info) => {
   var user = new AV.User();
   try {
     await user.signUpOrlogInWithMobilePhone(info);
+    setCookieToken(res, user);
     res.send(user);
   } catch (error) {
     failError(res, error);
@@ -99,7 +101,8 @@ pub.login = async (req, res) => {
     registerOrLogin(res, info);
   } else {
     try {
-      let user = await AV.User.login(info.mobilePhoneNumber, info.password);
+      let user = await AV.User.logIn(info.mobilePhoneNumber, info.password);
+      setCookieToken(res, user);
       res.send(user);
     } catch (error) {
       failError(res, error);
@@ -150,12 +153,50 @@ pub.updateInfo = async (req, res) => {
   }
 };
 
-pub.currentUser = (req, res) => {
-  if (AV.User.current()) {
-    res.send(AV.User.current());
+pub.fetchUser = async (req) => {
+  try {
+    if (req.user) {
+      await req.user.fetch();
+    }
+  } catch (error) {
+    debug('fetch error ' + error);
+  }
+};
+
+pub.currentUser = async (req, res) => {
+  await pub.fetchUser(req);
+  if (req.user) {
+    res.send(req.user);
   } else {
     res.redirect('/');
   }
+};
+
+let CookieSessionKey = 'codereviewsession';
+
+let setCookieToken = (res, user) => {
+  let session = {uid: user.id, sessionToken: user._sessionToken};
+  //res.clearCookie(CookieSessionKey);
+  let secure = !tool.isDevelopment();
+  debug('set cookie %j', session);
+  res.cookie(CookieSessionKey, session, { secure: secure, httpOnly: true, signed: true, maxAge: 1000 * 60 * 60 * 24 * 60}); // 2 months
+};
+
+pub.tokenParser = () => {
+  return (req, res, next) => {
+    debug('signed cookies %j', req.signedCookies);
+    var session = req.signedCookies[CookieSessionKey];
+    debug('signed cookies is %s', session);
+    if (session != null && session.uid != null && session.sessionToken != null) {
+      req.user = new AV.User();
+      req.user.id = session.uid;
+      req.user._sessionToken = session.sessionToken;
+      debug('set req.user');
+      next();
+    } else {
+      next();
+    }
+  };
 };
 
 function randomString() {
@@ -204,10 +245,6 @@ pub.gitHubCallback = (req, res) => {
     console.log('no code or access token');
   }
   res.send();
-};
-
-var isDevelopment = () => {
-  return !process.env.LC_APP_ENV || process.env.LC_APP_ENV == 'development';
 };
 
 var domain = () => {

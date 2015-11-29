@@ -23,6 +23,7 @@ require('babel-core/register');
 const apiRouter = require('./api-router');
 const tool = require('./tool');
 const config = require('./config');
+const user = require('./user');
 
 // 设置 view 引擎
 // app.set('views', path.join(__dirname, 'views'));
@@ -37,7 +38,8 @@ app.use(bodyParser.urlencoded({
   extended: false
 }));
 app.use(cookieParser('O8IIo4l00KM620vO'));
-app.use(leanengineExpressCookieSession({cookie: {maxAge: 3600000}})); // 41.6 day
+// app.use(leanengineExpressCookieSession({cookie: {maxAge: 3600000}})); // 41.6 day
+app.use(user.tokenParser());
 
 // 未处理异常捕获 middleware
 app.use((req, res, next) => {
@@ -66,6 +68,12 @@ app.all('/api/*', (req, res, next) => {
   }
   next();
 });
+
+if (tool.isDevelopment()) {
+  app.get('/test', (req ,res) => {
+    res.sendFile(path.dirname(require.main.filename) + '/public/test.html');
+  });
+}
 
 // api
 app.use('/api', apiRouter);
