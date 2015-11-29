@@ -23,6 +23,7 @@ router.post('/register', user.register);
 router.post('/login', user.login);
 router.post('/requestSmsCode', user.requestSmsCode);
 router.post('/user', user.updateInfo);
+router.get('/user', user.currentUser);
 
 router.get('/login/github/callback', user.gitHubCallback);
 router.get('/login/github', user.loginByGitHubAuth);

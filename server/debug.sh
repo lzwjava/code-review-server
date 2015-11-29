@@ -1,1 +1,1 @@
-DEBUG=user avoscloud
+DEBUG=user,avos:cookieSession avoscloud

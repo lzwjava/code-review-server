@@ -13,6 +13,7 @@ const path = require('path');
 const cookieParser = require('cookie-parser');
 const bodyParser = require('body-parser');
 const AV = require('leanengine');
+const leanengineExpressCookieSession = require('./leanengine-express-cookie-session');
 const app = express();
 
 // babel 编译
@@ -35,7 +36,8 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({
   extended: false
 }));
-app.use(cookieParser());
+app.use(cookieParser('O8IIo4l00KM620vO'));
+app.use(leanengineExpressCookieSession({cookie: {maxAge: 3600000}})); // 41.6 day
 
 // 未处理异常捕获 middleware
 app.use((req, res, next) => {
