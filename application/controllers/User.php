@@ -109,8 +109,7 @@ class User extends CI_Controller
         }
         $mobilePhoneNumber = $_POST["mobilePhoneNumber"];
         $password = $_POST["password"];
-        $password_md5 = md5($password);
-        if ($this->userDao->checkLogin($mobilePhoneNumber, $password_md5) == false) {
+        if ($this->userDao->checkLogin($mobilePhoneNumber, $password) == false) {
             responseJson(LOGIN_FAILED, null, "手机号码不存在或者密码错误");
         } else {
             $this->loginOrRegisterSucceed($mobilePhoneNumber);

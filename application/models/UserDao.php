@@ -17,8 +17,7 @@ class UserDao extends CI_Model
 
     function checkIfUserUsed($field, $value)
     {
-        $sql =
-        $sql = "SELECT * FROM users WHERE " . $field . " =?";
+        $sql = "SELECT * FROM users WHERE $field =?";
         $array[] = $value;
         return $this->db->query($sql, $array)->num_rows() > 0;
     }
@@ -75,7 +74,7 @@ class UserDao extends CI_Model
     {
         $sql = "SELECT * FROM users WHERE mobilePhoneNumber=? AND password=?";
         $array[] = $mobilePhoneNumber;
-        $array[] = $password;
+        $array[] = md5($password);
         return $this->db->query($sql, $array)->num_rows() == 1;
     }
 
