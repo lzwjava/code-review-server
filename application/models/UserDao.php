@@ -17,6 +17,7 @@ class UserDao extends CI_Model
 
     function checkIfUserUsed($field, $value)
     {
+        $sql =
         $sql = "SELECT * FROM users WHERE " . $field . " =?";
         $array[] = $value;
         return $this->db->query($sql, $array)->num_rows() > 0;
@@ -32,18 +33,42 @@ class UserDao extends CI_Model
         return $this->checkIfUserUsed('mobilePhoneNumber', $mobilePhoneNumber);
     }
 
-    function insertUser($username, $mobilePhoneNumber, $avatarUrl, $type, $password)
+    function insertUser($type, $username, $mobilePhoneNumber, $avatarUrl, $password)
     {
+
         $data = array(
+            'id' => $this->genId(),
             'username' => $username,
-            'password' => $password,
+            'password' => md5($password),
             'mobilePhoneNumber' => $mobilePhoneNumber,
             'avatarUrl' => $avatarUrl,
-            'type' => $type
+            'sessionToken' => $this->genSessionToken()
         );
         $this->db->trans_start();
-        $this->db->insert('users', $data);
+        $tableName = $this->tableNameByType($type);
+        $this->db->insert($tableName, $data);
         $this->db->trans_complete();
+    }
+
+    private function genId() {
+        return getToken(16);
+    }
+
+    private function genSessionToken() {
+        return getToken(32);
+    }
+
+    private function tableNameByType($type)
+    {
+        if ($type == TYPE_LEARNER) {
+            $tableName = 'learners';
+        } else if ($type == TYPE_REVIEWER) {
+            $tableName = 'reviewers';
+        } else {
+            error_log('unkown type');
+            $tableName = 'learners';
+        }
+        return $tableName;
     }
 
     function checkLogin($mobilePhoneNumber, $password)
@@ -56,7 +81,7 @@ class UserDao extends CI_Model
 
     function findUser($filed, $value)
     {
-        $sql = "SELECT * FROM users WHERE " . $filed . "=?";
+        $sql = "SELECT * FROM users WHERE $filed=?";
         $array[] = $value;
         $user = $this->db->query($sql, $array)->row();
         if ($user) {
@@ -83,24 +108,23 @@ class UserDao extends CI_Model
     function updateSessionTokenIfNeeded($user)
     {
         $created = strtotime($user->sessionTokenCreated);
-        error_log("sessionTokenCreated " . $user->sessionTokenCreated);
         $now = dateWithMs();
-        error_log("now " . $now);
         $nowMillis = strtotime($now);
-        error_log("nowMillis " . $nowMillis);
         $duration = $nowMillis - $created;
-        error_log("duration " . $duration);
         if ($user->sessionToken == null || $user->sessionTokenCreated == null
             || $duration > 60 * 60 * 24 * 30
         ) {
-            $sql = "UPDATE users SET sessionToken = ?, sessionTokenCreated = ? WHERE id = ?";
-            $array[] = uuid();
+            $tableName = $this->tableNameByType($user->type);
+            $sql = "UPDATE $tableName SET sessionToken = ?, sessionTokenCreated = ? WHERE id = ?";
+            $array[] = $this->genSessionToken();
             $array[] = $now;
             $array[] = $user->id;
             $this->db->query($sql, $array);
-            return $this->findUserById($user->id);
+            $actualUser = $this->findUserById($user->id);
         } else {
-            return $user;
+            $actualUser = $user;
         }
+        unset($actualUser->sessionTokenCreated);
+        return $actualUser;
     }
 }

@@ -86,4 +86,9 @@ defined('EXIT__AUTO_MAX')      OR define('EXIT__AUTO_MAX', 125); // highest auto
 
 define('LOGIN_FAILED', 10);
 define('REQUEST_SUCCEED', 0);
+define('USERNAME_TAKEN', 1);
+define('MOBILE_PHONE_NUMBER_TAKEN', 2);
+define('SMS_ERROR', 3);
 
+define('TYPE_REVIEWER', 1);
+define('TYPE_LEARNER', 0);

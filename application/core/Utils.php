@@ -44,9 +44,14 @@ if (!function_exists('dateWithMs')) {
 }
 
 if (!function_exists('uuid')) {
-    function uuid()
+    function uuid($len = null)
     {
-        return md5(uniqid());
+        $uuid = md5(uniqid());
+        if ($len == null) {
+            return $uuid;
+        } else {
+            return substr($uuid, 0, $len);
+        }
     }
 }
 
@@ -56,6 +61,23 @@ if (!function_exists('setCookieForever')) {
         setcookie($name, $value, time() + 3600 * 24 * 165 * 20, "/");
     }
 }
+
+if (!function_exists('getToken')) {
+
+    function getToken($length = 16)
+    {
+        $token = "";
+        $codeAlphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+        $codeAlphabet .= "abcdefghijklmnopqrstuvwxyz";
+        $codeAlphabet .= "0123456789";
+        $max = strlen($codeAlphabet) - 1;
+        for ($i = 0; $i < $length; $i++) {
+            $token .= $codeAlphabet[rand(0, $max)];
+        }
+        return $token;
+    }
+}
+
 
 if (!function_exists('deleteCookie')) {
     function deleteCookie($name)

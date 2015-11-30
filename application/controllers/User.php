@@ -15,11 +15,14 @@ class User extends CI_Controller
 
     private function checkSmsCodeWrong($mobilePhoneNumber, $smsCode)
     {
+        if (getenv('CRDEBUG')) {
+            return false;
+        }
         $return = $this->curlLeanCloud("verifySmsCode/" . $smsCode . "?mobilePhoneNumber=" . $mobilePhoneNumber, null);
         if ($return['status'] == 200) {
             return false;
         } else {
-            responseJson(1, null, $return['result']);
+            responseJson(SMS_ERROR, null, $return['result']);
             return true;
         }
     }
@@ -53,7 +56,6 @@ class User extends CI_Controller
 
     public function requestSmsCode()
     {
-        header("Content-type:application/json;charset=utf-8");
         if (checkIfParamsNotExist($_POST, array("mobilePhoneNumber"))
         ) {
             return;
@@ -64,9 +66,9 @@ class User extends CI_Controller
         );
         $return = $this->curlLeanCloud('requestSmsCode', $data);
         if ($return['status'] = 200) {
-            responseJson(0, $return['result'], null);
+            responseJson(REQUEST_SUCCEED, $return['result'], null);
         } else {
-            responseJson(1, $return['result'], null);
+            responseJson(SMS_ERROR, null, $return['result']);
         }
     }
 
@@ -83,21 +85,21 @@ class User extends CI_Controller
         $type = $_POST['type'];
         $smsCode = $_POST['smsCode'];
         if ($this->userDao->checkIfUsernameUsed($username)) {
-            responseJson(1, null, "用户名已存在");
-            return;
+            responseJson(USERNAME_TAKEN, null, "用户名已存在");
         } elseif ($this->userDao->checkIfMobilePhoneNumberUsed($mobilePhoneNumber)) {
-            responseJson(2, null, "手机号已被占用");
+            responseJson(MOBILE_PHONE_NUMBER_TAKEN, null, "手机号已被占用");
         } else if ($this->checkSmsCodeWrong($mobilePhoneNumber, $smsCode)) {
             return;
         } else {
             $defaultAvatarUrl = "https://avatars2.githubusercontent.com/u/5022872?v=3&s=460";
-            $passwordMd5 = md5($password);
-            $this->userDao->insertUser($username, $mobilePhoneNumber, $defaultAvatarUrl, $type,
-                $passwordMd5);
-            $user = $this->userDao->findUserByMobilePhoneNumber($mobilePhoneNumber);
-            $user = $this->userDao->updateSessionTokenIfNeeded($user);
-            responseJson(REQUEST_SUCCEED, $user, null);
+            $this->userDao->insertUser($type, $username, $mobilePhoneNumber, $defaultAvatarUrl,
+                $password);
+            $this->loginOrRegisterSucceed($mobilePhoneNumber);
         }
+    }
+
+    public function test() {
+        echo getenv('CRDEBUG');
     }
 
     public function login()
@@ -109,18 +111,38 @@ class User extends CI_Controller
         $password = $_POST["password"];
         $password_md5 = md5($password);
         if ($this->userDao->checkLogin($mobilePhoneNumber, $password_md5) == false) {
-            responseJson(LOGIN_FAILED, 0, "手机号码不存在或者密码错误");
+            responseJson(LOGIN_FAILED, null, "手机号码不存在或者密码错误");
         } else {
-            $user = $this->userDao->findUserByMobilePhoneNumber($mobilePhoneNumber);
-            $user = $this->userDao->updateSessionTokenIfNeeded($user);
-            setCookieForever('cr.user', json_encode($user));
-            responseJson(REQUEST_SUCCEED, $user, null);
+            $this->loginOrRegisterSucceed($mobilePhoneNumber);
+        }
+    }
+
+    public function loginOrRegisterSucceed($mobilePhoneNumber) {
+        $user = $this->userDao->findUserByMobilePhoneNumber($mobilePhoneNumber);
+        $user = $this->userDao->updateSessionTokenIfNeeded($user);
+        setCookieForever('crtoken', $user->sessionToken);
+        responseJson(REQUEST_SUCCEED, $user, null);
+    }
+
+    public function self()
+    {
+        $login_url = 'Location: /';
+        if (!isset($_COOKIE['crtoken'])) {
+            header($login_url);
+        } else {
+            $user = $this->userDao->findUserBySessionToken($_COOKIE['crtoken']);
+            if ($user == null) {
+                header($login_url);
+            } else {
+                responseJson(REQUEST_SUCCEED, $user, null);
+            }
         }
     }
 
     public function logout()
     {
-        deleteCookie('cr.user');
+        session_unset('crtoken');
+        deleteCookie('crtoken');
         responseJson(REQUEST_SUCCEED, null, "已安全退出");
     }
 }
