@@ -53,4 +53,54 @@ class UserDao extends CI_Model
         $array[] = $password;
         return $this->db->query($sql, $array)->num_rows() == 1;
     }
+
+    function findUser($filed, $value)
+    {
+        $sql = "SELECT * FROM users WHERE " . $filed . "=?";
+        $array[] = $value;
+        $user = $this->db->query($sql, $array)->row();
+        if ($user) {
+            unset ($user->password);
+        }
+        return $user;
+    }
+
+    function findUserById($id)
+    {
+        return $this->findUser("id", $id);
+    }
+
+    function findUserByMobilePhoneNumber($mobilePhoneNumber)
+    {
+        return $this->findUser("mobilePhoneNumber", $mobilePhoneNumber);
+    }
+
+    function findUserBySessionToken($sessionToken)
+    {
+        return $this->findUser("sessionToken", $sessionToken);
+    }
+
+    function updateSessionTokenIfNeeded($user)
+    {
+        $created = strtotime($user->sessionTokenCreated);
+        error_log("sessionTokenCreated " . $user->sessionTokenCreated);
+        $now = dateWithMs();
+        error_log("now " . $now);
+        $nowMillis = strtotime($now);
+        error_log("nowMillis " . $nowMillis);
+        $duration = $nowMillis - $created;
+        error_log("duration " . $duration);
+        if ($user->sessionToken == null || $user->sessionTokenCreated == null
+            || $duration > 60 * 60 * 24 * 30
+        ) {
+            $sql = "UPDATE users SET sessionToken = ?, sessionTokenCreated = ? WHERE id = ?";
+            $array[] = uuid();
+            $array[] = $now;
+            $array[] = $user->id;
+            $this->db->query($sql, $array);
+            return $this->findUserById($user->id);
+        } else {
+            return $user;
+        }
+    }
 }

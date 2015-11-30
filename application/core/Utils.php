@@ -31,3 +31,35 @@ if (!function_exists('responseJson')) {
         echo json_encode($arr);;
     }
 }
+
+if (!function_exists('dateWithMs')) {
+    function dateWithMs()
+    {
+        list ($t1, $t2) = explode(' ', microtime());
+        $date = new DateTime ();
+        $date->setTimestamp($t2);
+
+        return $date->format("Y-m-d H:i:s") . substr($t1, 1, 7);
+    }
+}
+
+if (!function_exists('uuid')) {
+    function uuid()
+    {
+        return md5(uniqid());
+    }
+}
+
+if (!function_exists('setCookieForever')) {
+    function setCookieForever($name, $value)
+    {
+        setcookie($name, $value, time() + 3600 * 24 * 165 * 20, "/");
+    }
+}
+
+if (!function_exists('deleteCookie')) {
+    function deleteCookie($name)
+    {
+        setcookie($name, "", time() - 10000, "/");
+    }
+}

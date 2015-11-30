@@ -72,7 +72,6 @@ class User extends CI_Controller
 
     public function register()
     {
-        header("Content-type:text/html;charset=utf-8");
         if (checkIfParamsNotExist($_POST, array('username', 'mobilePhoneNumber',
             'password', 'type', 'smsCode'))
         ) {
@@ -95,7 +94,33 @@ class User extends CI_Controller
             $passwordMd5 = md5($password);
             $this->userDao->insertUser($username, $mobilePhoneNumber, $defaultAvatarUrl, $type,
                 $passwordMd5);
+            $user = $this->userDao->findUserByMobilePhoneNumber($mobilePhoneNumber);
+            $user = $this->userDao->updateSessionTokenIfNeeded($user);
+            responseJson(REQUEST_SUCCEED, $user, null);
         }
     }
 
+    public function login()
+    {
+        if (checkIfParamsNotExist($_POST, array("mobilePhoneNumber", "password"))) {
+            return;
+        }
+        $mobilePhoneNumber = $_POST["mobilePhoneNumber"];
+        $password = $_POST["password"];
+        $password_md5 = md5($password);
+        if ($this->userDao->checkLogin($mobilePhoneNumber, $password_md5) == false) {
+            responseJson(LOGIN_FAILED, 0, "手机号码不存在或者密码错误");
+        } else {
+            $user = $this->userDao->findUserByMobilePhoneNumber($mobilePhoneNumber);
+            $user = $this->userDao->updateSessionTokenIfNeeded($user);
+            setCookieForever('cr.user', json_encode($user));
+            responseJson(REQUEST_SUCCEED, $user, null);
+        }
+    }
+
+    public function logout()
+    {
+        deleteCookie('cr.user');
+        responseJson(REQUEST_SUCCEED, null, "已安全退出");
+    }
 }
