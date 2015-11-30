@@ -9,9 +9,9 @@ CREATE TABLE `users` (
   `avatarUrl` varchar(255) NOT NULL,
   `type` tinyint(2) NOT NULL,
   `password` varchar(255) NOT NULL,
-  `salt` varchar(255) NOT NULL,
   `created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
+  UNIQUE KEY 'NAME_IDX' (`username`)
   UNIQUE KEY `PHONE_IDX` (`mobilePhoneNumber`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 SET FOREIGN_KEY_CHECKS = 1;
