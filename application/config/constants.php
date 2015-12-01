@@ -84,11 +84,14 @@ defined('EXIT_DATABASE')       OR define('EXIT_DATABASE', 8); // database error
 defined('EXIT__AUTO_MIN')      OR define('EXIT__AUTO_MIN', 9); // lowest automatically-assigned error code
 defined('EXIT__AUTO_MAX')      OR define('EXIT__AUTO_MAX', 125); // highest automatically-assigned error code
 
-define('LOGIN_FAILED', 10);
 define('REQUEST_SUCCEED', 0);
-define('USERNAME_TAKEN', 1);
-define('MOBILE_PHONE_NUMBER_TAKEN', 2);
-define('SMS_ERROR', 3);
+
+define('ERROR_LOGIN_FAILED', 10);
+define('ERROR_USERNAME_TAKEN', 1);
+define('ERROR_MOBILE_PHONE_NUMBER_TAKEN', 2);
+define('ERROR_SMS_WRONG', 3);
+define('ERROR_USER_NOT_EXIST', 4);
 
 define('TYPE_REVIEWER', 1);
 define('TYPE_LEARNER', 0);
+

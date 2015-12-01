@@ -7,11 +7,11 @@
  */
 
 if (!function_exists('checkIfParamsNotExist')) {
-    function checkIfParamsNotExist($request, $params)
+    function checkIfParamsNotExist($object, $request, $params)
     {
         foreach ($params as $param) {
             if (isset($request[$param]) == false) {
-                responseJson(4, null, "必须提供以下参数: " . $param);
+                responseJson($object, 4, null, "必须提供以下参数: " . $param);
                 return true;
             }
         }
@@ -20,15 +20,20 @@ if (!function_exists('checkIfParamsNotExist')) {
 }
 
 if (!function_exists('responseJson')) {
-    function responseJson($resultCode, $resultData, $resultInfo)
+    function responseJson($object, $resultCode, $resultData = null, $resultInfo = null)
     {
-        header("Content-type:application/json;charset=utf-8");
         $arr = array(
             'resultCode' => $resultCode,
             'resultData' => $resultData,
             'resultInfo' => $resultInfo
         );
-        echo json_encode($arr);;
+        if ($resultCode == REQUEST_SUCCEED) {
+            $object->output->set_status_header(200);
+        } else {
+            $object->output->set_status_header(400);
+        }
+        $object->output->set_content_type('application/json', 'utf-8')
+            ->set_output(json_encode($arr));
     }
 }
 

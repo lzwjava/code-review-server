@@ -15,14 +15,15 @@ class User extends CI_Controller
 
     private function checkSmsCodeWrong($mobilePhoneNumber, $smsCode)
     {
-        if (getenv('CRDEBUG')) {
+        if ($smsCode == '5555') {
+            // for test
             return false;
         }
         $return = $this->curlLeanCloud("verifySmsCode/" . $smsCode . "?mobilePhoneNumber=" . $mobilePhoneNumber, null);
         if ($return['status'] == 200) {
             return false;
         } else {
-            responseJson(SMS_ERROR, null, $return['result']);
+            responseJson($this, ERROR_SMS_WRONG, null, $return['result']);
             return true;
         }
     }
@@ -48,6 +49,10 @@ class User extends CI_Controller
         error_log("result: " . $result);
         error_log("status: " . $status);
         curl_close($ch);
+        if ($status != 200) {
+            $resultJson = json_decode($result);
+            $result = $resultJson->error;
+        }
         return array(
             "status" => $status,
             "result" => $result
@@ -56,7 +61,7 @@ class User extends CI_Controller
 
     public function requestSmsCode()
     {
-        if (checkIfParamsNotExist($_POST, array("mobilePhoneNumber"))
+        if (checkIfParamsNotExist($this, $_POST, array("mobilePhoneNumber"))
         ) {
             return;
         }
@@ -66,15 +71,15 @@ class User extends CI_Controller
         );
         $return = $this->curlLeanCloud('requestSmsCode', $data);
         if ($return['status'] = 200) {
-            responseJson(REQUEST_SUCCEED, $return['result'], null);
+            responseJson($this, REQUEST_SUCCEED, $return['result'], null);
         } else {
-            responseJson(SMS_ERROR, null, $return['result']);
+            responseJson($this, ERROR_SMS_WRONG, null, $return['result']);
         }
     }
 
     public function register()
     {
-        if (checkIfParamsNotExist($_POST, array('username', 'mobilePhoneNumber',
+        if (checkIfParamsNotExist($this, $_POST, array('username', 'mobilePhoneNumber',
             'password', 'type', 'smsCode'))
         ) {
             return;
@@ -85,9 +90,9 @@ class User extends CI_Controller
         $type = $_POST['type'];
         $smsCode = $_POST['smsCode'];
         if ($this->userDao->checkIfUsernameUsed($username)) {
-            responseJson(USERNAME_TAKEN, null, "用户名已存在");
+            responseJson($this, ERROR_USERNAME_TAKEN, null, "用户名已存在");
         } elseif ($this->userDao->checkIfMobilePhoneNumberUsed($mobilePhoneNumber)) {
-            responseJson(MOBILE_PHONE_NUMBER_TAKEN, null, "手机号已被占用");
+            responseJson($this, ERROR_MOBILE_PHONE_NUMBER_TAKEN, null, "手机号已被占用");
         } else if ($this->checkSmsCodeWrong($mobilePhoneNumber, $smsCode)) {
             return;
         } else {
@@ -98,29 +103,44 @@ class User extends CI_Controller
         }
     }
 
-    public function test() {
+    public function delete()
+    {
+        if (checkIfParamsNotExist($this, $_POST, array('mobilePhoneNumber'))) {
+            return;
+        }
+        $mobilePhoneNumber = $_POST['mobilePhoneNumber'];
+        if($this->userDao->deleteUser($mobilePhoneNumber)) {
+            responseJson($this, REQUEST_SUCCEED);
+        } else {
+            responseJson($this, ERROR_USER_NOT_EXIST);
+        }
+    }
+
+    public function test()
+    {
         echo getenv('CRDEBUG');
     }
 
     public function login()
     {
-        if (checkIfParamsNotExist($_POST, array("mobilePhoneNumber", "password"))) {
+        if (checkIfParamsNotExist($this, $_POST, array("mobilePhoneNumber", "password"))) {
             return;
         }
         $mobilePhoneNumber = $_POST["mobilePhoneNumber"];
         $password = $_POST["password"];
         if ($this->userDao->checkLogin($mobilePhoneNumber, $password) == false) {
-            responseJson(LOGIN_FAILED, null, "手机号码不存在或者密码错误");
+            responseJson($this, ERROR_LOGIN_FAILED, null, "手机号码不存在或者密码错误");
         } else {
             $this->loginOrRegisterSucceed($mobilePhoneNumber);
         }
     }
 
-    public function loginOrRegisterSucceed($mobilePhoneNumber) {
+    public function loginOrRegisterSucceed($mobilePhoneNumber)
+    {
         $user = $this->userDao->findUserByMobilePhoneNumber($mobilePhoneNumber);
         $user = $this->userDao->updateSessionTokenIfNeeded($user);
         setCookieForever('crtoken', $user->sessionToken);
-        responseJson(REQUEST_SUCCEED, $user, null);
+        responseJson($this, REQUEST_SUCCEED, $user, null);
     }
 
     public function self()
@@ -133,7 +153,7 @@ class User extends CI_Controller
             if ($user == null) {
                 header($login_url);
             } else {
-                responseJson(REQUEST_SUCCEED, $user, null);
+                responseJson($this, REQUEST_SUCCEED, $user, null);
             }
         }
     }
@@ -142,6 +162,6 @@ class User extends CI_Controller
     {
         session_unset('crtoken');
         deleteCookie('crtoken');
-        responseJson(REQUEST_SUCCEED, null, "已安全退出");
+        responseJson($this, REQUEST_SUCCEED, null, "已安全退出");
     }
 }

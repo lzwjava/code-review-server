@@ -49,11 +49,13 @@ class UserDao extends CI_Model
         $this->db->trans_complete();
     }
 
-    private function genId() {
+    private function genId()
+    {
         return getToken(16);
     }
 
-    private function genSessionToken() {
+    private function genSessionToken()
+    {
         return getToken(32);
     }
 
@@ -64,7 +66,7 @@ class UserDao extends CI_Model
         } else if ($type == TYPE_REVIEWER) {
             $tableName = 'reviewers';
         } else {
-            error_log('unkown type');
+            error_log('unknown type');
             $tableName = 'learners';
         }
         return $tableName;
@@ -102,6 +104,20 @@ class UserDao extends CI_Model
     function findUserBySessionToken($sessionToken)
     {
         return $this->findUser("sessionToken", $sessionToken);
+    }
+
+    function deleteUser($mobilePhoneNumber)
+    {
+        $user = $this->findUserByMobilePhoneNumber($mobilePhoneNumber);
+        if ($user != null) {
+            $tableName = $this->tableNameByType($user->type);
+            $sql = "delete from $tableName where mobilePhoneNumber=?";
+            $array[] = $mobilePhoneNumber;
+            $this->db->query($sql, $array);
+            return true;
+        } else {
+            return false;
+        }
     }
 
     function updateSessionTokenIfNeeded($user)
