@@ -198,6 +198,7 @@ class User extends CI_Controller
             return false;
         } else {
             responseJson($this, ERROR_NOT_IN_SESSION, null, "未登录");
+            return true;
         }
     }
 
