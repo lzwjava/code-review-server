@@ -124,6 +124,7 @@ class CI_DB_mysqli_driver extends CI_DB {
 		$client_flags = ($this->compress === TRUE) ? MYSQLI_CLIENT_COMPRESS : 0;
 		$mysqli = mysqli_init();
 
+		$mysqli->options(MYSQLI_OPT_INT_AND_FLOAT_NATIVE, true);
 		$mysqli->options(MYSQLI_OPT_CONNECT_TIMEOUT, 10);
 
 		if ($this->stricton)
