@@ -10,7 +10,9 @@
 if (!defined('BASEPATH'))
     exit ('No direct script access allowed');
 
-class User extends CI_Controller
+require 'BaseController.php';
+
+class User extends BaseController
 {
 
     private function checkSmsCodeWrong($mobilePhoneNumber, $smsCode)
@@ -23,7 +25,7 @@ class User extends CI_Controller
         if ($return['status'] == 200) {
             return false;
         } else {
-            responseJson($this, ERROR_SMS_WRONG, null, $return['result']);
+            $this->failure(ERROR_SMS_WRONG, $return['result']);
             return true;
         }
     }
@@ -61,7 +63,7 @@ class User extends CI_Controller
 
     public function requestSmsCode()
     {
-        if (checkIfParamsNotExist($this, $_POST, array("mobilePhoneNumber"))
+        if ($this->checkIfParamsNotExist($_POST, array("mobilePhoneNumber"))
         ) {
             return;
         }
@@ -71,15 +73,15 @@ class User extends CI_Controller
         );
         $return = $this->curlLeanCloud('requestSmsCode', $data);
         if ($return['status'] = 200) {
-            responseJson($this, REQ_OK, $return['result'], null);
+            $this->succeed($return['result']);
         } else {
-            responseJson($this, ERROR_SMS_WRONG, null, $return['result']);
+            $this->failure(ERROR_SMS_WRONG, $return['result']);
         }
     }
 
     public function register()
     {
-        if (checkIfParamsNotExist($this, $_POST, array('username', 'mobilePhoneNumber',
+        if ($this->checkIfParamsNotExist($_POST, array('username', 'mobilePhoneNumber',
             'password', 'type', 'smsCode'))
         ) {
             return;
@@ -92,11 +94,11 @@ class User extends CI_Controller
         if ($this->checkIfUsernameUsedAndReponse($username)) {
             return;
         } elseif ($this->userDao->checkIfMobilePhoneNumberUsed($mobilePhoneNumber)) {
-            responseJson($this, ERROR_MOBILE_PHONE_NUMBER_TAKEN, null, "手机号已被占用");
+            $this->failure(ERROR_MOBILE_PHONE_NUMBER_TAKEN, "手机号已被占用");
         } else if ($this->checkSmsCodeWrong($mobilePhoneNumber, $smsCode)) {
             return;
         } else {
-            $defaultAvatarUrl = "https://avatars2.githubusercontent.com/u/5022872?v=3&s=460";
+            $defaultAvatarUrl = "http://7xotd0.com1.z0.glb.clouddn.com/android.png";
             $this->userDao->insertUser($type, $username, $mobilePhoneNumber, $defaultAvatarUrl,
                 $password);
             $this->loginOrRegisterSucceed($mobilePhoneNumber);
@@ -106,7 +108,7 @@ class User extends CI_Controller
     private function checkIfUsernameUsedAndReponse($username)
     {
         if ($this->userDao->checkIfUsernameUsed($username)) {
-            responseJson($this, ERROR_USERNAME_TAKEN, null, "用户名已存在");
+            $this->failure(ERROR_USERNAME_TAKEN, "用户名已存在");
             return true;
         } else {
             return false;
@@ -115,14 +117,14 @@ class User extends CI_Controller
 
     public function delete()
     {
-        if (checkIfParamsNotExist($this, $_POST, array('mobilePhoneNumber'))) {
+        if ($this->checkIfParamsNotExist($_POST, array('mobilePhoneNumber'))) {
             return;
         }
         $mobilePhoneNumber = $_POST['mobilePhoneNumber'];
         if ($this->userDao->deleteUser($mobilePhoneNumber)) {
-            responseJson($this, REQ_OK);
+            $this->succeed();
         } else {
-            responseJson($this, ERROR_USER_NOT_EXIST);
+            $this->failure(ERROR_USER_NOT_EXIST, "user not exists");
         }
     }
 
@@ -133,13 +135,13 @@ class User extends CI_Controller
 
     public function login()
     {
-        if (checkIfParamsNotExist($this, $_POST, array("mobilePhoneNumber", "password"))) {
+        if ($this->checkIfParamsNotExist($_POST, array("mobilePhoneNumber", "password"))) {
             return;
         }
         $mobilePhoneNumber = $_POST["mobilePhoneNumber"];
         $password = $_POST["password"];
         if ($this->userDao->checkLogin($mobilePhoneNumber, $password) == false) {
-            responseJson($this, ERROR_LOGIN_FAILED, null, "手机号码不存在或者密码错误");
+            $this->failure(ERROR_LOGIN_FAILED, "手机号码不存在或者密码错误");
         } else {
             $this->loginOrRegisterSucceed($mobilePhoneNumber);
         }
@@ -150,7 +152,7 @@ class User extends CI_Controller
         $user = $this->userDao->findUserByMobilePhoneNumber($mobilePhoneNumber);
         $user = $this->userDao->updateSessionTokenIfNeeded($user);
         setCookieForever(KEY_COOKIE_TOKEN, $user->sessionToken);
-        responseJson($this, REQ_OK, $user, null);
+        $this->succeed($user);
     }
 
     public function self()
@@ -158,7 +160,7 @@ class User extends CI_Controller
         $login_url = 'Location: /';
         if ($this->checkIfInSession()) {
             $user = $this->userDao->findUserBySessionToken($_COOKIE['crtoken']);
-            responseJson($this, REQ_OK, $user, null);
+            $this->succeed($user);
         } else {
             header($login_url);
         }
@@ -168,7 +170,7 @@ class User extends CI_Controller
     {
         session_unset(KEY_COOKIE_TOKEN);
         deleteCookie(KEY_COOKIE_TOKEN);
-        responseJson($this, REQ_OK, null, "已安全退出");
+        $this->succeed();
     }
 
     private function requestToken()
@@ -197,7 +199,7 @@ class User extends CI_Controller
         if ($this->checkIfInSession()) {
             return false;
         } else {
-            responseJson($this, ERROR_NOT_IN_SESSION, null, "未登录");
+            $this->failure(ERROR_NOT_IN_SESSION, "未登录");
             return true;
         }
     }
@@ -205,7 +207,7 @@ class User extends CI_Controller
     public function update()
     {
         if (!isset($_POST['username']) && !isset($_POST['avatarUrl'])) {
-            responseJson($this, ERROR_AT_LEAST_ONE_UPDATE, "请至少提供一个可以修改的信息");
+            $this->failure(ERROR_AT_LEAST_ONE_UPDATE, "请至少提供一个可以修改的信息");
             return;
         }
         if ($this->checkIfNotInSessionAndResponse()) {
@@ -230,6 +232,6 @@ class User extends CI_Controller
             ));
         }
         $user = $this->userDao->findUserBySessionToken($token);
-        responseJson($this, REQ_OK, $user);
+        $this->succeed($user);
     }
 }

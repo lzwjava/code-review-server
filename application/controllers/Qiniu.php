@@ -12,7 +12,8 @@ use Qiniu\Auth;
 if (!defined('BASEPATH'))
     exit ('No direct script access allowed');
 
-class Qiniu extends CI_Controller
+require 'BaseController.php';
+class Qiniu extends BaseController
 {
     public function token()
     {
@@ -28,6 +29,6 @@ class Qiniu extends CI_Controller
             "token" => $upToken,
             "bucketUrl" => $bucketUrl
         );
-        responseJson($this, REQ_OK, $result);
+        $this->succeed($result);
     }
 }

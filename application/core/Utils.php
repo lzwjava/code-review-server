@@ -6,37 +6,6 @@
  * Time: 下午3:44
  */
 
-if (!function_exists('checkIfParamsNotExist')) {
-    function checkIfParamsNotExist($object, $request, $params)
-    {
-        foreach ($params as $param) {
-            if (isset($request[$param]) == false) {
-                responseJson($object, 4, null, "必须提供以下参数: " . $param);
-                return true;
-            }
-        }
-        return false;
-    }
-}
-
-if (!function_exists('responseJson')) {
-    function responseJson($object, $resultCode, $resultData = null, $resultInfo = null)
-    {
-        $arr = array(
-            'resultCode' => $resultCode,
-            'resultData' => $resultData,
-            'resultInfo' => $resultInfo
-        );
-        if ($resultCode == REQ_OK) {
-            $object->output->set_status_header(200);
-        } else {
-            $object->output->set_status_header(400);
-        }
-        $object->output->set_content_type('application/json', 'utf-8')
-            ->set_output(json_encode($arr));
-    }
-}
-
 if (!function_exists('dateWithMs')) {
     function dateWithMs()
     {
