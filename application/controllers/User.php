@@ -204,7 +204,9 @@ class User extends BaseController
 
     public function update()
     {
-        if (!isset($_POST['username']) && !isset($_POST['avatarUrl'])) {
+        if (!isset($_POST['username']) && !isset($_POST['avatarUrl'])
+            && !isset($_POST[KEY_INTRODUCTION])
+        ) {
             $this->failure(ERROR_AT_LEAST_ONE_UPDATE, "请至少提供一个可以修改的信息");
             return;
         }
@@ -229,7 +231,13 @@ class User extends BaseController
                 "avatarUrl" => $avatarUrl
             ));
         }
-        $user = $this->userDao->findUserBySessionToken($token);
+        if (isset($_POST[KEY_INTRODUCTION])) {
+            $intro = $_POST[KEY_INTRODUCTION];
+            $this->userDao->updateUser($user, array(
+                KEY_INTRODUCTION => $intro
+            ));
+        }
+        $user = $this->userDao->findActualUser($user);
         $this->succeed($user);
     }
 }

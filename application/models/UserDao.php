@@ -6,7 +6,6 @@
  * Date: 15/11/30
  * Time: 下午2:13
  */
-
 class UserDao extends BaseDao
 {
     function checkIfUserUsed($field, $value)
@@ -85,6 +84,18 @@ class UserDao extends BaseDao
         return $user;
     }
 
+    function findActualUser($user)
+    {
+        $tableName = $this->tableNameByType($user->type);
+        $sql = "select * from $tableName where id=?";
+        $array[] = $user->id;
+        $user = $this->db->query($sql, $array)->row();
+        if ($user) {
+            $this->cleanUser($user);
+        }
+        return $user;
+    }
+
     function findUserById($id)
     {
         return $this->findUser("id", $id);
@@ -133,7 +144,7 @@ class UserDao extends BaseDao
         } else {
             $actualUser = $user;
         }
-        unset($actualUser->sessionTokenCreated);
+        $this->cleanUser($actualUser);
         return $actualUser;
     }
 
@@ -146,5 +157,10 @@ class UserDao extends BaseDao
             $array[] = $user->id;
             $this->db->query($sql, $array);
         }
+    }
+
+    function cleanUser($user) {
+        unset($user->sessionTokenCreated);
+        unset($user->password);
     }
 }

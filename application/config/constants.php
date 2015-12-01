@@ -86,7 +86,6 @@ defined('EXIT__AUTO_MAX')      OR define('EXIT__AUTO_MAX', 125); // highest auto
 
 define('REQ_OK', 0);
 
-define('ERROR_LOGIN_FAILED', 10);
 define('ERROR_USERNAME_TAKEN', 1);
 define('ERROR_MOBILE_PHONE_NUMBER_TAKEN', 2);
 define('ERROR_SMS_WRONG', 3);
@@ -94,9 +93,16 @@ define('ERROR_MISS_PARAMETERS', 4);
 define('ERROR_AT_LEAST_ONE_UPDATE', 5);
 define('ERROR_NOT_IN_SESSION', 6);
 define('ERROR_USER_NOT_EXIST', 7);
+define('ERROR_OBJECT_NOT_EXIST', 8);
+define('ERROR_LOGIN_FAILED', 10);
 
 define('TYPE_REVIEWER', 1);
 define('TYPE_LEARNER', 0);
 
-define('KEY_COOKIE_TOKEN', "crtoken");
-define('KEY_SESSION_HEADER', "X-CR-Session");
+define('KEY_COOKIE_TOKEN', 'crtoken');
+define('KEY_SESSION_HEADER', 'X-CR-Session');
+
+define('KEY_INTRODUCTION', 'introduction');
+define('KEY_SKIP', 'skip');
+define('KEY_LIMIT', 'limit');
+define('KEY_ID', 'id');
