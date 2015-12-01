@@ -6,15 +6,9 @@
  * Date: 15/11/30
  * Time: 下午2:13
  */
-class UserDao extends CI_Model
-{
-    function __construct()
-    {
-        parent::__construct();
-        $this->load->database();
-        $this->db->query("SET NAMES UTF8");
-    }
 
+class UserDao extends BaseDao
+{
     function checkIfUserUsed($field, $value)
     {
         $sql = "SELECT * FROM users WHERE $field =?";

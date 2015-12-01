@@ -10,8 +10,6 @@
 if (!defined('BASEPATH'))
     exit ('No direct script access allowed');
 
-require 'BaseController.php';
-
 class User extends BaseController
 {
 

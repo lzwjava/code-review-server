@@ -126,6 +126,4 @@ $autoload['language'] = array();
 |
 |	$autoload['model'] = array('first_model' => 'first');
 */
-$autoload['model'] = array('userDao');
-
-require_once(APPPATH.'core/Utils.php');
+$autoload['model'] = array('BaseDao', 'userDao', 'reviewerDao');

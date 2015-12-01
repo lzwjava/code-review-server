@@ -12,7 +12,6 @@ use Qiniu\Auth;
 if (!defined('BASEPATH'))
     exit ('No direct script access allowed');
 
-require 'BaseController.php';
 class Qiniu extends BaseController
 {
     public function token()
