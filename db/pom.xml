@@ -1,0 +1,42 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>codeReview</groupId>
+	<artifactId>dbdeploy</artifactId>
+	<packaging>jar</packaging>
+	<version>1.0.0</version>
+	<properties>
+		<url>jdbc:mysql://code.pickme.cn:3306/codereview?autoReconnect=true</url>
+		<username>root</username>
+		<password>CodeReview2015</password>
+	</properties>
+
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>com.dbdeploy</groupId>
+				<artifactId>maven-dbdeploy-plugin</artifactId>
+				<version>3.0M3</version>
+
+				<configuration>
+					<scriptdirectory>./sql</scriptdirectory>
+					<encoding>GBK</encoding>
+					<driver>com.mysql.jdbc.Driver</driver>
+					<url>${url}</url>
+					<userid>${username}</userid>
+					<password>${password}</password>
+					<dbms>mysql</dbms>
+					<delimiter>/</delimiter>
+					<delimiterType>normal</delimiterType>
+				</configuration>
+				<dependencies>
+					<dependency>
+						<groupId>mysql</groupId>
+						<artifactId>mysql-connector-java</artifactId>
+						<version>5.1.6</version>
+					</dependency>
+				</dependencies>
+			</plugin>
+		</plugins>
+	</build>
+</project>

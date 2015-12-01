@@ -81,10 +81,10 @@ $query_builder = TRUE;
 
 $db['default'] = array(
 	'dsn'	=> '',
-	'hostname' => 'localhost',
+	'hostname' => 'code.pickme.cn',
 	'username' => 'root',
 	'password' => 'CodeReview2015',
-	'database' => '',
+	'database' => 'codereview',
 	'dbdriver' => 'mysqli',
 	'dbprefix' => '',
 	'pconnect' => FALSE,
