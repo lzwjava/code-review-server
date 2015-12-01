@@ -27,7 +27,7 @@ if (!function_exists('responseJson')) {
             'resultData' => $resultData,
             'resultInfo' => $resultInfo
         );
-        if ($resultCode == REQUEST_SUCCEED) {
+        if ($resultCode == REQ_OK) {
             $object->output->set_status_header(200);
         } else {
             $object->output->set_status_header(400);

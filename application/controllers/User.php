@@ -71,7 +71,7 @@ class User extends CI_Controller
         );
         $return = $this->curlLeanCloud('requestSmsCode', $data);
         if ($return['status'] = 200) {
-            responseJson($this, REQUEST_SUCCEED, $return['result'], null);
+            responseJson($this, REQ_OK, $return['result'], null);
         } else {
             responseJson($this, ERROR_SMS_WRONG, null, $return['result']);
         }
@@ -120,7 +120,7 @@ class User extends CI_Controller
         }
         $mobilePhoneNumber = $_POST['mobilePhoneNumber'];
         if ($this->userDao->deleteUser($mobilePhoneNumber)) {
-            responseJson($this, REQUEST_SUCCEED);
+            responseJson($this, REQ_OK);
         } else {
             responseJson($this, ERROR_USER_NOT_EXIST);
         }
@@ -150,7 +150,7 @@ class User extends CI_Controller
         $user = $this->userDao->findUserByMobilePhoneNumber($mobilePhoneNumber);
         $user = $this->userDao->updateSessionTokenIfNeeded($user);
         setCookieForever(KEY_COOKIE_TOKEN, $user->sessionToken);
-        responseJson($this, REQUEST_SUCCEED, $user, null);
+        responseJson($this, REQ_OK, $user, null);
     }
 
     public function self()
@@ -158,7 +158,7 @@ class User extends CI_Controller
         $login_url = 'Location: /';
         if ($this->checkIfInSession()) {
             $user = $this->userDao->findUserBySessionToken($_COOKIE['crtoken']);
-            responseJson($this, REQUEST_SUCCEED, $user, null);
+            responseJson($this, REQ_OK, $user, null);
         } else {
             header($login_url);
         }
@@ -168,7 +168,7 @@ class User extends CI_Controller
     {
         session_unset(KEY_COOKIE_TOKEN);
         deleteCookie(KEY_COOKIE_TOKEN);
-        responseJson($this, REQUEST_SUCCEED, null, "已安全退出");
+        responseJson($this, REQ_OK, null, "已安全退出");
     }
 
     private function requestToken()
@@ -229,6 +229,6 @@ class User extends CI_Controller
             ));
         }
         $user = $this->userDao->findUserBySessionToken($token);
-        responseJson($this, 0, $user);
+        responseJson($this, REQ_OK, $user);
     }
 }

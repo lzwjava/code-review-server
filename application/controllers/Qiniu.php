@@ -28,6 +28,6 @@ class Qiniu extends CI_Controller
             "token" => $upToken,
             "bucketUrl" => $bucketUrl
         );
-        responseJson($this, $result);
+        responseJson($this, REQ_OK, $result);
     }
 }
