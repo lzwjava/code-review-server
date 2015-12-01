@@ -142,4 +142,15 @@ class UserDao extends CI_Model
         unset($actualUser->sessionTokenCreated);
         return $actualUser;
     }
+
+    function updateUser($user, $info)
+    {
+        $tableName = $this->tableNameByType($user->type);
+        foreach ($info as $key => $value) {
+            $sql = "update $tableName set $key=? where id=?";
+            $array[] = $value;
+            $array[] = $user->id;
+            $this->db->query($sql, $array);
+        }
+    }
 }

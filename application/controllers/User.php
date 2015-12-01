@@ -89,8 +89,8 @@ class User extends CI_Controller
         $password = $_POST['password'];
         $type = $_POST['type'];
         $smsCode = $_POST['smsCode'];
-        if ($this->userDao->checkIfUsernameUsed($username)) {
-            responseJson($this, ERROR_USERNAME_TAKEN, null, "用户名已存在");
+        if ($this->checkIfUsernameUsedAndReponse($username)) {
+            return;
         } elseif ($this->userDao->checkIfMobilePhoneNumberUsed($mobilePhoneNumber)) {
             responseJson($this, ERROR_MOBILE_PHONE_NUMBER_TAKEN, null, "手机号已被占用");
         } else if ($this->checkSmsCodeWrong($mobilePhoneNumber, $smsCode)) {
@@ -103,13 +103,23 @@ class User extends CI_Controller
         }
     }
 
+    private function checkIfUsernameUsedAndReponse($username)
+    {
+        if ($this->userDao->checkIfUsernameUsed($username)) {
+            responseJson($this, ERROR_USERNAME_TAKEN, null, "用户名已存在");
+            return true;
+        } else {
+            return false;
+        }
+    }
+
     public function delete()
     {
         if (checkIfParamsNotExist($this, $_POST, array('mobilePhoneNumber'))) {
             return;
         }
         $mobilePhoneNumber = $_POST['mobilePhoneNumber'];
-        if($this->userDao->deleteUser($mobilePhoneNumber)) {
+        if ($this->userDao->deleteUser($mobilePhoneNumber)) {
             responseJson($this, REQUEST_SUCCEED);
         } else {
             responseJson($this, ERROR_USER_NOT_EXIST);
@@ -139,29 +149,86 @@ class User extends CI_Controller
     {
         $user = $this->userDao->findUserByMobilePhoneNumber($mobilePhoneNumber);
         $user = $this->userDao->updateSessionTokenIfNeeded($user);
-        setCookieForever('crtoken', $user->sessionToken);
+        setCookieForever(KEY_COOKIE_TOKEN, $user->sessionToken);
         responseJson($this, REQUEST_SUCCEED, $user, null);
     }
 
     public function self()
     {
         $login_url = 'Location: /';
-        if (!isset($_COOKIE['crtoken'])) {
-            header($login_url);
-        } else {
+        if ($this->checkIfInSession()) {
             $user = $this->userDao->findUserBySessionToken($_COOKIE['crtoken']);
-            if ($user == null) {
-                header($login_url);
-            } else {
-                responseJson($this, REQUEST_SUCCEED, $user, null);
-            }
+            responseJson($this, REQUEST_SUCCEED, $user, null);
+        } else {
+            header($login_url);
         }
     }
 
     public function logout()
     {
-        session_unset('crtoken');
-        deleteCookie('crtoken');
+        session_unset(KEY_COOKIE_TOKEN);
+        deleteCookie(KEY_COOKIE_TOKEN);
         responseJson($this, REQUEST_SUCCEED, null, "已安全退出");
+    }
+
+    private function requestToken()
+    {
+        if (isset($_COOKIE[KEY_COOKIE_TOKEN])) {
+            $token = $_COOKIE['crtoken'];
+        } else {
+            $token = $this->input->get_request_header(KEY_SESSION_HEADER, TRUE);
+        }
+        return $token;
+    }
+
+    private function checkIfInSession()
+    {
+        $token = $this->requestToken();
+        if ($token == null) {
+            return false;
+        } else {
+            $user = $this->userDao->findUserBySessionToken($token);
+            return $user != null;
+        }
+    }
+
+    private function checkIfNotInSessionAndResponse()
+    {
+        if ($this->checkIfInSession()) {
+            return false;
+        } else {
+            responseJson($this, ERROR_NOT_IN_SESSION, null, "未登录");
+        }
+    }
+
+    public function update()
+    {
+        if (!isset($_POST['username']) && !isset($_POST['avatarUrl'])) {
+            responseJson($this, ERROR_AT_LEAST_ONE_UPDATE, "请至少提供一个可以修改的信息");
+            return;
+        }
+        if ($this->checkIfNotInSessionAndResponse()) {
+            return;
+        }
+        $token = $this->requestToken();
+        $user = $this->userDao->findUserBySessionToken($token);
+        if (isset($_POST['username'])) {
+            $username = $_POST['username'];
+            if ($this->checkIfUsernameUsedAndReponse($username)) {
+                return;
+            } else {
+                $this->userDao->updateUser($user, array(
+                    "username" => $username
+                ));
+            }
+        }
+        if (isset($_POST['avatarUrl'])) {
+            $avatarUrl = $_POST['avatarUrl'];
+            $this->userDao->updateUser($user, array(
+                "avatarUrl" => $avatarUrl
+            ));
+        }
+        $user = $this->userDao->findUserBySessionToken($token);
+        responseJson($this, 0, $user);
     }
 }

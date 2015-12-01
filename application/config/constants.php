@@ -91,7 +91,11 @@ define('ERROR_USERNAME_TAKEN', 1);
 define('ERROR_MOBILE_PHONE_NUMBER_TAKEN', 2);
 define('ERROR_SMS_WRONG', 3);
 define('ERROR_USER_NOT_EXIST', 4);
+define('ERROR_AT_LEAST_ONE_UPDATE', 5);
+define('ERROR_NOT_IN_SESSION', 6);
 
 define('TYPE_REVIEWER', 1);
 define('TYPE_LEARNER', 0);
 
+define('KEY_COOKIE_TOKEN', "crtoken");
+define('KEY_SESSION_HEADER', "X-CR-Session");
