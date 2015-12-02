@@ -118,6 +118,8 @@ define('KEY_USERNAME', 'username');
 define('KEY_TYPE', 'type');
 define('KEY_VALID', 'valid');
 
+define('KEY_SMS_CODE', 'smsCode');
+
 define('KEY_INTRODUCTION', 'introduction');
 
 // orders table

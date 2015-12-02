@@ -10,10 +10,10 @@ class Reviewers extends BaseController
 {
     public function valid()
     {
-        if ($this->checkIfParamsNotExist($_GET, array('id'))) {
+        if ($this->checkIfParamsNotExist($_GET, array(KEY_ID))) {
             return;
         }
-        $id = $_GET['id'];
+        $id = $_GET[KEY_ID];
         $result = $this->reviewerDao->setReviewerValid($id);
         if ($result) {
             $this->succeed();
@@ -25,7 +25,7 @@ class Reviewers extends BaseController
     public function index()
     {
         $skip = $this->getSkip();
-        $limit = $this->getSkip();
+        $limit = $this->getLimit();
         $list = $this->reviewerDao->getList($skip, $limit);
         $this->succeed($list);
     }

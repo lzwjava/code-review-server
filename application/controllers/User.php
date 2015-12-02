@@ -61,13 +61,13 @@ class User extends BaseController
 
     public function requestSmsCode()
     {
-        if ($this->checkIfParamsNotExist($_POST, array("mobilePhoneNumber"))
+        if ($this->checkIfParamsNotExist($_POST, array(KEY_MOBILE_PHONE_NUMBER))
         ) {
             return;
         }
-        $mobilePhoneNumber = $_POST["mobilePhoneNumber"];
+        $mobilePhoneNumber = $_POST[KEY_MOBILE_PHONE_NUMBER];
         $data = array(
-            "mobilePhoneNumber" => $mobilePhoneNumber
+            KEY_MOBILE_PHONE_NUMBER => $mobilePhoneNumber
         );
         $return = $this->curlLeanCloud('requestSmsCode', $data);
         if ($return['status'] = 200) {
@@ -79,16 +79,16 @@ class User extends BaseController
 
     public function register()
     {
-        if ($this->checkIfParamsNotExist($_POST, array('username', 'mobilePhoneNumber',
-            'password', 'type', 'smsCode'))
+        if ($this->checkIfParamsNotExist($_POST, array(KEY_USERNAME, KEY_MOBILE_PHONE_NUMBER,
+            KEY_PASSWORD, KEY_TYPE, KEY_SMS_CODE))
         ) {
             return;
         }
-        $mobilePhoneNumber = $_POST['mobilePhoneNumber'];
-        $username = $_POST['username'];
-        $password = $_POST['password'];
-        $type = $_POST['type'];
-        $smsCode = $_POST['smsCode'];
+        $mobilePhoneNumber = $_POST[KEY_MOBILE_PHONE_NUMBER];
+        $username = $_POST[KEY_USERNAME];
+        $password = $_POST[KEY_PASSWORD];
+        $type = $_POST[KEY_TYPE];
+        $smsCode = $_POST[KEY_SMS_CODE];
         if ($this->checkIfUsernameUsedAndReponse($username)) {
             return;
         } elseif ($this->userDao->checkIfMobilePhoneNumberUsed($mobilePhoneNumber)) {
@@ -115,10 +115,10 @@ class User extends BaseController
 
     public function delete()
     {
-        if ($this->checkIfParamsNotExist($_POST, array('mobilePhoneNumber'))) {
+        if ($this->checkIfParamsNotExist($_POST, array(KEY_MOBILE_PHONE_NUMBER))) {
             return;
         }
-        $mobilePhoneNumber = $_POST['mobilePhoneNumber'];
+        $mobilePhoneNumber = $_POST[KEY_MOBILE_PHONE_NUMBER];
         if ($this->userDao->deleteUser($mobilePhoneNumber)) {
             $this->succeed();
         } else {
@@ -133,11 +133,11 @@ class User extends BaseController
 
     public function login()
     {
-        if ($this->checkIfParamsNotExist($_POST, array("mobilePhoneNumber", "password"))) {
+        if ($this->checkIfParamsNotExist($_POST, array(KEY_MOBILE_PHONE_NUMBER, KEY_PASSWORD))) {
             return;
         }
-        $mobilePhoneNumber = $_POST["mobilePhoneNumber"];
-        $password = $_POST["password"];
+        $mobilePhoneNumber = $_POST[KEY_MOBILE_PHONE_NUMBER];
+        $password = $_POST[KEY_PASSWORD];
         if ($this->userDao->checkLogin($mobilePhoneNumber, $password) == false) {
             $this->failure(ERROR_LOGIN_FAILED, "手机号码不存在或者密码错误");
         } else {
@@ -157,7 +157,7 @@ class User extends BaseController
     {
         $login_url = 'Location: /';
         if ($this->checkIfInSession()) {
-            $user = $this->userDao->findUserBySessionToken($_COOKIE['crtoken']);
+            $user = $this->userDao->findUserBySessionToken($_COOKIE[KEY_COOKIE_TOKEN]);
             $this->succeed($user);
         } else {
             header($login_url);
@@ -173,7 +173,7 @@ class User extends BaseController
 
     public function update()
     {
-        if (!isset($_POST['username']) && !isset($_POST['avatarUrl'])
+        if (!isset($_POST[KEY_USERNAME]) && !isset($_POST[KEY_AVATAR_URL])
             && !isset($_POST[KEY_INTRODUCTION])
         ) {
             $this->failure(ERROR_AT_LEAST_ONE_UPDATE, "请至少提供一个可以修改的信息");
@@ -183,20 +183,20 @@ class User extends BaseController
             return;
         }
         $user = $this->getSessionUser();
-        if (isset($_POST['username'])) {
-            $username = $_POST['username'];
+        if (isset($_POST[KEY_USERNAME])) {
+            $username = $_POST[KEY_USERNAME];
             if ($this->checkIfUsernameUsedAndReponse($username)) {
                 return;
             } else {
                 $this->userDao->updateUser($user, array(
-                    "username" => $username
+                    KEY_USERNAME => $username
                 ));
             }
         }
-        if (isset($_POST['avatarUrl'])) {
-            $avatarUrl = $_POST['avatarUrl'];
+        if (isset($_POST[KEY_AVATAR_URL])) {
+            $avatarUrl = $_POST[KEY_AVATAR_URL];
             $this->userDao->updateUser($user, array(
-                "avatarUrl" => $avatarUrl
+                KEY_AVATAR_URL => $avatarUrl
             ));
         }
         if (isset($_POST[KEY_INTRODUCTION])) {
