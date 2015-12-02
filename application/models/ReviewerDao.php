@@ -17,7 +17,8 @@ class ReviewerDao extends BaseDao
 
     private function publicFields()
     {
-        return "id,username,avatarUrl,created,introduction";
+        return $this->mergeFields(array(KEY_ID, KEY_USERNAME,
+            KEY_AVATAR_URL, KEY_CREATED, KEY_INTRODUCTION));
     }
 
     public function getList($skip = 0, $limit = 100)
