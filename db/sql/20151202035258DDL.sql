@@ -1,4 +1,4 @@
-DROP TABLE IF EXISTS `orders` \
+DROP TABLE IF EXISTS `orders` /
 CREATE TABLE `orders` (
   `orderId`    INT(11)       NOT NULL AUTO_INCREMENT,
   `gitHubUrl`  VARCHAR(255)  NOT NULL,
@@ -10,9 +10,9 @@ CREATE TABLE `orders` (
   PRIMARY KEY (`orderId`)
 )
   ENGINE = InnoDB
-  DEFAULT CHARSET utf8 \
+  DEFAULT CHARSET utf8 /
 
-DROP TABLE IF EXISTS `reviews` \
+DROP TABLE IF EXISTS `reviews` /
 CREATE TABLE `reviews` (
   `reviewId` INT(11)   NOT NULL  AUTO_INCREMENT,
   `orderId`  INT(11)   NOT NULL,
@@ -21,9 +21,9 @@ CREATE TABLE `reviews` (
   PRIMARY KEY (`reviewId`)
 )
   ENGINE = InnoDB
-  DEFAULT CHARSET utf8 \
+  DEFAULT CHARSET utf8 /
 
 ALTER TABLE `orders` ADD COLUMN `updated` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
-AFTER `created` \
+AFTER `created` /
 ALTER TABLE `reviews` ADD COLUMN `updated` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
-AFTER `created` \
+AFTER `created` /

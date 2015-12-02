@@ -147,8 +147,7 @@ class User extends BaseController
 
     public function loginOrRegisterSucceed($mobilePhoneNumber)
     {
-        $user = $this->userDao->findUserByMobilePhoneNumber($mobilePhoneNumber);
-        $user = $this->userDao->updateSessionTokenIfNeeded($user);
+        $user = $this->userDao->updateSessionTokenIfNeeded($mobilePhoneNumber);
         setCookieForever(KEY_COOKIE_TOKEN, $user->sessionToken);
         $this->succeed($user);
     }
