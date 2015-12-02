@@ -171,37 +171,6 @@ class User extends BaseController
         $this->succeed();
     }
 
-    private function requestToken()
-    {
-        if (isset($_COOKIE[KEY_COOKIE_TOKEN])) {
-            $token = $_COOKIE['crtoken'];
-        } else {
-            $token = $this->input->get_request_header(KEY_SESSION_HEADER, TRUE);
-        }
-        return $token;
-    }
-
-    private function checkIfInSession()
-    {
-        $token = $this->requestToken();
-        if ($token == null) {
-            return false;
-        } else {
-            $user = $this->userDao->findUserBySessionToken($token);
-            return $user != null;
-        }
-    }
-
-    private function checkIfNotInSessionAndResponse()
-    {
-        if ($this->checkIfInSession()) {
-            return false;
-        } else {
-            $this->failure(ERROR_NOT_IN_SESSION, "未登录");
-            return true;
-        }
-    }
-
     public function update()
     {
         if (!isset($_POST['username']) && !isset($_POST['avatarUrl'])
@@ -213,8 +182,7 @@ class User extends BaseController
         if ($this->checkIfNotInSessionAndResponse()) {
             return;
         }
-        $token = $this->requestToken();
-        $user = $this->userDao->findUserBySessionToken($token);
+        $user = $this->getSessionUser();
         if (isset($_POST['username'])) {
             $username = $_POST['username'];
             if ($this->checkIfUsernameUsedAndReponse($username)) {

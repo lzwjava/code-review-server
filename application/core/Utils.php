@@ -52,6 +52,12 @@ if (!function_exists('getToken')) {
     }
 }
 
+if (!function_exists('dbField')) {
+    function dbField($table, $key)
+    {
+        return $table . '.' . $key;
+    }
+}
 
 if (!function_exists('deleteCookie')) {
     function deleteCookie($name)

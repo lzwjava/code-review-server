@@ -1,0 +1,29 @@
+DROP TABLE IF EXISTS `orders` \
+CREATE TABLE `orders` (
+  `orderId`    INT(11)       NOT NULL AUTO_INCREMENT,
+  `gitHubUrl`  VARCHAR(255)  NOT NULL,
+  `learnerId`  VARCHAR(31)   NOT NULL,
+  `reviewerId` VARCHAR(31)   NOT NULL,
+  `remark`     VARCHAR(1023) NOT NULL DEFAULT '',
+  `status`     TINYINT(2)             DEFAULT 0,
+  `created`    TIMESTAMP     NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`orderId`)
+)
+  ENGINE = InnoDB
+  DEFAULT CHARSET utf8 \
+
+DROP TABLE IF EXISTS `reviews` \
+CREATE TABLE `reviews` (
+  `reviewId` INT(11)   NOT NULL  AUTO_INCREMENT,
+  `orderId`  INT(11)   NOT NULL,
+  `content`  TEXT      NOT NULL,
+  `created`  TIMESTAMP NOT NULL  DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`reviewId`)
+)
+  ENGINE = InnoDB
+  DEFAULT CHARSET utf8 \
+
+ALTER TABLE `orders` ADD COLUMN `updated` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+AFTER `created` \
+ALTER TABLE `reviews` ADD COLUMN `updated` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+AFTER `created` \

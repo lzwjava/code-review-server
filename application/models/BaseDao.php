@@ -14,4 +14,19 @@ class BaseDao extends CI_Model
         $this->load->database();
         $this->db->query("SET NAMES UTF8");
     }
+
+    protected function mergeFields($fields)
+    {
+        $filedStr = '';
+        $first = true;
+        foreach ($fields as $field) {
+            if ($first) {
+                $first = false;
+            } else {
+                $filedStr .= ',';
+            }
+            $filedStr .= $field;
+        }
+        return $filedStr;
+    }
 }

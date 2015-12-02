@@ -17,24 +17,24 @@ class UserDao extends BaseDao
 
     function checkIfUsernameUsed($username)
     {
-        return $this->checkIfUserUsed('username', $username);
+        return $this->checkIfUserUsed(KEY_USERNAME, $username);
     }
 
     function checkIfMobilePhoneNumberUsed($mobilePhoneNumber)
     {
-        return $this->checkIfUserUsed('mobilePhoneNumber', $mobilePhoneNumber);
+        return $this->checkIfUserUsed(KEY_MOBILE_PHONE_NUMBER, $mobilePhoneNumber);
     }
 
     function insertUser($type, $username, $mobilePhoneNumber, $avatarUrl, $password)
     {
 
         $data = array(
-            'id' => $this->genId(),
-            'username' => $username,
-            'password' => md5($password),
-            'mobilePhoneNumber' => $mobilePhoneNumber,
-            'avatarUrl' => $avatarUrl,
-            'sessionToken' => $this->genSessionToken()
+            KEY_ID => $this->genId(),
+            KEY_USERNAME => $username,
+            KEY_PASSWORD => md5($password),
+            KEY_MOBILE_PHONE_NUMBER => $mobilePhoneNumber,
+            KEY_AVATAR_URL => $avatarUrl,
+            KEY_SESSION_TOKEN => $this->genSessionToken()
         );
         $this->db->trans_start();
         $tableName = $this->tableNameByType($type);
@@ -55,12 +55,12 @@ class UserDao extends BaseDao
     private function tableNameByType($type)
     {
         if ($type == TYPE_LEARNER) {
-            $tableName = 'learners';
+            $tableName = TABLE_LEARNERS;
         } else if ($type == TYPE_REVIEWER) {
-            $tableName = 'reviewers';
+            $tableName = TABLE_REVIEWERS;
         } else {
             error_log('unknown type');
-            $tableName = 'learners';
+            $tableName = TABLE_LEARNERS;
         }
         return $tableName;
     }
@@ -75,12 +75,30 @@ class UserDao extends BaseDao
 
     function findUser($filed, $value)
     {
+        $user = $this->findRawUser($filed, $value);
+        if ($user) {
+            $this->cleanUser($user);
+        }
+        return $user;
+    }
+
+    function findPublicUser($field, $value) {
+        $user = $this->findRawUser($field, $value);
+        if ($user) {
+            $this->cleanUser($user);
+            unset($user->sessionToken);
+            unset($user->mobilePhoneNumber);
+            unset($user->created);
+            unset($user->type);
+        }
+        return $user;
+    }
+
+    function findRawUser($filed, $value)
+    {
         $sql = "SELECT * FROM users WHERE $filed=?";
         $array[] = $value;
         $user = $this->db->query($sql, $array)->row();
-        if ($user) {
-            unset ($user->password);
-        }
         return $user;
     }
 
@@ -98,17 +116,17 @@ class UserDao extends BaseDao
 
     function findUserById($id)
     {
-        return $this->findUser("id", $id);
+        return $this->findUser(KEY_ID, $id);
     }
 
     function findUserByMobilePhoneNumber($mobilePhoneNumber)
     {
-        return $this->findUser("mobilePhoneNumber", $mobilePhoneNumber);
+        return $this->findUser(KEY_MOBILE_PHONE_NUMBER, $mobilePhoneNumber);
     }
 
     function findUserBySessionToken($sessionToken)
     {
-        return $this->findUser("sessionToken", $sessionToken);
+        return $this->findUser(KEY_SESSION_TOKEN, $sessionToken);
     }
 
     function deleteUser($mobilePhoneNumber)
@@ -125,8 +143,9 @@ class UserDao extends BaseDao
         }
     }
 
-    function updateSessionTokenIfNeeded($user)
+    function updateSessionTokenIfNeeded($mobilePhoneNumber)
     {
+        $user = $this->findRawUser(KEY_MOBILE_PHONE_NUMBER, $mobilePhoneNumber);
         $created = strtotime($user->sessionTokenCreated);
         $now = dateWithMs();
         $nowMillis = strtotime($now);
@@ -159,7 +178,8 @@ class UserDao extends BaseDao
         }
     }
 
-    function cleanUser($user) {
+    function cleanUser($user)
+    {
         unset($user->sessionTokenCreated);
         unset($user->password);
     }

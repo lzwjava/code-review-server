@@ -6,7 +6,7 @@
  * Date: 15/12/2
  * Time: 上午12:39
  */
-class Reviewer extends BaseController
+class Reviewers extends BaseController
 {
     public function valid()
     {
@@ -24,29 +24,22 @@ class Reviewer extends BaseController
 
     public function index()
     {
-        $skip = 0;
-        $limit = 100;
-        if (isset($_GET[KEY_SKIP])) {
-            $skip = (int)$_GET[KEY_SKIP];
-        }
-        if (isset($_GET[KEY_LIMIT])) {
-            $limit = (int)$_GET[KEY_LIMIT];
-        }
+        $skip = $this->getSkip();
+        $limit = $this->getSkip();
         $list = $this->reviewerDao->getList($skip, $limit);
         $this->succeed($list);
     }
 
-    public function view($id = null)
+    public function view()
     {
-        if ($id == null) {
-            $this->failure(ERROR_MISS_PARAMETERS, "must provide id");
+        if ($this->checkIfParamsNotExist($_GET, array(KEY_ID))) {
             return;
         }
+        $id = $_GET[KEY_ID];
         $reviewer = $this->reviewerDao->getOne($id);
-        if ($reviewer) {
-            $this->succeed($reviewer);
-        } else {
-            $this->failure(ERROR_OBJECT_NOT_EXIST, "reviewer with that id not exits");
+        if ($this->checkIfObjectNotExists($reviewer)) {
+            return;
         }
+        $this->succeed($reviewer);
     }
 }

@@ -26,10 +26,10 @@ defined('SHOW_DEBUG_BACKTRACE') OR define('SHOW_DEBUG_BACKTRACE', TRUE);
 | always be used to set the mode correctly.
 |
 */
-defined('FILE_READ_MODE')  OR define('FILE_READ_MODE', 0644);
+defined('FILE_READ_MODE') OR define('FILE_READ_MODE', 0644);
 defined('FILE_WRITE_MODE') OR define('FILE_WRITE_MODE', 0666);
-defined('DIR_READ_MODE')   OR define('DIR_READ_MODE', 0755);
-defined('DIR_WRITE_MODE')  OR define('DIR_WRITE_MODE', 0755);
+defined('DIR_READ_MODE') OR define('DIR_READ_MODE', 0755);
+defined('DIR_WRITE_MODE') OR define('DIR_WRITE_MODE', 0755);
 
 /*
 |--------------------------------------------------------------------------
@@ -39,14 +39,14 @@ defined('DIR_WRITE_MODE')  OR define('DIR_WRITE_MODE', 0755);
 | These modes are used when working with fopen()/popen()
 |
 */
-defined('FOPEN_READ')                           OR define('FOPEN_READ', 'rb');
-defined('FOPEN_READ_WRITE')                     OR define('FOPEN_READ_WRITE', 'r+b');
-defined('FOPEN_WRITE_CREATE_DESTRUCTIVE')       OR define('FOPEN_WRITE_CREATE_DESTRUCTIVE', 'wb'); // truncates existing file data, use with care
+defined('FOPEN_READ') OR define('FOPEN_READ', 'rb');
+defined('FOPEN_READ_WRITE') OR define('FOPEN_READ_WRITE', 'r+b');
+defined('FOPEN_WRITE_CREATE_DESTRUCTIVE') OR define('FOPEN_WRITE_CREATE_DESTRUCTIVE', 'wb'); // truncates existing file data, use with care
 defined('FOPEN_READ_WRITE_CREATE_DESCTRUCTIVE') OR define('FOPEN_READ_WRITE_CREATE_DESTRUCTIVE', 'w+b'); // truncates existing file data, use with care
-defined('FOPEN_WRITE_CREATE')                   OR define('FOPEN_WRITE_CREATE', 'ab');
-defined('FOPEN_READ_WRITE_CREATE')              OR define('FOPEN_READ_WRITE_CREATE', 'a+b');
-defined('FOPEN_WRITE_CREATE_STRICT')            OR define('FOPEN_WRITE_CREATE_STRICT', 'xb');
-defined('FOPEN_READ_WRITE_CREATE_STRICT')       OR define('FOPEN_READ_WRITE_CREATE_STRICT', 'x+b');
+defined('FOPEN_WRITE_CREATE') OR define('FOPEN_WRITE_CREATE', 'ab');
+defined('FOPEN_READ_WRITE_CREATE') OR define('FOPEN_READ_WRITE_CREATE', 'a+b');
+defined('FOPEN_WRITE_CREATE_STRICT') OR define('FOPEN_WRITE_CREATE_STRICT', 'xb');
+defined('FOPEN_READ_WRITE_CREATE_STRICT') OR define('FOPEN_READ_WRITE_CREATE_STRICT', 'x+b');
 
 /*
 |--------------------------------------------------------------------------
@@ -73,16 +73,16 @@ defined('FOPEN_READ_WRITE_CREATE_STRICT')       OR define('FOPEN_READ_WRITE_CREA
 |       http://tldp.org/LDP/abs/html/exitcodes.html
 |
 */
-defined('EXIT_SUCCESS')        OR define('EXIT_SUCCESS', 0); // no errors
-defined('EXIT_ERROR')          OR define('EXIT_ERROR', 1); // generic error
-defined('EXIT_CONFIG')         OR define('EXIT_CONFIG', 3); // configuration error
-defined('EXIT_UNKNOWN_FILE')   OR define('EXIT_UNKNOWN_FILE', 4); // file not found
-defined('EXIT_UNKNOWN_CLASS')  OR define('EXIT_UNKNOWN_CLASS', 5); // unknown class
+defined('EXIT_SUCCESS') OR define('EXIT_SUCCESS', 0); // no errors
+defined('EXIT_ERROR') OR define('EXIT_ERROR', 1); // generic error
+defined('EXIT_CONFIG') OR define('EXIT_CONFIG', 3); // configuration error
+defined('EXIT_UNKNOWN_FILE') OR define('EXIT_UNKNOWN_FILE', 4); // file not found
+defined('EXIT_UNKNOWN_CLASS') OR define('EXIT_UNKNOWN_CLASS', 5); // unknown class
 defined('EXIT_UNKNOWN_METHOD') OR define('EXIT_UNKNOWN_METHOD', 6); // unknown class member
-defined('EXIT_USER_INPUT')     OR define('EXIT_USER_INPUT', 7); // invalid user input
-defined('EXIT_DATABASE')       OR define('EXIT_DATABASE', 8); // database error
-defined('EXIT__AUTO_MIN')      OR define('EXIT__AUTO_MIN', 9); // lowest automatically-assigned error code
-defined('EXIT__AUTO_MAX')      OR define('EXIT__AUTO_MAX', 125); // highest automatically-assigned error code
+defined('EXIT_USER_INPUT') OR define('EXIT_USER_INPUT', 7); // invalid user input
+defined('EXIT_DATABASE') OR define('EXIT_DATABASE', 8); // database error
+defined('EXIT__AUTO_MIN') OR define('EXIT__AUTO_MIN', 9); // lowest automatically-assigned error code
+defined('EXIT__AUTO_MAX') OR define('EXIT__AUTO_MAX', 125); // highest automatically-assigned error code
 
 define('REQ_OK', 0);
 
@@ -95,6 +95,8 @@ define('ERROR_NOT_IN_SESSION', 6);
 define('ERROR_USER_NOT_EXIST', 7);
 define('ERROR_OBJECT_NOT_EXIST', 8);
 define('ERROR_LOGIN_FAILED', 10);
+define('ERROR_ONLY_LEARNER_CAN_ORDER', 11);
+define('ERROR_UNKNOWN_TYPE', 12);
 
 define('TYPE_REVIEWER', 1);
 define('TYPE_LEARNER', 0);
@@ -102,7 +104,41 @@ define('TYPE_LEARNER', 0);
 define('KEY_COOKIE_TOKEN', 'crtoken');
 define('KEY_SESSION_HEADER', 'X-CR-Session');
 
-define('KEY_INTRODUCTION', 'introduction');
 define('KEY_SKIP', 'skip');
 define('KEY_LIMIT', 'limit');
 define('KEY_ID', 'id');
+
+// users table
+define('KEY_MOBILE_PHONE_NUMBER', 'mobilePhoneNumber');
+define('KEY_AVATAR_URL', 'avatarUrl');
+define('KEY_SESSION_TOKEN', 'sessionToken');
+define('KEY_SESSION_TOKEN_CREATED', 'sessionTokenCreated');
+define('KEY_PASSWORD', 'password');
+define('KEY_USERNAME', 'username');
+define('KEY_TYPE', 'type');
+define('KEY_VALID', 'valid');
+
+define('KEY_INTRODUCTION', 'introduction');
+
+// orders table
+define('KEY_ORDER_ID', 'orderId');
+define('KEY_GITHUB_URL', 'gitHubUrl');
+define('KEY_LEARNER_ID', 'learnerId');
+define('KEY_REVIEWER_ID', 'reviewerId');
+define('KEY_REMARK', 'remark');
+define('KEY_STATUS', 'status');
+define('KEY_CREATED', 'created');
+define('KEY_UPDATED', 'updated');
+
+// reviews table
+define('KEY_REVIEW_ID', 'reviewId');
+define('KEY_CONTENT', 'content');
+
+define('ORDER_STATUS_TODO', 0);
+define('ORDER_STATUS_FINISHED', 1);
+define('ORDER_STATUS_REJECTED', 2);
+
+define('TABLE_ORDERS', 'orders');
+define('TABLE_REVIEWS', 'reviews');
+define('TABLE_LEARNERS', 'learners');
+define('TABLE_REVIEWERS', 'reviewers');
