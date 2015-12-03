@@ -27,4 +27,17 @@ class ReviewDao extends BaseDao
         $array[] = $reviewId;
         return $this->db->query($sql, $array)->row();
     }
+
+    function updateContent($reviewId, $content)
+    {
+        $this->update($reviewId, array(
+            KEY_CONTENT => $content
+        ));
+    }
+
+    function update($reviewId, $data)
+    {
+        $this->db->where(KEY_REVIEW_ID, $reviewId);
+        $this->db->update(TABLE_REVIEWS, $data);
+    }
 }
