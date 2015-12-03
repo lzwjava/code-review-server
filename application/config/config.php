@@ -207,7 +207,11 @@ $config['directory_trigger'] = 'd';
 | your log files will fill up very fast.
 |
 */
-$config['log_threshold'] = 0;
+if (getenv('CRDEBUG')) {
+    $config['log_threshold'] = 2;
+} else {
+    $config['log_threshold'] = 1;
+}
 
 /*
 |--------------------------------------------------------------------------
@@ -218,7 +222,11 @@ $config['log_threshold'] = 0;
 | application/logs/ directory. Use a full server path with trailing slash.
 |
 */
-$config['log_path'] = '';
+if (getenv('CRDEBUG')) {
+    $config['log_path'] = '/Users/lzw/code-review/logs/';
+} else {
+    $config['log_path'] = '/home/code-review-logs/';
+}
 
 /*
 |--------------------------------------------------------------------------
