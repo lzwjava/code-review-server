@@ -97,6 +97,7 @@ define('ERROR_OBJECT_NOT_EXIST', 8);
 define('ERROR_LOGIN_FAILED', 10);
 define('ERROR_ONLY_LEARNER_CAN_ORDER', 11);
 define('ERROR_UNKNOWN_TYPE', 12);
+define('ERROR_NOT_ALLOW_DO_IT', 13);
 
 define('TYPE_REVIEWER', 1);
 define('TYPE_LEARNER', 0);
