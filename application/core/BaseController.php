@@ -108,4 +108,9 @@ class BaseController extends CI_Controller
         }
         return $limit;
     }
+
+    protected function castToNumber($genericStringNumber)
+    {
+        return $genericStringNumber + 0;
+    }
 }

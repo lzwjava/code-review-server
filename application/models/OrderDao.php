@@ -22,7 +22,8 @@ class OrderDao extends BaseDao
             dbField(TABLE_REVIEWS, KEY_REVIEW_ID)));
     }
 
-    private function mergeReview($order) {
+    private function mergeReview($order)
+    {
         if ($order->reviewId) {
             $order->review = $this->reviewDao->getOne($order->reviewId);
         }
@@ -36,8 +37,7 @@ class OrderDao extends BaseDao
         $array[] = $learnerId;
         $orders = $this->db->query($sql, $array)->result();
         foreach ($orders as $order) {
-            $order->reviewer = $this->userDao->findPublicUser(KEY_ID, $order->reviewerId);
-            $this->mergeReview($order);
+            $this->mergeOrderChildren($order);
         }
         return $orders;
     }
@@ -50,10 +50,18 @@ class OrderDao extends BaseDao
         $array[] = $reviewerId;
         $orders = $this->db->query($sql, $array)->result();
         foreach ($orders as $order) {
-            $order->learner = $this->userDao->findPublicUser(KEY_ID, $order->learnerId);
-            $this->mergeReview($order);
+            $this->mergeOrderChildren($order);
         }
         return $orders;
+    }
+
+    function mergeOrderChildren($order)
+    {
+        if ($order) {
+            $order->learner = $this->userDao->findPublicUser(KEY_ID, $order->learnerId);
+            $order->reviewer = $this->userDao->findPublicUser(KEY_ID, $order->reviewerId);
+            $this->mergeReview($order);
+        }
     }
 
     function getOne($orderId)
@@ -63,9 +71,19 @@ class OrderDao extends BaseDao
         $array[] = $orderId;
         $order = $this->db->query($sql, $array)->row();
         if ($order) {
-            $order->learner = $this->userDao->findPublicUser(KEY_ID, $order->learnerId);
-            $order->reviewer = $this->userDao->findPublicUser(KEY_ID, $order->reviewerId);
-            $this->mergeReview($order);
+            $this->mergeOrderChildren($order);
+        }
+        return $order;
+    }
+
+    function getOneByReviewId($reviewId)
+    {
+        $fields = $this->getPublicFields();
+        $sql = "SELECT $fields FROM orders LEFT JOIN reviews ON orders.orderId = reviews.orderId WHERE reviews.reviewId = ?";
+        $array[] = $reviewId;
+        $order = $this->db->query($sql, $array)->row();
+        if ($order) {
+            $this->mergeOrderChildren($order);
         }
         return $order;
     }
