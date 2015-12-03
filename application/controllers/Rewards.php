@@ -11,8 +11,13 @@ class Rewards extends BaseController
     public function callback()
     {
         $input = trim(file_get_contents('php://input'));
-        log_message('error', "the input string $input");
-        $input_data = json_decode($input, true);
-        log_message('error', "the input data $input_data->id");
+        if ($input == null) {
+            $this->failure(ERROR_MISS_PARAMETERS, "please input string");
+            return;
+        }
+        // $inputData = json_decode($input, true);
+        // print_r($inputData);
+        log_message('error', $input);
+        $this->succeed();
     }
 }
