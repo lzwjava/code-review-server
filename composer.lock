@@ -4,9 +4,57 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "406b118039c3517409036d6a382e2c9d",
-    "content-hash": "1fb55514821c08c1cdf3578db4861739",
+    "hash": "5c8f59d24a04c25d5964e12235de1cb6",
+    "content-hash": "dbc5e4585f2984da606b44ca96c157a6",
     "packages": [
+        {
+            "name": "pingplusplus/pingpp-php",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/PingPlusPlus/pingpp-php.git",
+                "reference": "13643158b3b229d67b9bf99665f8d80144307aab"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/PingPlusPlus/pingpp-php/zipball/13643158b3b229d67b9bf99665f8d80144307aab",
+                "reference": "13643158b3b229d67b9bf99665f8d80144307aab",
+                "shasum": ""
+            },
+            "require": {
+                "ext-curl": "*",
+                "ext-json": "*",
+                "ext-mbstring": "*",
+                "php": ">=5.3.3"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": []
+            },
+            "autoload": {
+                "psr-4": {
+                    "Pingpp\\": "lib/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Pingplusplus and contributors",
+                    "homepage": "https://github.com/PingPlusPlus/pingpp-php/contributors"
+                }
+            ],
+            "description": "Pingplusplus PHP Library",
+            "homepage": "https://pingxx.com/",
+            "keywords": [
+                "api",
+                "mobile payment processing",
+                "pingpp"
+            ],
+            "time": "2015-10-11 15:10:09"
+        },
         {
             "name": "qiniu/php-sdk",
             "version": "v7.0.5",
@@ -62,7 +110,9 @@
     "packages-dev": [],
     "aliases": [],
     "minimum-stability": "stable",
-    "stability-flags": [],
+    "stability-flags": {
+        "pingplusplus/pingpp-php": 20
+    },
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": [],

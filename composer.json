@@ -1,5 +1,6 @@
 {
     "require": {
-        "qiniu/php-sdk": "^7.0"
+        "qiniu/php-sdk": "^7.0",
+        "pingplusplus/pingpp-php": "dev-master"
     }
 }
