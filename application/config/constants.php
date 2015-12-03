@@ -98,6 +98,10 @@ define('ERROR_LOGIN_FAILED', 10);
 define('ERROR_ONLY_LEARNER_CAN_ORDER', 11);
 define('ERROR_UNKNOWN_TYPE', 12);
 define('ERROR_NOT_ALLOW_DO_IT', 13);
+define('ERROR_PINGPP_CHARGE', 14);
+define('ERROR_PARAMETERS_MISMATCH', 15);
+define('ERROR_AMOUNT_UNIT', 16);
+define('ERROR_INVALID_IP', 17);
 
 define('TYPE_REVIEWER', 1);
 define('TYPE_LEARNER', 0);
@@ -136,6 +140,15 @@ define('KEY_UPDATED', 'updated');
 // reviews table
 define('KEY_REVIEW_ID', 'reviewId');
 define('KEY_CONTENT', 'content');
+
+// rewards rable
+define('TABLE_REWARDS', 'rewards');
+define('KEY_AMOUNT', 'amount');
+define('KEY_REWARD_ID', 'rewardId');
+define('KEY_ORDER_NO', 'orderNo');
+define('KEY_PAID', 'paid');
+define('KEY_CREATOR', 'creator');
+define('KEY_CREATOR_IP', 'creatorIP');
 
 define('ORDER_STATUS_TODO', 0);
 define('ORDER_STATUS_FINISHED', 1);
