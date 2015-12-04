@@ -1,4 +1,4 @@
-DROP TABLE IF EXISTS `rewards` \
+DROP TABLE IF EXISTS `rewards` /
 CREATE TABLE `rewards` (
   `rewardId`  INT(11)     NOT NULL          AUTO_INCREMENT,
 

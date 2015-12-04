@@ -27,6 +27,11 @@ class Test extends BaseController
 
     public function index()
     {
+        $this->load->helper('url');
+        $url = site_url('welcome/register');
+        error_log("site_url: $url");
+
+        error_log(anchor('news/local/123', 'My News', 'title="News title"'));
         $this->load->view('test');
     }
 }
