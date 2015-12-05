@@ -28,6 +28,8 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 <div id="container">
     <h1>Test</h1>
 
+    <h2><?php echo $title ?></h2>
+
     <div id="body">
         <form method="post" action="http://up.qiniu.com" enctype="multipart/form-data">
             <input name="token" placeholder="token">

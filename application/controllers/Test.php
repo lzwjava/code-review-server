@@ -9,6 +9,19 @@
 class Test extends BaseController
 {
 
+    public function _remap($method)
+    {
+        error_log("method: $method");
+        if ($method === 'some')
+        {
+            $this->index();
+        }
+        else
+        {
+            $this->$method();
+        }
+    }
+
     private function xrange($start, $end, $step = 1)
     {
         for ($i = $start; $i <= $end; $i += $step) {
@@ -25,13 +38,16 @@ class Test extends BaseController
         }
     }
 
-    public function index()
+    public function index($page = 'home', $id = null)
     {
+        error_log("page: $page id: $id");
         $this->load->helper('url');
         $url = site_url('welcome/register');
         error_log("site_url: $url");
-
         error_log(anchor('news/local/123', 'My News', 'title="News title"'));
-        $this->load->view('test');
+
+        $data['title'] = "Great News!";
+        error_log(url_title('Swift is open source now.', 'dash', TRUE));
+        $this->load->view('test', $data);
     }
 }
