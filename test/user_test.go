@@ -32,10 +32,23 @@ func NewClient() *Client {
 }
 
 func (c *Client) call(path string, params url.Values) (map[string] interface{}, error) {
+	return c.request("POST", path, params)
+}
+
+func (c *Client) get(path string, params url.Values) (map[string] interface{}, error) {
+	return c.request("GET", path, params)
+}
+
+func (c *Client) getData(path string, params url.Values) (map[string] interface{}) {
+	var res, err = c.get(path, params)
+	return c.resultDataFromRes(res, err)
+}
+
+func (c *Client) request(method string, path string, params url.Values) (map[string] interface{}, error) {
 	// url:= "http://codereview.pickme.cn/" + path
 	urlStr:= "http://localhost:3005/" + path
 
-	req, err := http.NewRequest("POST", urlStr, bytes.NewBufferString(params.Encode()));
+	req, err := http.NewRequest(method, urlStr, bytes.NewBufferString(params.Encode()));
 	req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
 	if err != nil {
 		return nil, err
@@ -52,20 +65,28 @@ func (c *Client) call(path string, params url.Values) (map[string] interface{}, 
     if jsonErr != nil {
     	return nil, doErr
     }
+
+    fmt.Println("curl", urlStr, params)
+    fmt.Println("response:", dat)
+    fmt.Println()
+
     return dat, nil
 }
 
-func (c *Client) callData(path string, params url.Values) (map[string] interface{}) {
-	res, err := c.call(path, params)
-	if err != nil {
-		panic(err)
+func (C *Client)resultDataFromRes(res map[string] interface{}, error interface{}) map[string] interface{} {
+	if error != nil {
+		panic(error)
 	}
-	fmt.Println(res)
 	if (int(res["resultCode"].(float64)) != 0) {
 		panic("resultCode is not 0")
 	}
 	data := res["resultData"].(map[string]interface{})
 	return data
+}
+
+func (c *Client) callData(path string, params url.Values) (map[string] interface{}) {
+	res, err := c.call(path, params)
+	return c.resultDataFromRes(res, err)
 }
 
 // perform the request.
@@ -111,11 +132,28 @@ func readString(reader io.ReadCloser) (string){
 	return s
 }
 
-func TestLogin(t *testing.T) {
+func deleteUser(mobilePhoneNumber string) {
 	c := NewClient()
-	res := c.callData("user/login", url.Values{"mobilePhoneNumber": {"13261630925"}, 
-		"password": {"123456"}});
-	assert.Equal(t, "lzwjava", res["username"])
-	assert.Equal(t, "13261630925", res["mobilePhoneNumber"])
+	_, err := c.call("user/delete", url.Values{"mobilePhoneNumber": {mobilePhoneNumber}})
+	if err != nil {
+		panic(err)
+	}
 }
 
+func TestRegisterAndLogin(t *testing.T) {
+	deleteUser("1326163092")
+	c := NewClient()
+	res := c.callData("user/register", url.Values{"mobilePhoneNumber": {"1326163092"},
+		"username": {"lzwjavaTest"}, "smsCode": {"5555"}, "password":{"123456"}, "type": {"0"}})
+	assert.Equal(t, "lzwjavaTest", res["username"])
+	assert.NotNil(t, res["id"])
+	assert.NotNil(t, res["created"])
+	assert.Equal(t, int(res["type"].(float64)), 0)
+
+	res = c.callData("user/login", url.Values{"mobilePhoneNumber": {"1326163092"}, 
+		"password": {"123456"}});
+	assert.Equal(t, "lzwjavaTest", res["username"])
+	assert.Equal(t, "1326163092", res["mobilePhoneNumber"])
+
+	deleteUser("1326163092")
+}
