@@ -99,7 +99,7 @@ define('ERROR_ONLY_LEARNER_CAN_ORDER', 11);
 define('ERROR_UNKNOWN_TYPE', 12);
 define('ERROR_NOT_ALLOW_DO_IT', 13);
 define('ERROR_PINGPP_CHARGE', 14);
-define('ERROR_PARAMETERS_MISMATCH', 15);
+define('ERROR_PARAMETER_ILLEGAL', 15);
 define('ERROR_AMOUNT_UNIT', 16);
 define('ERROR_INVALID_IP', 17);
 
@@ -126,6 +126,7 @@ define('KEY_VALID', 'valid');
 define('KEY_SMS_CODE', 'smsCode');
 
 define('KEY_INTRODUCTION', 'introduction');
+define('KEY_EXPERIENCE', 'experience');
 
 // orders table
 define('KEY_ORDER_ID', 'orderId');
@@ -158,3 +159,6 @@ define('TABLE_ORDERS', 'orders');
 define('TABLE_REVIEWS', 'reviews');
 define('TABLE_LEARNERS', 'learners');
 define('TABLE_REVIEWERS', 'reviewers');
+
+define('REWARD_UNPAID', 0);
+define('REWARD_PAID', 1);

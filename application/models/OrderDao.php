@@ -64,6 +64,15 @@ class OrderDao extends BaseDao
         }
     }
 
+    function countFinishOrders($reviewerId)
+    {
+        $sql = "SELECT count(*) as cnt FROM orders WHERE status=? AND reviewerId=?";
+        $array[] = ORDER_STATUS_FINISHED;
+        $array[] = $reviewerId;
+        $result = $this->db->query($sql, $array)->row();
+        return $result->cnt;
+    }
+
     function getOne($orderId)
     {
         $fields = $this->getPublicFields();

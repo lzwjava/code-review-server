@@ -170,12 +170,22 @@ class User extends BaseController
         $this->succeed();
     }
 
+    private function checkIfNotAtLeastOneParam($request, $params)
+    {
+        foreach ($params as $param) {
+            if (isset($request[$param])) {
+                return false;
+            }
+        }
+        $this->failure(ERROR_AT_LEAST_ONE_UPDATE, "请至少提供一个可以修改的信息");
+        return true;
+    }
+
     public function update()
     {
-        if (!isset($_POST[KEY_USERNAME]) && !isset($_POST[KEY_AVATAR_URL])
-            && !isset($_POST[KEY_INTRODUCTION])
+        if ($this->checkIfNotAtLeastOneParam($_POST, array(KEY_AVATAR_URL, KEY_USERNAME,
+            KEY_INTRODUCTION, KEY_EXPERIENCE))
         ) {
-            $this->failure(ERROR_AT_LEAST_ONE_UPDATE, "请至少提供一个可以修改的信息");
             return;
         }
         if ($this->checkIfNotInSessionAndResponse()) {
@@ -202,6 +212,16 @@ class User extends BaseController
             $intro = $_POST[KEY_INTRODUCTION];
             $this->userDao->updateUser($user, array(
                 KEY_INTRODUCTION => $intro
+            ));
+        }
+        if (isset($_POST[KEY_EXPERIENCE])) {
+            $experience = $_POST[KEY_EXPERIENCE];
+            if ($experience < 0 || $experience > 30) {
+                $this->failure(ERROR_PARAMETER_ILLEGAL, '工作经验年限应在 0~30 年');
+                return;
+            }
+            $this->userDao->updateUser($user, array(
+                KEY_EXPERIENCE => $experience
             ));
         }
         $user = $this->userDao->findActualUser($user);

@@ -18,7 +18,7 @@ class ReviewerDao extends BaseDao
     private function publicFields()
     {
         return $this->mergeFields(array(KEY_ID, KEY_USERNAME,
-            KEY_AVATAR_URL, KEY_CREATED, KEY_INTRODUCTION));
+            KEY_AVATAR_URL, KEY_CREATED, KEY_INTRODUCTION, KEY_EXPERIENCE));
     }
 
     public function getList($skip = 0, $limit = 100)
@@ -27,7 +27,15 @@ class ReviewerDao extends BaseDao
         $sql = "SELECT $fields FROM reviewers where valid=1 ORDER BY created limit $limit OFFSET
 $skip";
         $result = $this->db->query($sql)->result();
+        foreach ($result as $reviewer) {
+            $this->mergeCount($reviewer);
+        }
         return $result;
+    }
+
+    private function mergeCount($reviewer) {
+        $reviewer->orderCount = $this->orderDao->countFinishOrders($reviewer->id);
+        $reviewer->rewardCount = $this->rewardDao->countRewards($reviewer->id);
     }
 
     public function getOne($id)
