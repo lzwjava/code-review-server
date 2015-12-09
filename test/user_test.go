@@ -35,5 +35,24 @@ func TestRegisterAndLogin(t *testing.T) {
 	assert.Equal(t, "lzwjavaTest", res["username"])
 	assert.Equal(t, "1326163092", res["mobilePhoneNumber"])
 
+	avatarUrl := "http://7xotd0.com1.z0.glb.clouddn.com/header_logo.png"
+
+	res = c.callData("user/update", url.Values{"username": {"lzwjavaTest1"},
+		"avatarUrl": {avatarUrl}});
+	assert.Equal(t, "lzwjavaTest1", res["username"])
+	assert.Equal(t, avatarUrl, res["avatarUrl"])
+
 	deleteUser("1326163092")
+}
+
+func TestRegisterAndLogin_Reviewer(t *testing.T) {
+	deleteUser("13261630924")
+	c := NewClient()
+	res := c.callData("user/register", url.Values{"mobilePhoneNumber": {"13261630924"},
+		"username": {"lzwjavaReviewer"}, "smsCode": {"5555"}, "password":{"123456"}, "type": {"1"}})
+
+	res = c.callData("user/update", url.Values{"introduction": {"I'm lzwjava"}})
+	assert.Equal(t, "I'm lzwjava", res["introduction"])
+
+	deleteUser("13261630924")	
 }

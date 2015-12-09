@@ -16,6 +16,7 @@ import (
 
 type Client struct {
 	HTTPClient  *http.Client
+	sessionToken string
 }
 
 func NewClient() *Client {
@@ -52,9 +53,12 @@ func (c *Client) request(method string, path string, params url.Values) (map[str
 		urlStr= "http://localhost:3005/" + path
 	}
 	req, err := http.NewRequest(method, urlStr, bytes.NewBufferString(params.Encode()));
-	req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
 	if err != nil {
 		return nil, err
+	}
+	req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
+	if len(c.sessionToken) > 0 {
+		req.Header.Set("X-CR-Session", c.sessionToken)
 	}
 	body, doErr := c.do(req)
 	if doErr != nil  {
@@ -76,7 +80,7 @@ func (c *Client) request(method string, path string, params url.Values) (map[str
     return dat, nil
 }
 
-func (C *Client)resultDataFromRes(res map[string] interface{}, error interface{}) map[string] interface{} {
+func (c *Client)resultDataFromRes(res map[string] interface{}, error interface{}) map[string] interface{} {
 	if error != nil {
 		panic(error)
 	}
@@ -84,6 +88,11 @@ func (C *Client)resultDataFromRes(res map[string] interface{}, error interface{}
 		panic("resultCode is not 0")
 	}
 	data := res["resultData"].(map[string]interface{})
+
+	if sessionToken, ok :=data["sessionToken"].(string); ok {
+		c.sessionToken = sessionToken
+	}
+
 	return data
 }
 
