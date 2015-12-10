@@ -28,7 +28,7 @@ func TestRegisterAndLogin(t *testing.T) {
 	assert.Equal(t, "lzwjavaTest", res["username"])
 	assert.NotNil(t, res["id"])
 	assert.NotNil(t, res["created"])
-	assert.Equal(t, int(res["type"].(float64)), 0)
+	assert.Equal(t, toInt(res["type"]), 0)
 
 	res = c.callData("user/login", url.Values{"mobilePhoneNumber": {"1326163092"}, 
 		"password": {"123456"}});
@@ -45,7 +45,7 @@ func TestRegisterAndLogin(t *testing.T) {
 	deleteUser("1326163092")
 }
 
-func TestRegisterAndLogin_Reviewer(t *testing.T) {
+func TestReviewerRegisterAndLogin(t *testing.T) {
 	deleteUser("13261630924")
 	c := NewClient()
 	res := c.callData("user/register", url.Values{"mobilePhoneNumber": {"13261630924"},
