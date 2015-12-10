@@ -68,7 +68,8 @@ func (c *Client) request(method string, path string, params url.Values) (map[str
 
 	var dat map[string]interface{}
 
-	jsonErr := json.NewDecoder(body).Decode(&dat);
+	decoder := json.NewDecoder(body)
+	jsonErr := decoder.Decode(&dat);
     if jsonErr != nil {
     	return nil, doErr
     }
@@ -84,7 +85,7 @@ func (c *Client)resultDataFromRes(res map[string] interface{}, error interface{}
 	if error != nil {
 		panic(error)
 	}
-	if (int(res["resultCode"].(float64)) != 0) {
+	if (toInt(res["resultCode"]) != 0) {
 		panic("resultCode is not 0")
 	}
 	data := res["resultData"].(map[string]interface{})
@@ -142,4 +143,8 @@ func readString(reader io.ReadCloser) (string){
 	buf.ReadFrom(reader)
 	s := buf.String()
 	return s
+}
+
+func toInt(obj interface{}) (int){
+	return int(obj.(float64))
 }

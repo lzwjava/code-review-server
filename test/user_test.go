@@ -51,8 +51,13 @@ func TestRegisterAndLogin_Reviewer(t *testing.T) {
 	res := c.callData("user/register", url.Values{"mobilePhoneNumber": {"13261630924"},
 		"username": {"lzwjavaReviewer"}, "smsCode": {"5555"}, "password":{"123456"}, "type": {"1"}})
 
-	res = c.callData("user/update", url.Values{"introduction": {"I'm lzwjava"}})
+	res = c.callData("user/update", url.Values{"introduction": {"I'm lzwjava"},
+		"experience": {"1"}})
 	assert.Equal(t, "I'm lzwjava", res["introduction"])
+	assert.Equal(t, 1, toInt(res["experience"]))
 
-	deleteUser("13261630924")	
+	result, _ := c.call("user/update", url.Values{"experience": {"100"}})
+	assert.Equal(t, toInt(result["resultCode"]), 15)
+
+	deleteUser("13261630924")
 }
