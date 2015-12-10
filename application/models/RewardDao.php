@@ -24,11 +24,18 @@ class RewardDao extends BaseDao
 
     function countRewards($reviewerId)
     {
-        $sql = "SELECT count(*) as cnt FROM rewards LEFT JOIN reviews ON reviews.reviewId = rewards.reviewId
+        $sql = "SELECT count(*) AS cnt FROM rewards LEFT JOIN reviews ON reviews.reviewId = rewards.reviewId
                 LEFT JOIN orders ON orders.orderId = reviews.orderId WHERE paid=? AND reviewerId=?";
         $array[] = REWARD_UNPAID;
         $array[] = $reviewerId;
         $result = $this->db->query($sql, $array)->row();
         return $result->cnt;
+    }
+
+    function updateRewardToPaid($orderNo)
+    {
+        $sql = "UPDATE rewards SET paid=1 WHERE orderNo=?";
+        $array[] = $orderNo;
+        return $this->db->query($sql, $array);
     }
 }

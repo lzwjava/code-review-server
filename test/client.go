@@ -52,11 +52,19 @@ func (c *Client) request(method string, path string, params url.Values) (map[str
 	} else {
 		urlStr= "http://localhost:3005/" + path
 	}
-	req, err := http.NewRequest(method, urlStr, bytes.NewBufferString(params.Encode()));
+	paramStr := bytes.NewBufferString(params.Encode())
+
+	req, err := http.NewRequest(method, urlStr, paramStr)
+
+	if (method == "GET") {
+		req, err = http.NewRequest(method, fmt.Sprintf("%s?%s", urlStr, paramStr), nil)		
+	}
 	if err != nil {
 		return nil, err
 	}
-	req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
+	if (method == "POST") {
+		req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
+	}
 	if len(c.sessionToken) > 0 {
 		req.Header.Set("X-CR-Session", c.sessionToken)
 	}
@@ -88,7 +96,10 @@ func (c *Client)resultDataFromRes(res map[string] interface{}, error interface{}
 	if (toInt(res["resultCode"]) != 0) {
 		panic("resultCode is not 0")
 	}
-	data := res["resultData"].(map[string]interface{})
+	var data map[string] interface{}
+	if (res["resultData"] != nil) {
+		data = res["resultData"].(map[string]interface{})
+	}
 
 	if sessionToken, ok :=data["sessionToken"].(string); ok {
 		c.sessionToken = sessionToken

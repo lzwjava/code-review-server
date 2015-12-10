@@ -12,14 +12,6 @@ func unused1() {
 	fmt.Printf("")
 }
 
-func deleteUser(mobilePhoneNumber string) {
-	c := NewClient()
-	_, err := c.call("user/delete", url.Values{"mobilePhoneNumber": {mobilePhoneNumber}})
-	if err != nil {
-		panic(err)
-	}
-}
-
 func TestRegisterAndLogin(t *testing.T) {
 	deleteUser("1326163092")
 	c := NewClient()
