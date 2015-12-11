@@ -12,10 +12,10 @@ class Rewards extends BaseController
     {
 
         $content = file_get_contents("php://input");
-        error_log("content $content");
+        logInfo("content $content");
         $event = json_decode($content);
         if (!isset($event->type)) {
-            $this->failure(ERROR_MISS_PARAMETERS, "please input string");
+            $this->failure(ERROR_MISS_PARAMETERS, "please input event type");
             return;
         }
         switch ($event->type) {
@@ -42,7 +42,6 @@ class Rewards extends BaseController
         } else {
             $orderNo = $event->data->object->order_no;
             $reward = $this->rewardDao->getOneByOrderNo($orderNo);
-            error_log($reward);
             if ($reward == null) {
                 $this->failure(ERROR_OBJECT_NOT_EXIST, "reward with that orderNo not exists");
             } else {

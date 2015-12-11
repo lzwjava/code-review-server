@@ -94,11 +94,16 @@ func (c *Client) callWithStr(path string, body string) (string) {
 	urlStr := baseUrl(path)
 	req, err := http.NewRequest("POST", urlStr, strings.NewReader(body))
 	checkErr(err)
+	req.Header.Set("Content-Type", "plain/text")
+	fmt.Println("curl", urlStr, body)
+
 	res, doErr := c.do(req)
 	checkErr(doErr)
 	buf := new(bytes.Buffer)
 	buf.ReadFrom(res)
 	s := buf.String()
+	fmt.Println("response:", s)
+	fmt.Println()
 	return s
 }
 
@@ -129,9 +134,7 @@ func (c *Client) callData(path string, params url.Values) (map[string]interface{
 // perform the request.
 func (c *Client) do(req *http.Request) (io.ReadCloser, error) {
 	res, err := c.HTTPClient.Do(req)
-	if err != nil {
-		return nil, err
-	}
+	checkErr(err)
 
 	if res.StatusCode < 400 {
 		return res.Body, err

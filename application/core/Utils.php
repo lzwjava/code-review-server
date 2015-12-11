@@ -65,3 +65,13 @@ if (!function_exists('deleteCookie')) {
         setcookie($name, "", time() - 10000, "/");
     }
 }
+
+if (!function_exists('logInfo')) {
+    function logInfo($info) {
+        if (getenv('CRDEBUG')) {
+            error_log($info);
+        } else {
+            log_message('error', $info);
+        }
+    }
+}
