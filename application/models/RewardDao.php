@@ -38,4 +38,11 @@ class RewardDao extends BaseDao
         $array[] = $orderNo;
         return $this->db->query($sql, $array);
     }
+
+    function getOneByOrderNo($orderNo)
+    {
+        $sql = "select * from rewards where orderNo=?";
+        $array[] = $orderNo;
+        return $this->db->query($sql, $array)->row();
+    }
 }

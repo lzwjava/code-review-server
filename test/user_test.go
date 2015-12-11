@@ -3,14 +3,10 @@ package codereview
 import (
 	"testing"
 	"github.com/stretchr/testify/assert"
-	"fmt"
+	_ "fmt"
 	_ "reflect"
 	"net/url"
 )
-
-func unused1() {
-	fmt.Printf("")
-}
 
 func TestRegisterAndLogin(t *testing.T) {
 	deleteUser("1326163092")
@@ -22,7 +18,7 @@ func TestRegisterAndLogin(t *testing.T) {
 	assert.NotNil(t, res["created"])
 	assert.Equal(t, toInt(res["type"]), 0)
 
-	res = c.callData("user/login", url.Values{"mobilePhoneNumber": {"1326163092"}, 
+	res = c.callData("user/login", url.Values{"mobilePhoneNumber": {"1326163092"},
 		"password": {"123456"}});
 	assert.Equal(t, "lzwjavaTest", res["username"])
 	assert.Equal(t, "1326163092", res["mobilePhoneNumber"])

@@ -15,12 +15,12 @@ import (
 )
 
 type Client struct {
-	HTTPClient  *http.Client
+	HTTPClient   *http.Client
 	sessionToken string
 }
 
 func NewClient() *Client {
-	return &Client {
+	return &Client{
 		HTTPClient: http.DefaultClient,
 	}
 }
@@ -31,33 +31,38 @@ func unused() {
 	reflect.TypeOf("string")
 }
 
-func (c *Client) call(path string, params url.Values) (map[string] interface{}, error) {
+func (c *Client) call(path string, params url.Values) (map[string]interface{}, error) {
 	return c.request("POST", path, params)
 }
 
-func (c *Client) get(path string, params url.Values) (map[string] interface{}, error) {
+func (c *Client) get(path string, params url.Values) (map[string]interface{}, error) {
 	return c.request("GET", path, params)
 }
 
-func (c *Client) getData(path string, params url.Values) (map[string] interface{}) {
+func (c *Client) getData(path string, params url.Values) (map[string]interface{}) {
 	var res, err = c.get(path, params)
 	return c.resultDataFromRes(res, err)
 }
 
-func (c *Client) request(method string, path string, params url.Values) (map[string] interface{}, error) {
+func baseUrl(path string) (string) {
 	prod := os.Getenv("PROD")
 	var urlStr string
 	if prod != "" {
 		urlStr = "http://codereview.pickme.cn/" + path
 	} else {
-		urlStr= "http://localhost:3005/" + path
+		urlStr = "http://localhost:3005/" + path
 	}
+	return urlStr
+}
+
+func (c *Client) request(method string, path string, params url.Values) (map[string]interface{}, error) {
+	urlStr := baseUrl(path)
 	paramStr := bytes.NewBufferString(params.Encode())
 
 	req, err := http.NewRequest(method, urlStr, paramStr)
 
 	if (method == "GET") {
-		req, err = http.NewRequest(method, fmt.Sprintf("%s?%s", urlStr, paramStr), nil)		
+		req, err = http.NewRequest(method, fmt.Sprintf("%s?%s", urlStr, paramStr), nil)
 	}
 	if err != nil {
 		return nil, err
@@ -69,46 +74,54 @@ func (c *Client) request(method string, path string, params url.Values) (map[str
 		req.Header.Set("X-CR-Session", c.sessionToken)
 	}
 	body, doErr := c.do(req)
-	if doErr != nil  {
-		return nil, doErr
-	}
-    defer body.Close()
+	checkErr(doErr)
+	defer body.Close()
 
 	var dat map[string]interface{}
 
 	decoder := json.NewDecoder(body)
 	jsonErr := decoder.Decode(&dat);
-    if jsonErr != nil {
-    	return nil, doErr
-    }
+	checkErr(jsonErr)
 
-    fmt.Println("curl", urlStr, params)
-    fmt.Println("response:", dat)
-    fmt.Println()
+	fmt.Println("curl", urlStr, params)
+	fmt.Println("response:", dat)
+	fmt.Println()
 
-    return dat, nil
+	return dat, nil
 }
 
-func (c *Client)resultDataFromRes(res map[string] interface{}, error interface{}) map[string] interface{} {
+func (c *Client) callWithStr(path string, body string) (string) {
+	urlStr := baseUrl(path)
+	req, err := http.NewRequest("POST", urlStr, strings.NewReader(body))
+	checkErr(err)
+	res, doErr := c.do(req)
+	checkErr(doErr)
+	buf := new(bytes.Buffer)
+	buf.ReadFrom(res)
+	s := buf.String()
+	return s
+}
+
+func (c *Client)resultDataFromRes(res map[string]interface{}, error interface{}) map[string]interface{} {
 	if error != nil {
 		panic(error)
 	}
 	if (toInt(res["resultCode"]) != 0) {
 		panic("resultCode is not 0")
 	}
-	var data map[string] interface{}
+	var data map[string]interface{}
 	if (res["resultData"] != nil) {
 		data = res["resultData"].(map[string]interface{})
 	}
 
-	if sessionToken, ok :=data["sessionToken"].(string); ok {
+	if sessionToken, ok := data["sessionToken"].(string); ok {
 		c.sessionToken = sessionToken
 	}
 
 	return data
 }
 
-func (c *Client) callData(path string, params url.Values) (map[string] interface{}) {
+func (c *Client) callData(path string, params url.Values) (map[string]interface{}) {
 	res, err := c.call(path, params)
 	return c.resultDataFromRes(res, err)
 }
@@ -149,13 +162,9 @@ func (c *Client) do(req *http.Request) (io.ReadCloser, error) {
 	return nil, e
 }
 
-func readString(reader io.ReadCloser) (string){
+func readString(reader io.ReadCloser) (string) {
 	buf := new(bytes.Buffer)
 	buf.ReadFrom(reader)
 	s := buf.String()
 	return s
-}
-
-func toInt(obj interface{}) (int){
-	return int(obj.(float64))
 }

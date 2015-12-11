@@ -7,6 +7,6 @@ import (
 	_ "net/url"
 )
 
-func TestReviewAdd(t *testing.T) {
-	
+func TestReviews_Add(t *testing.T) {
+
 }

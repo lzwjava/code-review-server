@@ -11,7 +11,9 @@ class Rewards extends BaseController
     public function callback()
     {
 
-        $event = json_decode(file_get_contents("php://input"));
+        $content = file_get_contents("php://input");
+        error_log("content $content");
+        $event = json_decode($content);
         if (!isset($event->type)) {
             $this->failure(ERROR_MISS_PARAMETERS, "please input string");
             return;
@@ -29,7 +31,6 @@ class Rewards extends BaseController
                 header($_SERVER['SERVER_PROTOCOL'] . ' 400 Bad Request');
                 break;
         }
-        $this->succeed();
     }
 
     private function handleChargeSucceed($event)
@@ -37,10 +38,17 @@ class Rewards extends BaseController
         if (!isset($event->data) || !isset($event->data->object) ||
             !isset($event->data->object->order_no)
         ) {
-            log_message('error', 'event.data.object.order_no is not set.');
+            $this->failure(ERROR_PARAMETER_ILLEGAL, "there are no orderNo in event");
         } else {
             $orderNo = $event->data->object->order_no;
-            $this->rewardDao->updateRewardToPaid($orderNo);
+            $reward = $this->rewardDao->getOneByOrderNo($orderNo);
+            error_log($reward);
+            if ($reward == null) {
+                $this->failure(ERROR_OBJECT_NOT_EXIST, "reward with that orderNo not exists");
+            } else {
+                $this->rewardDao->updateRewardToPaid($orderNo);
+                $this->succeed();
+            }
         }
     }
 }

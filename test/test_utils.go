@@ -5,12 +5,13 @@ import (
 	_ "reflect"
 	"net/url"
 	"database/sql"
+	"strconv"
 )
 
 func checkErr(err error) {
-    if err != nil {
-        panic(err)
-    }
+	if err != nil {
+		panic(err)
+	}
 }
 
 func deleteUser(mobilePhoneNumber string) {
@@ -21,18 +22,18 @@ func deleteUser(mobilePhoneNumber string) {
 	}
 }
 
-func deleteUserByData(data map[string] interface{}) {
+func deleteUserByData(data map[string]interface{}) {
 	deleteUser(data["mobilePhoneNumber"].(string))
 }
 
-func registerLearner(c *Client) map[string] interface{} {
+func registerLearner(c *Client) map[string]interface{} {
 	deleteUser("1326163092")
 	res := c.callData("user/register", url.Values{"mobilePhoneNumber": {"1326163092"},
 		"username": {"lzwjavaTest"}, "smsCode": {"5555"}, "password":{"123456"}, "type": {"0"}})
 	return res
 }
 
-func registerReviewer(c *Client) map[string] interface{} {
+func registerReviewer(c *Client) map[string]interface{} {
 	deleteUser("13261630924")
 	res := c.callData("user/register", url.Values{"mobilePhoneNumber": {"13261630924"},
 		"username": {"lzwjavaReviewer"}, "smsCode": {"5555"}, "password":{"123456"}, "type": {"1"}})
@@ -54,15 +55,23 @@ func deleteRecord(table string, column string, id string) {
 	sql := fmt.Sprintf("delete from %s where %s=?", table, column)
 
 	stmt, err := db.Prepare(sql)
-    checkErr(err)
+	checkErr(err)
 
-    res, err := stmt.Exec(id)
-    checkErr(err)
+	res, err := stmt.Exec(id)
+	checkErr(err)
 
-    affect, err := res.RowsAffected()
-    checkErr(err)
+	affect, err := res.RowsAffected()
+	checkErr(err)
 
-    fmt.Println(sql, "affected", affect)
+	fmt.Println(sql, "affected", affect)
 
-    db.Close()
+	db.Close()
+}
+
+func toInt(obj interface{}) (int) {
+	return int(obj.(float64))
+}
+
+func floatToStr(flt interface{}) string {
+	return strconv.Itoa(toInt(flt))
 }
