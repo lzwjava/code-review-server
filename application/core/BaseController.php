@@ -34,6 +34,11 @@ class BaseController extends CI_Controller
                 $this->failureOfParam($param);
                 return true;
             }
+            $trim = trim($request[$param]);
+            if ($trim === '') {
+                $this->failureOfParam($param);
+                return true;
+            }
         }
         return false;
     }
@@ -50,7 +55,7 @@ class BaseController extends CI_Controller
 
     protected function failureOfParam($param)
     {
-        $this->failure(ERROR_MISS_PARAMETERS, "必须提供以下参数: " . $param);
+        $this->failure(ERROR_MISS_PARAMETERS, "必须提供以下参数且不为空: " . $param);
     }
 
     protected function requestToken()

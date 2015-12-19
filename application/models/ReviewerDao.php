@@ -44,6 +44,7 @@ $skip";
         $sql = "SELECT $fields FROM reviewers WHERE valid=1 AND id=?";
         $array[] = $id;
         $reviewer = $this->db->query($sql, $array)->row();
+        $this->mergeCount($reviewer);
         return $reviewer;
     }
 

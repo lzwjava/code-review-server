@@ -48,7 +48,7 @@ func baseUrl(path string) (string) {
 	prod := os.Getenv("PROD")
 	var urlStr string
 	if prod != "" {
-		urlStr = "http://codereview.pickme.cn/" + path
+		urlStr = "http://reviewcode.cn/" + path
 	} else {
 		urlStr = "http://localhost:3005/" + path
 	}

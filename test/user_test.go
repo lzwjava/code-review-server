@@ -8,7 +8,7 @@ import (
 	"net/url"
 )
 
-func TestRegisterAndLogin(t *testing.T) {
+func TestUser_RegisterAndLogin(t *testing.T) {
 	deleteUser("1326163092")
 	c := NewClient()
 	res := c.callData("user/register", url.Values{"mobilePhoneNumber": {"1326163092"},
@@ -33,7 +33,7 @@ func TestRegisterAndLogin(t *testing.T) {
 	deleteUser("1326163092")
 }
 
-func TestReviewerRegisterAndLogin(t *testing.T) {
+func TestUser_ReviewerRegisterAndLogin(t *testing.T) {
 	deleteUser("13261630924")
 	c := NewClient()
 	res := c.callData("user/register", url.Values{"mobilePhoneNumber": {"13261630924"},

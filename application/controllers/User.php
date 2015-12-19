@@ -227,4 +227,9 @@ class User extends BaseController
         $user = $this->userDao->findActualUser($user);
         $this->succeed($user);
     }
+
+    public function view()
+    {
+
+    }
 }
