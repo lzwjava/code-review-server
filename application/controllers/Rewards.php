@@ -45,8 +45,21 @@ class Rewards extends BaseController
             if ($charge == null) {
                 $this->failure(ERROR_OBJECT_NOT_EXIST, "charge with that orderNo not exists");
             } else {
-                $this->chargeDao->updateChargeToPaid($orderNo);
-                $this->succeed();
+                $reward = $this->rewardDao->getOneByChargeId($charge->chargeId);
+                if ($reward == null) {
+                    $this->failure(ERROR_OBJECT_NOT_EXIST, "reward with that orderNo not exists");
+                } else {
+                    $order = $this->orderDao->getOne($reward->orderId);
+                    if ($order == null) {
+                        $this->failure(ERROR_OBJECT_NOT_EXIST, "order with that orderNo not exists");
+                    } else {
+                        $this->chargeDao->updateChargeToPaid($orderNo);
+                        if ($order->status == ORDER_STATUS_NOT_PAID) {
+                            $this->orderDao->updateOrderToPaid($order->orderId, $reward->rewardId);
+                        }
+                        $this->succeed();
+                    }
+                }
             }
         }
     }

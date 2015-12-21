@@ -29,4 +29,15 @@ class RewardDao extends BaseDao
         $result = $this->db->query($sql, $array)->row();
         return $result->cnt;
     }
+
+    function getOne($field, $value)
+    {
+        return $this->getOneFromTable('rewards', $field, $value);
+    }
+
+    function getOneByChargeId($chargeId)
+    {
+        return $this->getOne('chargeId', $chargeId);
+    }
+
 }

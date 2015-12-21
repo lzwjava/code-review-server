@@ -17,6 +17,7 @@ class OrderDao extends BaseDao
             KEY_LEARNER_ID,
             KEY_REVIEWER_ID,
             KEY_STATUS,
+            KEY_REMARK,
             dbField(TABLE_ORDERS, KEY_CREATED),
             dbField(TABLE_ORDERS, KEY_UPDATED),
             dbField(TABLE_REVIEWS, KEY_REVIEW_ID)));
@@ -66,7 +67,7 @@ class OrderDao extends BaseDao
 
     function countFinishOrders($reviewerId)
     {
-        $sql = "SELECT count(*) as cnt FROM orders WHERE status=? AND reviewerId=?";
+        $sql = "SELECT count(*) AS cnt FROM orders WHERE status=? AND reviewerId=?";
         $array[] = ORDER_STATUS_FINISHED;
         $array[] = $reviewerId;
         $result = $this->db->query($sql, $array)->row();
@@ -115,5 +116,14 @@ class OrderDao extends BaseDao
     function update($id, $data)
     {
 
+    }
+
+    function updateOrderToPaid($orderId, $rewardId)
+    {
+        $sql = "update orders set status=?,firstRewardId=? where orderId= ?";
+        $array[] = ORDER_STATUS_PAID;
+        $array[] = $rewardId;
+        $array[] = $orderId;
+        return $this->db->query($sql, $array);
     }
 }

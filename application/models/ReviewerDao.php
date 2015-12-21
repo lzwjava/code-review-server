@@ -33,7 +33,8 @@ $skip";
         return $result;
     }
 
-    private function mergeCount($reviewer) {
+    private function mergeCount($reviewer)
+    {
         $reviewer->orderCount = $this->orderDao->countFinishOrders($reviewer->id);
         $reviewer->rewardCount = $this->rewardDao->countRewards($reviewer->id);
     }

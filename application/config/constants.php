@@ -151,9 +151,10 @@ define('KEY_PAID', 'paid');
 define('KEY_CREATOR', 'creator');
 define('KEY_CREATOR_IP', 'creatorIP');
 
-define('ORDER_STATUS_TODO', 0);
+define('ORDER_STATUS_NOT_PAID', 0);
 define('ORDER_STATUS_FINISHED', 1);
 define('ORDER_STATUS_REJECTED', 2);
+define('ORDER_STATUS_PAID', 3);
 
 define('TABLE_ORDERS', 'orders');
 define('TABLE_REVIEWS', 'reviews');

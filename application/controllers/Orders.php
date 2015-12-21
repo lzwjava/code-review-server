@@ -81,10 +81,6 @@ class Orders extends BaseController
             $this->failure(ERROR_AMOUNT_UNIT, 'amount 必须为整数, 单位为分钱. 例如 10 元, amount = 1000.');
             return;
         }
-        if ($amount < 10) {
-            $this->failure(ERROR_AMOUNT_UNIT, '打赏金额最少为 10 分钱');
-            return;
-        }
         if ($this->checkIfNotInSessionAndResponse()) {
             return;
         }
@@ -94,6 +90,19 @@ class Orders extends BaseController
         if ($order == null) {
             $this->failure(ERROR_OBJECT_NOT_EXIST, '没有找到相应的 review 订单');
             return;
+        }
+        $firstReward = false;
+        if ($user->id == $order->learnerId && $order->status == ORDER_STATUS_NOT_PAID) {
+            if ($amount < 5000) {
+                $this->failure(ERROR_AMOUNT_UNIT, '申请者打赏至少为 5 元');
+                return;
+            }
+            $firstReward = true;
+        } else {
+            if ($amount < 1000) {
+                $this->failure(ERROR_AMOUNT_UNIT, '打赏金额至少为 1 元');
+                return;
+            }
         }
         $reviewerName = $order->reviewer->username;
         $orderNo = $this->getOrderNo();
