@@ -34,6 +34,25 @@ func TestOrders_Reward(t *testing.T) {
 	assert.Equal(t, toInt(callbackRes["resultCode"]), 0);
 }
 
+func TestRewards_Count(t *testing.T) {
+	c := NewClient()
+	reviewer, _, order := addOrder(c, t)
+	orderId := floatToStr(order["orderId"])
+	reward(c, orderId, t);
+	reward(c, orderId, t);
+	afterReviewer := c.getData("reviewers/view", url.Values{"id": {reviewer["id"].(string)}});
+	assert.Equal(t, toInt(afterReviewer["rewardCount"]), 2);
+}
+
+func reward(c *Client, orderId string, t *testing.T) {
+	rewardRes, err := c.call("orders/reward", url.Values{"orderId": {orderId},
+		"amount": {"5000"}})
+	checkErr(err);
+
+	orderNo := rewardRes["order_no"].(string)
+	callbackRes := c.callWithStr("rewards/callback", testCallbackStr(orderNo, orderId))
+	assert.Equal(t, toInt(callbackRes["resultCode"]), 0);
+}
 
 func testCallbackStr(orderNo string, orderId string) string {
 	const jsonStream = `{ "id": "evt_ugB6x3K43D16wXCcqbplWAJo", "created": 1427555101, "livemode": true, "type":
