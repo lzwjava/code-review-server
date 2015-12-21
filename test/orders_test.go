@@ -9,13 +9,7 @@ import (
 	_ "strings"
 	"fmt"
 	_ "flag"
-	"os"
 )
-
-func TestMain(m *testing.M) {
-	os.Exit(m.Run())
-	fmt.Println("run main");
-}
 
 func TestOrders_AddOrder(t *testing.T) {
 	c := NewClient()
@@ -39,23 +33,8 @@ func addOrder(c *Client, t *testing.T) (map[string]interface{}, map[string]inter
 	assert.NotNil(t, order["created"]);
 	assert.NotNil(t, order["updated"]);
 	assert.NotNil(t, order["orderId"])
+	assert.Nil(t, order["reviewId"]);
 	return reviewer, learner, order;
-}
-
-func TestOrders_Add(t *testing.T) {
-	c := NewClient()
-	reviewer, _, order := addOrder(c, t)
-
-	c.sessionToken = reviewer["sessionToken"].(string)
-	orderId := floatToStr(order["orderId"])
-
-	rewardRes, err := c.call("orders/reward", url.Values{"orderId": {orderId},
-		"amount": {"1000"}})
-	checkErr(err)
-	assert.NotNil(t, rewardRes)
-
-	orderNo := rewardRes["order_no"].(string)
-	c.callWithStr("rewards/callback", testCallbackStr(orderNo))
 }
 
 func testCallbackStr(orderNo string) string {

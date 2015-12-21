@@ -94,7 +94,7 @@ class Orders extends BaseController
         $firstReward = false;
         if ($user->id == $order->learnerId && $order->status == ORDER_STATUS_NOT_PAID) {
             if ($amount < 5000) {
-                $this->failure(ERROR_AMOUNT_UNIT, '申请者打赏至少为 5 元');
+                $this->failure(ERROR_AMOUNT_UNIT, '申请者打赏金额至少为 5 元');
                 return;
             }
             $firstReward = true;

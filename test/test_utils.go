@@ -45,6 +45,10 @@ func validReviewer(c *Client, reviewerId string) {
 	c.getData("reviewers/valid", url.Values{"id": {reviewerId}})
 }
 
+func deleteTable(table string) {
+	deleteRecord(table, "1", "1");
+}
+
 func deleteRecord(table string, column string, id string) {
 	db, err := sql.Open("mysql", "lzw:@/codereview")
 	checkErr(err)
