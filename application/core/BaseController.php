@@ -5,6 +5,13 @@ if (!defined('BASEPATH'))
 
 class BaseController extends CI_Controller
 {
+
+    function __construct()
+    {
+        parent::__construct();
+        \Pingpp\Pingpp::setApiKey('sk_test_9Giz1SPG8mD4OW94OSTmPGyL');
+    }
+
     protected function response($resultCode, $resultData = null, $resultInfo = null)
     {
         $arr = array(

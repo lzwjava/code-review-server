@@ -8,14 +8,12 @@
  */
 class RewardDao extends BaseDao
 {
-    function add($reviewId, $orderNo, $amount, $creator, $creatorIP)
+    function add($orderId, $creator, $chargeId)
     {
         $data = array(
-            KEY_REVIEW_ID => $reviewId,
-            KEY_ORDER_NO => $orderNo,
-            KEY_AMOUNT => $amount,
+            KEY_ORDER_ID => $orderId,
             KEY_CREATOR => $creator,
-            KEY_CREATOR_IP => $creatorIP
+            KEY_CHARGE_ID => $chargeId
         );
         $this->db->insert(TABLE_REWARDS, $data);
         $insertId = $this->db->insert_id();
@@ -24,25 +22,11 @@ class RewardDao extends BaseDao
 
     function countRewards($reviewerId)
     {
-        $sql = "SELECT count(*) AS cnt FROM rewards LEFT JOIN reviews ON reviews.reviewId = rewards.reviewId
-                LEFT JOIN orders ON orders.orderId = reviews.orderId WHERE paid=? AND reviewerId=?";
-        $array[] = REWARD_UNPAID;
+        $sql = "SELECT count(*) AS cnt FROM rewards LEFT JOIN orders ON orders.orderId = rewards.orderId
+                LEFT JOIN charges ON charges.chargeId = rewards.chargeId WHERE paid=? AND reviewerId=?";
+        $array[] = CHARGE_PAID;
         $array[] = $reviewerId;
         $result = $this->db->query($sql, $array)->row();
         return $result->cnt;
-    }
-
-    function updateRewardToPaid($orderNo)
-    {
-        $sql = "UPDATE rewards SET paid=1 WHERE orderNo=?";
-        $array[] = $orderNo;
-        return $this->db->query($sql, $array);
-    }
-
-    function getOneByOrderNo($orderNo)
-    {
-        $sql = "select * from rewards where orderNo=?";
-        $array[] = $orderNo;
-        return $this->db->query($sql, $array)->row();
     }
 }

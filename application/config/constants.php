@@ -160,5 +160,9 @@ define('TABLE_REVIEWS', 'reviews');
 define('TABLE_LEARNERS', 'learners');
 define('TABLE_REVIEWERS', 'reviewers');
 
-define('REWARD_UNPAID', 0);
-define('REWARD_PAID', 1);
+define('CHARGE_UNPAID', 0);
+define('CHARGE_PAID', 1);
+
+// charges table
+define('TABLE_CHARGES', 'charges');
+define('KEY_CHARGE_ID', 'chargeId');

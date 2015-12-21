@@ -41,11 +41,11 @@ class Rewards extends BaseController
             $this->failure(ERROR_PARAMETER_ILLEGAL, "there are no orderNo in event");
         } else {
             $orderNo = $event->data->object->order_no;
-            $reward = $this->rewardDao->getOneByOrderNo($orderNo);
-            if ($reward == null) {
-                $this->failure(ERROR_OBJECT_NOT_EXIST, "reward with that orderNo not exists");
+            $charge = $this->chargeDao->getOneByOrderNo($orderNo);
+            if ($charge == null) {
+                $this->failure(ERROR_OBJECT_NOT_EXIST, "charge with that orderNo not exists");
             } else {
-                $this->rewardDao->updateRewardToPaid($orderNo);
+                $this->chargeDao->updateChargeToPaid($orderNo);
                 $this->succeed();
             }
         }
