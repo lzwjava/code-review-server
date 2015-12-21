@@ -93,13 +93,13 @@ class Orders extends BaseController
         }
         $firstReward = false;
         if ($user->id == $order->learnerId && $order->status == ORDER_STATUS_NOT_PAID) {
-            if ($amount < 5000) {
+            if ($amount < LEAST_FIRST_REWARD) {
                 $this->failure(ERROR_AMOUNT_UNIT, '申请者打赏金额至少为 5 元');
                 return;
             }
             $firstReward = true;
         } else {
-            if ($amount < 1000) {
+            if ($amount < LEAST_COMMON_REWARD) {
                 $this->failure(ERROR_AMOUNT_UNIT, '打赏金额至少为 1 元');
                 return;
             }
@@ -124,7 +124,8 @@ class Orders extends BaseController
                 'client_ip' => $ipAddress,
                 'currency' => 'cny',
                 'subject' => '打赏',
-                'body' => "打赏给 $reviewerName 大神"
+                'body' => "打赏给 $reviewerName 大神",
+                'metadata' => array(KEY_ORDER_ID => $order->orderId)
             )
         );
         if ($ch == null || $ch->failure_code != null) {
@@ -136,10 +137,8 @@ class Orders extends BaseController
             return;
         }
 
-        $this->db->trans_start();
         $chargeId = $this->chargeDao->add($orderNo, $amount, $user->id, $ipAddress);
-        $this->rewardDao->add($order->orderId, $user->id, $chargeId);
-        $this->db->trans_complete();
+        //$this->rewardDao->add($order->orderId, $user->id, $chargeId);
 
         $this->output->set_status_header(200);
         $this->output->set_content_type('application/json', 'utf-8');

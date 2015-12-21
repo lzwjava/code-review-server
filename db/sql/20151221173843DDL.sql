@@ -1,1 +1,0 @@
-ALTER TABLE `orders` add column `firstRewardId` INT(11) DEFAULT -1 /

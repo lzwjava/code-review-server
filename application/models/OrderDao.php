@@ -118,11 +118,10 @@ class OrderDao extends BaseDao
 
     }
 
-    function updateOrderToPaid($orderId, $rewardId)
+    function updateOrderToPaid($orderId)
     {
-        $sql = "update orders set status=?,firstRewardId=? where orderId= ?";
+        $sql = "UPDATE orders SET status=? WHERE orderId= ?";
         $array[] = ORDER_STATUS_PAID;
-        $array[] = $rewardId;
         $array[] = $orderId;
         return $this->db->query($sql, $array);
     }

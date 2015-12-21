@@ -39,28 +39,39 @@ class Rewards extends BaseController
             !isset($event->data->object->order_no)
         ) {
             $this->failure(ERROR_PARAMETER_ILLEGAL, "there are no orderNo in event");
-        } else {
-            $orderNo = $event->data->object->order_no;
-            $charge = $this->chargeDao->getOneByOrderNo($orderNo);
-            if ($charge == null) {
-                $this->failure(ERROR_OBJECT_NOT_EXIST, "charge with that orderNo not exists");
+            return;
+        }
+        $object = $event->data->object;
+        $orderNo = $object->order_no;
+        $charge = $this->chargeDao->getOneByOrderNo($orderNo);
+        if ($charge == null) {
+            $this->failure(ERROR_OBJECT_NOT_EXIST, "charge with that orderNo not exists");
+            return;
+        }
+        $metadata = $object->metadata;
+        logInfo("object: ".json_encode($object));
+        if (!isset($metadata->orderId)) {
+            $this->failure(ERROR_PARAMETER_ILLEGAL, "not set orderId in metadata");
+            return;
+        }
+        logInfo("metadata: ".json_encode($metadata));
+        $orderId = $metadata->orderId;
+        $order = $this->orderDao->getOne($orderId);
+        if ($order == null) {
+            $this->failure(ERROR_OBJECT_NOT_EXIST, "order with that orderId not exists");
+            return;
+        }
+        $this->chargeDao->updateChargeToPaid($orderNo);
+        $this->rewardDao->add($order->orderId, $charge->creator, $charge->chargeId);
+        $amount = $object->amount;
+
+        if ($order->status == ORDER_STATUS_NOT_PAID ) {
+            if ($amount < LEAST_FIRST_REWARD) {
+                logInfo('status is not paid but amount less than 5000');
             } else {
-                $reward = $this->rewardDao->getOneByChargeId($charge->chargeId);
-                if ($reward == null) {
-                    $this->failure(ERROR_OBJECT_NOT_EXIST, "reward with that orderNo not exists");
-                } else {
-                    $order = $this->orderDao->getOne($reward->orderId);
-                    if ($order == null) {
-                        $this->failure(ERROR_OBJECT_NOT_EXIST, "order with that orderNo not exists");
-                    } else {
-                        $this->chargeDao->updateChargeToPaid($orderNo);
-                        if ($order->status == ORDER_STATUS_NOT_PAID) {
-                            $this->orderDao->updateOrderToPaid($order->orderId, $reward->rewardId);
-                        }
-                        $this->succeed();
-                    }
-                }
+                $this->orderDao->updateOrderToPaid($order->orderId);
             }
         }
+        $this->succeed();
     }
 }

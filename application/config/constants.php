@@ -167,3 +167,6 @@ define('CHARGE_PAID', 1);
 // charges table
 define('TABLE_CHARGES', 'charges');
 define('KEY_CHARGE_ID', 'chargeId');
+
+define('LEAST_FIRST_REWARD', 5000);
+define('LEAST_COMMON_REWARD', 1000);

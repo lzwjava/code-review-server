@@ -73,6 +73,9 @@ func (c *Client) request(method string, path string, params url.Values) (map[str
 	if len(c.sessionToken) > 0 {
 		req.Header.Set("X-CR-Session", c.sessionToken)
 	}
+
+	fmt.Println("curl", urlStr, params)
+
 	body, doErr := c.do(req)
 	checkErr(doErr)
 	defer body.Close()
@@ -83,28 +86,33 @@ func (c *Client) request(method string, path string, params url.Values) (map[str
 	jsonErr := decoder.Decode(&dat);
 	checkErr(jsonErr)
 
-	fmt.Println("curl", urlStr, params)
 	fmt.Println("response:", dat)
 	fmt.Println()
 
 	return dat, nil
 }
 
-func (c *Client) callWithStr(path string, body string) (string) {
+func (c *Client) callWithStr(path string, body string) map[string]interface{} {
 	urlStr := baseUrl(path)
 	req, err := http.NewRequest("POST", urlStr, strings.NewReader(body))
 	checkErr(err)
 	req.Header.Set("Content-Type", "plain/text")
 	fmt.Println("curl", urlStr, body)
 
-	res, doErr := c.do(req)
+	doBody, doErr := c.do(req)
 	checkErr(doErr)
-	buf := new(bytes.Buffer)
-	buf.ReadFrom(res)
-	s := buf.String()
-	fmt.Println("response:", s)
+	defer doBody.Close()
+
+	var dat map[string]interface{}
+
+	decoder := json.NewDecoder(doBody)
+	jsonErr := decoder.Decode(&dat);
+	checkErr(jsonErr)
+
+	fmt.Println("response:", dat)
 	fmt.Println()
-	return s
+
+	return dat
 }
 
 func (c *Client)resultDataFromRes(res map[string]interface{}, error interface{}) map[string]interface{} {
@@ -155,6 +163,13 @@ func (c *Client) do(req *http.Request) (io.ReadCloser, error) {
 			return nil, e
 		} else {
 			return nil, err
+		}
+	}
+
+	if (strings.Contains(kind, "text/html")) {
+		if b, err := ioutil.ReadAll(res.Body); err == nil {
+			ioutil.WriteFile("error.html", b, 0644);
+			panic("PHP Error, Please see error.html");
 		}
 	}
 
