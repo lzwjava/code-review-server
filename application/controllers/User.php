@@ -113,7 +113,7 @@ class User extends BaseController
         }
     }
 
-    public function delete()
+    private function delete()
     {
         if ($this->checkIfParamsNotExist($_POST, array(KEY_MOBILE_PHONE_NUMBER))) {
             return;

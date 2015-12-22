@@ -118,6 +118,9 @@ class BaseController extends CI_Controller
         if (isset($_GET[KEY_LIMIT])) {
             $limit = (int)$_GET[KEY_LIMIT];
         }
+        if ($limit > 1000) {
+            $limit = 1000;
+        }
         return $limit;
     }
 
