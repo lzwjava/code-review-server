@@ -16,7 +16,6 @@ class Orders extends BaseController
         $user = $this->getSessionUser();
         $skip = $this->getSkip();
         $limit = $this->getLimit();
-        error_log("type: $user->type");
         if ($user->type == TYPE_LEARNER) {
             $orders = $this->orderDao->getOrdersOfLearner($user->id, $skip, $limit);
         } else {
@@ -41,7 +40,6 @@ class Orders extends BaseController
         $gitHubUrl = $_POST[KEY_GITHUB_URL];
         $remark = $_POST[KEY_REMARK];
         $reviewerId = $_POST[KEY_REVIEWER_ID];
-        error_log($reviewerId);
         $reviewer = $this->reviewerDao->getOne($reviewerId);
         if ($reviewer == null) {
             $this->failure(ERROR_OBJECT_NOT_EXIST, "无法找到相应的大神");

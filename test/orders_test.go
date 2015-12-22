@@ -15,9 +15,23 @@ func TestOrders_AddOrder(t *testing.T) {
 	addOrder(c, t)
 }
 
+func TestOrders_View(t *testing.T) {
+	c := NewClient()
+	reviewer, _ := registerUsers(c)
+	reviewerId := reviewer["id"].(string);
+
+	order := c.callData("orders/add", url.Values{"gitHubUrl": {"https://github.com/lzwjava/Reveal-In-GitHub"},
+		"remark": {"麻烦大神了"}, "reviewerId":{reviewerId}});
+
+	orderId := floatToStr(order["orderId"])
+	theOrder := c.getData("orders/view", url.Values{"orderId": {orderId}})
+
+	assert.Equal(t, floatToStr(theOrder["orderId"]), orderId)
+	assert.Equal(t, theOrder["reviewerId"].(string), reviewerId);
+}
+
 func addOrder(c *Client, t *testing.T) (map[string]interface{}, map[string]interface{}, map[string]interface{}) {
-	reviewer := registerReviewer(c)
-	learner := registerLearner(c)
+	reviewer, learner := registerUsers(c)
 
 	reviewerId := reviewer["id"].(string);
 	learnerId := learner["id"].(string);

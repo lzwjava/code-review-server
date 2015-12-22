@@ -11,7 +11,6 @@ import (
 	"net/url"
 	"strings"
 	"reflect"
-	"os"
 )
 
 type Client struct {
@@ -84,14 +83,16 @@ func (c *Client) request(method string, path string, params url.Values) (map[str
 	checkErr(doErr)
 	defer body.Close()
 
+	buf := new(bytes.Buffer)
+	buf.ReadFrom(body)
+	bodyStr := buf.String()
+	fmt.Println("response:", bodyStr)
+	fmt.Println()
+
 	var dat map[string]interface{}
 
-	decoder := json.NewDecoder(body)
-	jsonErr := decoder.Decode(&dat);
+	jsonErr := json.Unmarshal([]byte(bodyStr), &dat)
 	checkErr(jsonErr)
-
-	fmt.Println("response:", dat)
-	fmt.Println()
 
 	return dat, nil
 }

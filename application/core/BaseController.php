@@ -19,8 +19,8 @@ class BaseController extends CI_Controller
             'resultData' => $resultData,
             'resultInfo' => $resultInfo
         );
-        $this->output->set_status_header(200);
-        $this->output->set_content_type('application/json', 'utf-8')
+        $this->output->set_status_header(200)
+            ->set_content_type('application/json', 'utf-8')
             ->set_output(json_encode($arr));
     }
 

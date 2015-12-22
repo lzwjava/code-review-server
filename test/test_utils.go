@@ -41,6 +41,12 @@ func registerReviewer(c *Client) map[string]interface{} {
 	return res
 }
 
+func registerUsers(c *Client) (map[string]interface{}, map[string]interface{} ){
+    reviewer := registerReviewer(c)
+	learner := registerLearner(c)
+	return reviewer, learner
+}
+
 func validReviewer(c *Client, reviewerId string) {
 	c.getData("reviewers/valid", url.Values{"id": {reviewerId}})
 }

@@ -154,12 +154,13 @@ class User extends BaseController
 
     public function self()
     {
-        $login_url = 'Location: /';
         if ($this->checkIfInSession()) {
-            $user = $this->userDao->findUserBySessionToken($_COOKIE[KEY_COOKIE_TOKEN]);
+            $user = $this->userDao->findUserBySessionToken($this->requestToken());
             $this->succeed($user);
         } else {
-            header($login_url);
+            // $login_url = 'Location: /';
+            // header($login_url);
+            $this->failure(ERROR_NOT_IN_SESSION, "当前没有用户登录");
         }
     }
 

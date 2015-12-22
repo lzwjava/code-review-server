@@ -9,7 +9,6 @@ import (
 )
 
 func TestUser_RegisterAndLogin(t *testing.T) {
-	deleteUser("1326163092")
 	c := NewClient()
 	res := c.callData("user/register", url.Values{"mobilePhoneNumber": {"1326163092"},
 		"username": {"lzwjavaTest"}, "smsCode": {"5555"}, "password":{"123456"}, "type": {"0"}})
@@ -29,12 +28,9 @@ func TestUser_RegisterAndLogin(t *testing.T) {
 		"avatarUrl": {avatarUrl}});
 	assert.Equal(t, "lzwjavaTest1", res["username"])
 	assert.Equal(t, avatarUrl, res["avatarUrl"])
-
-	deleteUser("1326163092")
 }
 
 func TestUser_ReviewerRegisterAndLogin(t *testing.T) {
-	deleteUser("13261630924")
 	c := NewClient()
 	res := c.callData("user/register", url.Values{"mobilePhoneNumber": {"13261630924"},
 		"username": {"lzwjavaReviewer"}, "smsCode": {"5555"}, "password":{"123456"}, "type": {"1"}})
@@ -46,6 +42,12 @@ func TestUser_ReviewerRegisterAndLogin(t *testing.T) {
 
 	result, _ := c.call("user/update", url.Values{"experience": {"100"}})
 	assert.Equal(t, toInt(result["resultCode"]), 15)
+}
 
-	deleteUser("13261630924")
+func TestUser_Self(t *testing.T) {
+	c := NewClient()
+	_, learner := registerUsers(c)
+	self := c.getData("user/self", url.Values{})
+	assert.Equal(t, self["id"].(string), learner["id"].(string))
+	assert.Equal(t, self["username"].(string), learner["username"].(string))
 }
