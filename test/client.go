@@ -45,13 +45,17 @@ func (c *Client) getData(path string, params url.Values) (map[string]interface{}
 }
 
 func baseUrl(path string) (string) {
-	prod := os.Getenv("PROD")
 	var urlStr string
-	if prod != "" {
-		urlStr = "http://reviewcode.cn/" + path
-	} else {
-		urlStr = "http://localhost:3005/" + path
-	}
+	urlStr = "http://localhost:3005/" + path
+//
+//	prod := os.Getenv("PROD")
+//
+//	if prod != "" {
+//		urlStr = "http://reviewcode.cn/" + path
+//	} else {
+//
+//	}
+
 	return urlStr
 }
 
