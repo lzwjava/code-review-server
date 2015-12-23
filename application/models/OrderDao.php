@@ -56,6 +56,29 @@ class OrderDao extends BaseDao
         return $orders;
     }
 
+    function getOrdersOfReviewerWithLearner($reviewerId, $learnerId)
+    {
+        $fields = $this->getPublicFields();
+        $sql = "select $fields from orders LEFT JOIN reviews ON orders.orderId = reviews.orderId
+                where orders.reviewerId=? and orders.learnerId = ? ORDER BY orders.updated DESC";
+        $array[] = $reviewerId;
+        $array[] = $learnerId;
+        $orders = $this->db->query($sql, $array)->result();
+        foreach ($orders as $order) {
+            $this->mergeOrderChildren($order);
+        }
+        return $orders;
+    }
+
+    function hasSameOrder($reviewerId, $learnerId, $gitHubUrl)
+    {
+        $sql = "SELECT count(*) AS cnt FROM orders WHERE orders.reviewerId = ?
+                AND orders.learnerId=? AND gitHubUrl=?";
+        $array = array($reviewerId, $learnerId, $gitHubUrl);
+        $result = $this->db->query($sql, $array)->row();
+        return $result->cnt > 0;
+    }
+
     function mergeOrderChildren($order)
     {
         if ($order) {
