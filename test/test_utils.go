@@ -14,27 +14,14 @@ func checkErr(err error) {
 	}
 }
 
-func deleteUser(mobilePhoneNumber string) {
-	c := NewClient()
-	_, err := c.call("user/delete", url.Values{"mobilePhoneNumber": {mobilePhoneNumber}})
-	if err != nil {
-		panic(err)
-	}
-}
-
-func deleteUserByData(data map[string]interface{}) {
-	deleteUser(data["mobilePhoneNumber"].(string))
-}
 
 func registerLearner(c *Client) map[string]interface{} {
-	deleteUser("1326163092")
 	res := c.callData("user/register", url.Values{"mobilePhoneNumber": {"1326163092"},
 		"username": {"lzwjavaTest"}, "smsCode": {"5555"}, "password":{"123456"}, "type": {"0"}})
 	return res
 }
 
 func registerReviewer(c *Client) map[string]interface{} {
-	deleteUser("13261630924")
 	res := c.callData("user/register", url.Values{"mobilePhoneNumber": {"13261630924"},
 		"username": {"lzwjavaReviewer"}, "smsCode": {"5555"}, "password":{"123456"}, "type": {"1"}})
 	validReviewer(c, res["id"].(string))

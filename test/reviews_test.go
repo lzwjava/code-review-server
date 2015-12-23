@@ -21,6 +21,22 @@ func TestReviews_AddReview(t *testing.T) {
 	assert.Equal(t, "代码写得不错！", reviewRes["content"])
 }
 
+func TestReviews_Duplicate(t *testing.T) {
+	c := NewClient()
+	reviewer, _, order := addOrder(c, t)
+
+	c.sessionToken = reviewer["sessionToken"].(string)
+	orderId := floatToStr(order["orderId"])
+	reviewRes := c.callData("reviews/add", url.Values{"orderId": {orderId},
+		"content": {"代码写得不错！"}})
+	assert.NotNil(t, reviewRes["reviewId"])
+
+	reviewRes, err  := c.call("reviews/add", url.Values{"orderId": {orderId},
+		"content": {"代码写得不错！"}})
+	assert.Nil(t, err)
+	assert.Equal(t, 18, toInt(reviewRes["resultCode"]))
+}
+
 func TestReviews_EditReview(t *testing.T) {
 	c := NewClient()
 	reviewer, _, order := addOrder(c, t)

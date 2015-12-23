@@ -29,6 +29,10 @@ class Reviews extends BaseController
             $this->failure(ERROR_NOT_ALLOW_DO_IT, "当前登录的用户不是该 review 指定的大神");
             return;
         }
+        if ($order->reviewId != null) {
+            $this->failure(ERROR_ALREADY_DO_IT, "已经给该Review 申请填写过 Review 了, 请编辑相应的 Review");
+            return;
+        }
         $insertId = $this->reviewDao->add($orderId, $content);
         $this->succeed($this->reviewDao->getOne($insertId));
     }

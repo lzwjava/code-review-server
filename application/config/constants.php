@@ -102,6 +102,7 @@ define('ERROR_PINGPP_CHARGE', 14);
 define('ERROR_PARAMETER_ILLEGAL', 15);
 define('ERROR_AMOUNT_UNIT', 16);
 define('ERROR_INVALID_IP', 17);
+define('ERROR_ALREADY_DO_IT', 18);
 
 define('TYPE_REVIEWER', 1);
 define('TYPE_LEARNER', 0);

@@ -21,11 +21,17 @@ class ReviewDao extends BaseDao
         return $insertId;
     }
 
-    function getOne($reviewId)
+    function getOneByOrderId($orderId) {
+        return $this->getOneFromReviews(KEY_ORDER_ID, $orderId);
+    }
+
+    function getOne($reviewId) {
+        return $this->getOneFromReviews(KEY_REVIEW_ID, $reviewId);
+    }
+
+    function getOneFromReviews($field, $value)
     {
-        $sql = "SELECT * FROM reviews WHERE reviewId=?";
-        $array[] = $reviewId;
-        return $this->db->query($sql, $array)->row();
+        return $this->getOneFromTable(TABLE_REVIEWS, $field, $value);
     }
 
     function updateContent($reviewId, $content)

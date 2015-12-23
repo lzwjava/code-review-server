@@ -86,7 +86,9 @@ func (c *Client) request(method string, path string, params url.Values) (map[str
 	buf := new(bytes.Buffer)
 	buf.ReadFrom(body)
 	bodyStr := buf.String()
+	ioutil.WriteFile("error.html", []byte(bodyStr), 0644);
 	fmt.Println("response:", bodyStr)
+
 	fmt.Println()
 
 	var dat map[string]interface{}
@@ -172,10 +174,7 @@ func (c *Client) do(req *http.Request) (io.ReadCloser, error) {
 	}
 
 	if (strings.Contains(kind, "text/html")) {
-		if b, err := ioutil.ReadAll(res.Body); err == nil {
-			ioutil.WriteFile("error.html", b, 0644);
-			panic("PHP Error, Please see error.html");
-		}
+		panic("PHP Error, Please see error.html");
 	}
 
 	if err := json.NewDecoder(res.Body).Decode(e); err != nil {
