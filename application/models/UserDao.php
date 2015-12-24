@@ -196,4 +196,5 @@ class UserDao extends BaseDao
             unset($user->type);
         }
     }
+
 }

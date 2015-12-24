@@ -18,7 +18,8 @@ class ReviewerDao extends BaseDao
     private function publicFields()
     {
         return $this->mergeFields(array(KEY_ID, KEY_USERNAME,
-            KEY_AVATAR_URL, KEY_CREATED, KEY_INTRODUCTION, KEY_EXPERIENCE));
+            KEY_AVATAR_URL, KEY_CREATED, KEY_INTRODUCTION, KEY_EXPERIENCE,
+            KEY_MAX_ORDERS, KEY_GITHUB_USERNAME));
     }
 
     public function getList($skip = 0, $limit = 100)
@@ -37,6 +38,7 @@ $skip";
     {
         $reviewer->orderCount = $this->orderDao->countFinishOrders($reviewer->id);
         $reviewer->rewardCount = $this->rewardDao->countRewards($reviewer->id);
+        $reviewer->busy = $this->isReviewerBusy($reviewer);
     }
 
     public function getOne($id)
@@ -51,9 +53,14 @@ $skip";
         return $reviewer;
     }
 
-    public function update($id, $data)
+    private function update($id, $data)
     {
 
+    }
+
+    function isReviewerBusy($reviewer) {
+        $todo = $this->orderDao->countPaidOrders($reviewer->id);
+        return $todo >= $reviewer->maxOrders;
     }
 
 }

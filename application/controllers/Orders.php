@@ -49,12 +49,16 @@ class Orders extends BaseController
             $this->failure(ERROR_ALREADY_DO_IT, "已经有相同 GitHub 地址的 Review 请求");
             return;
         }
+        if ($reviewer->busy) {
+            $this->failure(ERROR_EXCEED_MAX_ORDERS, "该大神 Review 申请已满,请稍后再申请");
+            return;
+        }
         $insertId = $this->orderDao->add($gitHubUrl, $remark, $reviewerId, $user->id);
         $order = $this->orderDao->getOne($insertId);
         $this->succeed($order);
     }
 
-    function edit()
+    private function edit()
     {
 
     }

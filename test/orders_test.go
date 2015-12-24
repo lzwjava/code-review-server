@@ -52,3 +52,19 @@ func addOrder(c *Client, t *testing.T) (map[string]interface{}, map[string]inter
 	assert.Nil(t, order["reviewId"])
 	return reviewer, learner, order
 }
+
+func TestOrders_maxOrder(t *testing.T) {
+	cleanTables()
+	c := NewClient()
+	reviewer := registerReviewer(c)
+	res := c.callData("user/update", url.Values{"maxOrders":{"0"}})
+	assert.Equal(t, 0, toInt(res["maxOrders"]))
+
+	registerLearner(c)
+
+	reviewerId := reviewer["id"].(string)
+
+	order := c.call("orders/add", url.Values{"gitHubUrl": {"https://github.com/lzwjava/Reveal-In-GitHub"},
+		"remark": {"麻烦大神了"}, "reviewerId":{reviewerId}})
+	assert.Equal(t, 20, toInt(order["resultCode"]))
+}
