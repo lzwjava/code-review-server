@@ -14,10 +14,10 @@ class BaseController extends CI_Controller
 
     protected function response($resultCode, $resultData = null, $resultInfo = null)
     {
-        if ($resultData == null) {
+        if ($resultData === null) {
             $resultData = new stdClass;
         }
-        if ($resultInfo == null) {
+        if ($resultInfo === null) {
             $resultInfo = new stdClass;
         }
         $arr = array(

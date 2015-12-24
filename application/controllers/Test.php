@@ -48,6 +48,8 @@ class Test extends BaseController
 
         $data['title'] = "Great News!";
         error_log(url_title('Swift is open source now.', 'dash', TRUE));
+
+        echo md5("123456");
         $this->load->view('test', $data);
     }
 }

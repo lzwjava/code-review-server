@@ -16,6 +16,8 @@ func TestOrders_AddOrder(t *testing.T) {
 }
 
 func TestOrders_View(t *testing.T) {
+	cleanTables()
+
 	c := NewClient()
 	reviewer, _ := registerUsers(c)
 	reviewerId := reviewer["id"].(string);
@@ -31,6 +33,7 @@ func TestOrders_View(t *testing.T) {
 }
 
 func addOrder(c *Client, t *testing.T) (map[string]interface{}, map[string]interface{}, map[string]interface{}) {
+	cleanTables()
 	reviewer, learner := registerUsers(c)
 
 	reviewerId := reviewer["id"].(string)

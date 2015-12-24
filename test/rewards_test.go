@@ -18,16 +18,14 @@ func TestOrders_Reward(t *testing.T) {
 	c.sessionToken = learner["sessionToken"].(string)
 	orderId := floatToStr(order["orderId"])
 
-	rewardRes, err := c.call("orders/reward", url.Values{"orderId": {orderId},
+	rewardRes := c.call("orders/reward", url.Values{"orderId": {orderId},
 		"amount": {"1000"}})
-	checkErr(err)
 	assert.NotNil(t, rewardRes)
 	assert.Equal(t, 16, toInt(rewardRes["resultCode"]));
 	assert.Equal(t, "申请者打赏金额至少为 5 元", rewardRes["resultInfo"].(string));
 
-	rewardRes, err = c.call("orders/reward", url.Values{"orderId": {orderId},
+	rewardRes = c.call("orders/reward", url.Values{"orderId": {orderId},
 		"amount": {"5000"}})
-	checkErr(err);
 
 	orderNo := rewardRes["order_no"].(string)
 	callbackRes := c.callWithStr("rewards/callback", testCallbackStr(orderNo, orderId))
@@ -45,10 +43,8 @@ func TestRewards_Count(t *testing.T) {
 }
 
 func reward(c *Client, orderId string, t *testing.T) {
-	rewardRes, err := c.call("orders/reward", url.Values{"orderId": {orderId},
+	rewardRes := c.call("orders/reward", url.Values{"orderId": {orderId},
 		"amount": {"5000"}})
-	checkErr(err);
-
 	orderNo := rewardRes["order_no"].(string)
 	callbackRes := c.callWithStr("rewards/callback", testCallbackStr(orderNo, orderId))
 	assert.Equal(t, toInt(callbackRes["resultCode"]), 0);

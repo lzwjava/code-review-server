@@ -77,6 +77,15 @@ class User extends BaseController
         }
     }
 
+    private function checkIfWrongPasswordFormat($password)
+    {
+        if (strlen($password) != 32) {
+            $this->failure(ERROR_PASSWORD_FORMAT, "密码未加密,不符合规范");
+            return true;
+        }
+        return false;
+    }
+
     public function register()
     {
         if ($this->checkIfParamsNotExist($_POST, array(KEY_USERNAME, KEY_MOBILE_PHONE_NUMBER,
@@ -94,6 +103,8 @@ class User extends BaseController
         } elseif ($this->userDao->checkIfMobilePhoneNumberUsed($mobilePhoneNumber)) {
             $this->failure(ERROR_MOBILE_PHONE_NUMBER_TAKEN, "手机号已被占用");
         } else if ($this->checkSmsCodeWrong($mobilePhoneNumber, $smsCode)) {
+            return;
+        } else if ($this->checkIfWrongPasswordFormat($password)) {
             return;
         } else {
             $defaultAvatarUrl = "http://7xotd0.com1.z0.glb.clouddn.com/android.png";
@@ -138,7 +149,9 @@ class User extends BaseController
         }
         $mobilePhoneNumber = $_POST[KEY_MOBILE_PHONE_NUMBER];
         $password = $_POST[KEY_PASSWORD];
-        if ($this->userDao->checkLogin($mobilePhoneNumber, $password) == false) {
+        if ($this->checkIfWrongPasswordFormat($password)) {
+            return;
+        } else if ($this->userDao->checkLogin($mobilePhoneNumber, $password) == false) {
             $this->failure(ERROR_LOGIN_FAILED, "手机号码不存在或者密码错误");
         } else {
             $this->loginOrRegisterSucceed($mobilePhoneNumber);

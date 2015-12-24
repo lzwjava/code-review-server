@@ -6,10 +6,15 @@ import (
 )
 
 func TestMain(m *testing.M) {
-	tables := []string{"reviewers", "learners", "orders", "rewards", "charges", "reviews"}
+	cleanTables()
+	os.Exit(m.Run())
+}
+
+func cleanTables() {
+	tables := []string{"reviewers", "learners", "orders", "rewards", "charges", "reviews",
+		"orders_tags", "users_tags"}
 	for _, table := range tables {
 		deleteTable(table)
 	}
 	fmt.Println()
-	os.Exit(m.Run())
 }

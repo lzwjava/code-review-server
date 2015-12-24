@@ -9,16 +9,19 @@ import (
 )
 
 func TestUser_RegisterAndLogin(t *testing.T) {
+	cleanTables()
+
 	c := NewClient()
+	md5Str := md5password("123456")
 	res := c.callData("user/register", url.Values{"mobilePhoneNumber": {"1326163092"},
-		"username": {"lzwjavaTest"}, "smsCode": {"5555"}, "password":{"123456"}, "type": {"0"}})
+		"username": {"lzwjavaTest"}, "smsCode": {"5555"}, "password":{md5Str}, "type": {"0"}})
 	assert.Equal(t, "lzwjavaTest", res["username"])
 	assert.NotNil(t, res["id"])
 	assert.NotNil(t, res["created"])
 	assert.Equal(t, toInt(res["type"]), 0)
 
 	res = c.callData("user/login", url.Values{"mobilePhoneNumber": {"1326163092"},
-		"password": {"123456"}});
+		"password": {md5password("123456")}});
 	assert.Equal(t, "lzwjavaTest", res["username"])
 	assert.Equal(t, "1326163092", res["mobilePhoneNumber"])
 
@@ -31,16 +34,18 @@ func TestUser_RegisterAndLogin(t *testing.T) {
 }
 
 func TestUser_ReviewerRegisterAndLogin(t *testing.T) {
+	cleanTables()
+
 	c := NewClient()
 	res := c.callData("user/register", url.Values{"mobilePhoneNumber": {"13261630924"},
-		"username": {"lzwjavaReviewer"}, "smsCode": {"5555"}, "password":{"123456"}, "type": {"1"}})
+		"username": {"lzwjavaReviewer"}, "smsCode": {"5555"}, "password":{md5password("123456")}, "type": {"1"}})
 
 	res = c.callData("user/update", url.Values{"introduction": {"I'm lzwjava"},
 		"experience": {"1"}})
 	assert.Equal(t, "I'm lzwjava", res["introduction"])
 	assert.Equal(t, 1, toInt(res["experience"]))
 
-	result, _ := c.call("user/update", url.Values{"experience": {"100"}})
+	result := c.call("user/update", url.Values{"experience": {"100"}})
 	assert.Equal(t, toInt(result["resultCode"]), 15)
 }
 

@@ -31,9 +31,8 @@ func TestReviews_Duplicate(t *testing.T) {
 		"content": {"代码写得不错！"}})
 	assert.NotNil(t, reviewRes["reviewId"])
 
-	reviewRes, err  := c.call("reviews/add", url.Values{"orderId": {orderId},
+	reviewRes = c.call("reviews/add", url.Values{"orderId": {orderId},
 		"content": {"代码写得不错！"}})
-	assert.Nil(t, err)
 	assert.Equal(t, 18, toInt(reviewRes["resultCode"]))
 }
 

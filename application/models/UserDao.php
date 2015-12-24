@@ -31,7 +31,7 @@ class UserDao extends BaseDao
         $data = array(
             KEY_ID => $this->genId(),
             KEY_USERNAME => $username,
-            KEY_PASSWORD => md5($password),
+            KEY_PASSWORD => sha1($password),
             KEY_MOBILE_PHONE_NUMBER => $mobilePhoneNumber,
             KEY_AVATAR_URL => $avatarUrl,
             KEY_SESSION_TOKEN => $this->genSessionToken()
@@ -69,7 +69,7 @@ class UserDao extends BaseDao
     {
         $sql = "SELECT * FROM users WHERE mobilePhoneNumber=? AND password=?";
         $array[] = $mobilePhoneNumber;
-        $array[] = md5($password);
+        $array[] = sha1($password);
         return $this->db->query($sql, $array)->num_rows() == 1;
     }
 

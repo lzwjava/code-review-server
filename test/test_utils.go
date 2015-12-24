@@ -6,6 +6,7 @@ import (
 	"net/url"
 	"database/sql"
 	"strconv"
+	"crypto/md5"
 )
 
 func checkErr(err error) {
@@ -16,22 +17,43 @@ func checkErr(err error) {
 
 
 func registerLearner(c *Client) map[string]interface{} {
-	res := c.callData("user/register", url.Values{"mobilePhoneNumber": {"1326163092"},
-		"username": {"lzwjavaTest"}, "smsCode": {"5555"}, "password":{"123456"}, "type": {"0"}})
-	return res
+	res := c.call("user/register", url.Values{"mobilePhoneNumber": {"1326163092"},
+		"username": {"lzwjavaTest"}, "smsCode": {"5555"}, "password":{md5password("123456")}, "type": {"0"}})
+	if (toInt(res["resultCode"]) == 0) {
+		registerRes := res["resultData"].(map[string]interface{})
+		c.sessionToken = registerRes["sessionToken"].(string)
+		return registerRes
+	} else {
+		loginRes := c.callData("user/login", url.Values{"mobilePhoneNumber": {"1326163092"},
+			"password":{md5password("123456")}});
+		return loginRes
+	}
 }
 
 func registerReviewer(c *Client) map[string]interface{} {
-	res := c.callData("user/register", url.Values{"mobilePhoneNumber": {"13261630924"},
-		"username": {"lzwjavaReviewer"}, "smsCode": {"5555"}, "password":{"123456"}, "type": {"1"}})
-	validReviewer(c, res["id"].(string))
-	return res
+	res := c.call("user/register", url.Values{"mobilePhoneNumber": {"13261630924"},
+		"username": {"lzwjavaReviewer"}, "smsCode": {"5555"}, "password":{md5password("123456")}, "type": {"1"}})
+	if (toInt(res["resultCode"]) == 0) {
+		registerRes := res["resultData"].(map[string]interface{})
+		c.sessionToken = registerRes["sessionToken"].(string)
+		validReviewer(c, registerRes["id"].(string))
+		return registerRes
+	} else {
+		loginRes := c.callData("user/login", url.Values{"mobilePhoneNumber": {"13261630924"},
+			"password":{md5password("123456")}});
+		return loginRes
+	}
 }
 
-func registerUsers(c *Client) (map[string]interface{}, map[string]interface{} ){
-    reviewer := registerReviewer(c)
+func registerUsers(c *Client) (map[string]interface{}, map[string]interface{}) {
+	reviewer := registerReviewer(c)
 	learner := registerLearner(c)
 	return reviewer, learner
+}
+
+func md5password(password string) string {
+	data := []byte(password)
+	return fmt.Sprintf("%x", md5.Sum(data))
 }
 
 func validReviewer(c *Client, reviewerId string) {

@@ -30,22 +30,22 @@ func unused() {
 	reflect.TypeOf("string")
 }
 
-func (c *Client) call(path string, params url.Values) (map[string]interface{}, error) {
+func (c *Client) call(path string, params url.Values) (map[string]interface{}) {
 	return c.request("POST", path, params)
 }
 
-func (c *Client) get(path string, params url.Values) (map[string]interface{}, error) {
+func (c *Client) get(path string, params url.Values) (map[string]interface{}) {
 	return c.request("GET", path, params)
 }
 
 func (c *Client) getData(path string, params url.Values) (map[string]interface{}) {
-	var res, err = c.get(path, params)
-	return c.resultDataFromRes(res, err).(map[string]interface{})
+	var res = c.get(path, params)
+	return c.resultDataFromRes(res).(map[string]interface{})
 }
 
 func (c *Client) getArrayData(path string, params url.Values) ([]interface{}) {
-	var res, err = c.get(path, params)
-	return c.resultDataFromRes(res, err).([]interface{})
+	var res = c.get(path, params)
+	return c.resultDataFromRes(res).([]interface{})
 }
 
 func baseUrl(path string) (string) {
@@ -63,18 +63,15 @@ func baseUrl(path string) (string) {
 	return urlStr
 }
 
-func (c *Client) request(method string, path string, params url.Values) (map[string]interface{}, error) {
+func (c *Client) request(method string, path string, params url.Values) (map[string]interface{}) {
 	urlStr := baseUrl(path)
 	paramStr := bytes.NewBufferString(params.Encode())
 
 	req, err := http.NewRequest(method, urlStr, paramStr)
-
 	if (method == "GET") {
 		req, err = http.NewRequest(method, fmt.Sprintf("%s?%s", urlStr, paramStr), nil)
 	}
-	if err != nil {
-		return nil, err
-	}
+	checkErr(err)
 	if (method == "POST") {
 		req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
 	}
@@ -101,7 +98,7 @@ func (c *Client) request(method string, path string, params url.Values) (map[str
 	jsonErr := json.Unmarshal([]byte(bodyStr), &dat)
 	checkErr(jsonErr)
 
-	return dat, nil
+	return dat
 }
 
 func (c *Client) callWithStr(path string, body string) map[string]interface{} {
@@ -127,10 +124,7 @@ func (c *Client) callWithStr(path string, body string) map[string]interface{} {
 	return dat
 }
 
-func (c *Client)resultDataFromRes(res map[string]interface{}, error interface{}) interface{} {
-	if error != nil {
-		panic(error)
-	}
+func (c *Client)resultDataFromRes(res map[string]interface{}) interface{} {
 	if (toInt(res["resultCode"]) != 0) {
 		panic("resultCode is not 0")
 	}
@@ -149,13 +143,13 @@ func (c *Client)resultDataFromRes(res map[string]interface{}, error interface{})
 }
 
 func (c *Client) callData(path string, params url.Values) (map[string]interface{}) {
-	res, err := c.call(path, params)
-	return c.resultDataFromRes(res, err).(map[string]interface{})
+	res := c.call(path, params)
+	return c.resultDataFromRes(res).(map[string]interface{})
 }
 
 func (c *Client) callArrayData(path string, params url.Values) ([]interface{}) {
-	res, err := c.call(path, params)
-	return c.resultDataFromRes(res, err).([]interface{})
+	res := c.call(path, params)
+	return c.resultDataFromRes(res).([]interface{})
 }
 
 // perform the request.
