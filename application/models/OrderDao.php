@@ -138,7 +138,7 @@ class OrderDao extends BaseDao
 
     function update($id, $data)
     {
-
+        
     }
 
     function updateOrderToPaid($orderId)

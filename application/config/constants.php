@@ -161,6 +161,9 @@ define('TABLE_ORDERS', 'orders');
 define('TABLE_REVIEWS', 'reviews');
 define('TABLE_LEARNERS', 'learners');
 define('TABLE_REVIEWERS', 'reviewers');
+define('TABLE_TAGS', 'tags');
+define('TABLE_USERS_TAGS', 'users_tags');
+define('TABLE_ORDERS_TAGS', 'orders_tags');
 
 define('CHARGE_UNPAID', 0);
 define('CHARGE_PAID', 1);
@@ -171,3 +174,14 @@ define('KEY_CHARGE_ID', 'chargeId');
 
 define('LEAST_FIRST_REWARD', 5000);
 define('LEAST_COMMON_REWARD', 1000);
+
+define('KEY_OP', 'op');
+define('KEY_OP_ADD', 'add');
+define('KEY_OP_REMOVE', 'remove');
+
+// tags table
+define('KEY_TAG_NAME', 'tagName');
+define('KEY_TAG_ID', 'tagId');
+define('KEY_COLOR', 'color');
+
+define('KEY_USER_ID', 'userId');

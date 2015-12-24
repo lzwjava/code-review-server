@@ -77,19 +77,19 @@ class UserDao extends BaseDao
     {
         $user = $this->findRawUser($filed, $value);
         if ($user) {
-            $this->cleanUser($user);
+            $this->mergeTags($user);
+            $this->cleanUserFieldsForAll($user);
         }
         return $user;
     }
 
-    function findPublicUser($field, $value) {
+    function findPublicUser($field, $value)
+    {
         $user = $this->findRawUser($field, $value);
         if ($user) {
-            $this->cleanUser($user);
-            unset($user->sessionToken);
-            unset($user->mobilePhoneNumber);
-            unset($user->created);
-            unset($user->type);
+            $this->mergeTags($user);
+            $this->cleanUserFieldsForAll($user);
+            $this->cleanUserFieldsForPrivacy($user);
         }
         return $user;
     }
@@ -109,9 +109,14 @@ class UserDao extends BaseDao
         $array[] = $user->id;
         $user = $this->db->query($sql, $array)->row();
         if ($user) {
-            $this->cleanUser($user);
+            $this->cleanUserFieldsForAll($user);
         }
         return $user;
+    }
+
+    function mergeTags($user)
+    {
+        $user->tags = $this->tagDao->getUserTags($user->id);
     }
 
     function findUserById($id)
@@ -163,7 +168,7 @@ class UserDao extends BaseDao
         } else {
             $actualUser = $user;
         }
-        $this->cleanUser($actualUser);
+        $this->cleanUserFieldsForAll($actualUser);
         return $actualUser;
     }
 
@@ -178,9 +183,21 @@ class UserDao extends BaseDao
         }
     }
 
-    function cleanUser($user)
+    function cleanUserFieldsForAll($user)
     {
-        unset($user->sessionTokenCreated);
-        unset($user->password);
+        if ($user) {
+            unset($user->sessionTokenCreated);
+            unset($user->password);
+        }
+    }
+
+    function cleanUserFieldsForPrivacy($user)
+    {
+        if ($user) {
+            unset($user->sessionToken);
+            unset($user->mobilePhoneNumber);
+            unset($user->created);
+            unset($user->type);
+        }
     }
 }

@@ -40,20 +40,25 @@ func (c *Client) get(path string, params url.Values) (map[string]interface{}, er
 
 func (c *Client) getData(path string, params url.Values) (map[string]interface{}) {
 	var res, err = c.get(path, params)
-	return c.resultDataFromRes(res, err)
+	return c.resultDataFromRes(res, err).(map[string]interface{})
+}
+
+func (c *Client) getArrayData(path string, params url.Values) ([]interface{}) {
+	var res, err = c.get(path, params)
+	return c.resultDataFromRes(res, err).([]interface{})
 }
 
 func baseUrl(path string) (string) {
 	var urlStr string
 	urlStr = "http://localhost:3005/" + path
-//
-//	prod := os.Getenv("PROD")
-//
-//	if prod != "" {
-//		urlStr = "http://reviewcode.cn/" + path
-//	} else {
-//
-//	}
+	//
+	//	prod := os.Getenv("PROD")
+	//
+	//	if prod != "" {
+	//		urlStr = "http://reviewcode.cn/" + path
+	//	} else {
+	//
+	//	}
 
 	return urlStr
 }
@@ -122,20 +127,22 @@ func (c *Client) callWithStr(path string, body string) map[string]interface{} {
 	return dat
 }
 
-func (c *Client)resultDataFromRes(res map[string]interface{}, error interface{}) map[string]interface{} {
+func (c *Client)resultDataFromRes(res map[string]interface{}, error interface{}) interface{} {
 	if error != nil {
 		panic(error)
 	}
 	if (toInt(res["resultCode"]) != 0) {
 		panic("resultCode is not 0")
 	}
-	var data map[string]interface{}
+	var data interface{}
 	if (res["resultData"] != nil) {
-		data = res["resultData"].(map[string]interface{})
+		data = res["resultData"].(interface{})
 	}
 
-	if sessionToken, ok := data["sessionToken"].(string); ok {
-		c.sessionToken = sessionToken
+	if mapData, isMap := data.(map[string]interface{}); isMap {
+		if sessionToken, ok := mapData["sessionToken"].(string); ok {
+			c.sessionToken = sessionToken
+		}
 	}
 
 	return data
@@ -143,7 +150,12 @@ func (c *Client)resultDataFromRes(res map[string]interface{}, error interface{})
 
 func (c *Client) callData(path string, params url.Values) (map[string]interface{}) {
 	res, err := c.call(path, params)
-	return c.resultDataFromRes(res, err)
+	return c.resultDataFromRes(res, err).(map[string]interface{})
+}
+
+func (c *Client) callArrayData(path string, params url.Values) ([]interface{}) {
+	res, err := c.call(path, params)
+	return c.resultDataFromRes(res, err).([]interface{})
 }
 
 // perform the request.

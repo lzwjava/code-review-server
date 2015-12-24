@@ -229,8 +229,26 @@ class User extends BaseController
         $this->succeed($user);
     }
 
-    public function view()
+    public function tag()
     {
-
+        if ($this->checkIfParamsNotExist($_POST, array(KEY_OP, KEY_TAG_ID))) {
+            return;
+        }
+        $op = $_POST[KEY_OP];
+        $tagId = $_POST[KEY_TAG_ID];
+        if ($this->checkIfNotInSessionAndResponse()) {
+            return;
+        }
+        $user = $this->getSessionUser();
+        if ($op != KEY_OP_ADD && $op != KEY_OP_REMOVE) {
+            $this->failure(ERROR_PARAMETER_ILLEGAL, "无效的操作");
+        } else {
+            if ($op == KEY_OP_ADD) {
+                $this->tagDao->addUserTag($user->id, $tagId);
+            } else {
+                $this->tagDao->removeUserTag($user->id, $tagId);
+            }
+            $this->succeed($this->tagDao->getUserTags($user->id));
+        }
     }
 }
