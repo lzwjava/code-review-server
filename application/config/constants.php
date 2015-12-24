@@ -129,6 +129,10 @@ define('KEY_SMS_CODE', 'smsCode');
 
 define('KEY_INTRODUCTION', 'introduction');
 define('KEY_EXPERIENCE', 'experience');
+define('KEY_COMPANY', 'company');
+define('KEY_JOB_TITLE', 'jobTitle');
+define('KEY_GITHUB_USERNAME', 'gitHubUsername');
+define('KEY_MAX_ORDERS', 'maxOrders');
 
 // orders table
 define('KEY_ORDER_ID', 'orderId');

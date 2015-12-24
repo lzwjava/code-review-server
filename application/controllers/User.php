@@ -198,7 +198,8 @@ class User extends BaseController
     public function update()
     {
         if ($this->checkIfNotAtLeastOneParam($_POST, array(KEY_AVATAR_URL, KEY_USERNAME,
-            KEY_INTRODUCTION, KEY_EXPERIENCE))
+            KEY_INTRODUCTION, KEY_EXPERIENCE, KEY_GITHUB_USERNAME, KEY_JOB_TITLE, KEY_COMPANY,
+            KEY_MAX_ORDERS))
         ) {
             return;
         }
@@ -206,27 +207,19 @@ class User extends BaseController
             return;
         }
         $user = $this->getSessionUser();
+        $data = array();
         if (isset($_POST[KEY_USERNAME])) {
             $username = $_POST[KEY_USERNAME];
             if ($this->checkIfUsernameUsedAndReponse($username)) {
                 return;
-            } else {
-                $this->userDao->updateUser($user, array(
-                    KEY_USERNAME => $username
-                ));
             }
+            $data[KEY_USERNAME] = $username;
         }
         if (isset($_POST[KEY_AVATAR_URL])) {
-            $avatarUrl = $_POST[KEY_AVATAR_URL];
-            $this->userDao->updateUser($user, array(
-                KEY_AVATAR_URL => $avatarUrl
-            ));
+            $data[KEY_AVATAR_URL] = $_POST[KEY_AVATAR_URL];
         }
         if (isset($_POST[KEY_INTRODUCTION])) {
-            $intro = $_POST[KEY_INTRODUCTION];
-            $this->userDao->updateUser($user, array(
-                KEY_INTRODUCTION => $intro
-            ));
+            $data[KEY_INTRODUCTION] = $_POST[KEY_INTRODUCTION];
         }
         if (isset($_POST[KEY_EXPERIENCE])) {
             $experience = $_POST[KEY_EXPERIENCE];
@@ -234,10 +227,21 @@ class User extends BaseController
                 $this->failure(ERROR_PARAMETER_ILLEGAL, '工作经验年限应在 0~30 年');
                 return;
             }
-            $this->userDao->updateUser($user, array(
-                KEY_EXPERIENCE => $experience
-            ));
+            $data[KEY_EXPERIENCE] = $experience;
         }
+        if (isset($_POST[KEY_GITHUB_USERNAME])) {
+            $data[KEY_GITHUB_USERNAME] = $_POST[KEY_GITHUB_USERNAME];
+        }
+        if (isset($_POST[KEY_JOB_TITLE])) {
+            $data[KEY_JOB_TITLE] = $_POST[KEY_JOB_TITLE];
+        }
+        if (isset($_POST[KEY_COMPANY])) {
+            $data[KEY_COMPANY] = $_POST[KEY_COMPANY];
+        }
+        if (isset($_POST[KEY_MAX_ORDERS])) {
+            $data[KEY_MAX_ORDERS] = $_POST[KEY_MAX_ORDERS];
+        }
+        $this->userDao->updateUser($user, $data);
         $user = $this->userDao->findActualUser($user);
         $this->succeed($user);
     }

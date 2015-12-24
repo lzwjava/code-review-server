@@ -24,13 +24,31 @@ func TestUser_RegisterAndLogin(t *testing.T) {
 		"password": {md5password("123456")}});
 	assert.Equal(t, "lzwjavaTest", res["username"])
 	assert.Equal(t, "1326163092", res["mobilePhoneNumber"])
+}
 
+func TestUser_Update(t *testing.T) {
+	c := NewClient()
+	registerLearner(c)
 	avatarUrl := "http://7xotd0.com1.z0.glb.clouddn.com/header_logo.png"
 
-	res = c.callData("user/update", url.Values{"username": {"lzwjavaTest1"},
-		"avatarUrl": {avatarUrl}});
+	res := c.callData("user/update", url.Values{"username": {"lzwjavaTest1"},
+		"avatarUrl": {avatarUrl}, "company":{"LeanCloud"},
+		"jobTitle": {"iOS工程师"}, "gitHubUsername": {"lzwjava"}, "introduction": {"一只 iOS 菜鸟"}})
+
 	assert.Equal(t, "lzwjavaTest1", res["username"])
 	assert.Equal(t, avatarUrl, res["avatarUrl"])
+	assert.Equal(t, "LeanCloud", res["company"])
+	assert.Equal(t, "iOS工程师", res["jobTitle"])
+	assert.Equal(t, "lzwjava", res["gitHubUsername"])
+	assert.Equal(t, "一只 iOS 菜鸟", res["introduction"])
+}
+
+func TestUser_ReviewerUpdate(t *testing.T) {
+	c := NewClient()
+	registerReviewer(c)
+
+	res := c.callData("user/update", url.Values{"maxOrders":{"7"}})
+	assert.Equal(t, 7, toInt(res["maxOrders"]));
 }
 
 func TestUser_ReviewerRegisterAndLogin(t *testing.T) {

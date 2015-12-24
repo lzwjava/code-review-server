@@ -29,7 +29,7 @@ CREATE TABLE `users_tags` (
 DROP TABLE IF EXISTS `orders_tags` /
 CREATE TABLE `orders_tags` (
   `id`      INT(11) UNSIGNED NOT NULL AUTO_INCREMENT,
-  `orderId` INT(11)      NOT NULL,
+  `orderId` INT(11)          NOT NULL,
   `tagId`   INT(11) UNSIGNED NOT NULL,
 
   PRIMARY KEY (`id`),
@@ -46,5 +46,46 @@ CREATE TABLE `orders_tags` (
   DEFAULT CHARSET utf8 /
 
 DELETE FROM `tags` /
-INSERT INTO `tags` (`tagName`) VALUES ("图像"), ("动画"), ("IM 通信"),("音视频"), ("支付"),
-("测试发布"), ("AutoLayout"), ("iOS 底层"), ("地图"),("主流 SDK 使用"), ("UI") /
+INSERT INTO `tags` (`tagName`) VALUES ("图像"), ("动画"), ("IM 通信"), ("音视频"), ("支付"),
+("测试发布"), ("AutoLayout"), ("iOS 底层"), ("地图"), ("主流 SDK 使用"), ("UI") /
+
+ALTER TABLE `learners` ADD COLUMN `introduction` VARCHAR(511) /
+
+ALTER TABLE `reviewers` ADD COLUMN `company` VARCHAR(127),
+ADD COLUMN `jobTitle` VARCHAR(127), ADD COLUMN `gitHubUsername` VARCHAR(127) /
+
+ALTER TABLE `learners` ADD COLUMN `company` VARCHAR(127),
+ADD COLUMN `jobTitle` VARCHAR(127), ADD COLUMN `gitHubUsername` VARCHAR(127) /
+
+ALTER VIEW `users` AS SELECT
+                        `id`,
+                        `username`,
+                        `mobilePhoneNumber`,
+                        `avatarUrl`,
+                        `sessionToken`,
+                        `sessionTokenCreated`,
+                        `password`,
+                        `created`,
+                        `type`,
+                        `introduction`,
+                        `company`,
+                        `jobTitle`,
+                        `gitHubUsername`
+                      FROM `learners`
+                      UNION SELECT
+                              `id`,
+                              `username`,
+                              `mobilePhoneNumber`,
+                              `avatarUrl`,
+                              `sessionToken`,
+                              `sessionTokenCreated`,
+                              `password`,
+                              `created`,
+                              `type`,
+                              `introduction`,
+                              `company`,
+                              `jobTitle`,
+                              `gitHubUsername`
+                            FROM `reviewers`  /
+
+ALTER TABLE `reviewers` ADD COLUMN `maxOrders` INT UNSIGNED DEFAULT 8 /

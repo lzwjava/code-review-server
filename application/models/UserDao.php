@@ -172,15 +172,11 @@ class UserDao extends BaseDao
         return $actualUser;
     }
 
-    function updateUser($user, $info)
+    function updateUser($user, $data)
     {
         $tableName = $this->tableNameByType($user->type);
-        foreach ($info as $key => $value) {
-            $sql = "update $tableName set $key=? where id=?";
-            $array[] = $value;
-            $array[] = $user->id;
-            $this->db->query($sql, $array);
-        }
+        $this->db->where(KEY_ID, $user->id);
+        $this->db->update($tableName, $data);
     }
 
     function cleanUserFieldsForAll($user)
