@@ -23,13 +23,6 @@ class OrderDao extends BaseDao
             dbField(TABLE_REVIEWS, KEY_REVIEW_ID)));
     }
 
-    private function mergeReview($order)
-    {
-        if ($order->reviewId) {
-            $order->review = $this->reviewDao->getOne($order->reviewId);
-        }
-    }
-
     function getOrdersOfLearner($learnerId, $skip = 0, $limit = 100)
     {
         $fields = $this->getPublicFields();
@@ -84,7 +77,10 @@ class OrderDao extends BaseDao
         if ($order) {
             $order->learner = $this->userDao->findPublicUser(KEY_ID, $order->learnerId);
             $order->reviewer = $this->userDao->findPublicUser(KEY_ID, $order->reviewerId);
-            $this->mergeReview($order);
+            if ($order->reviewId) {
+                $order->review = $this->reviewDao->getOne($order->reviewId);
+            }
+            $order->tags = $this->tagDao->getOrderTags($order->orderId);
         }
     }
 
@@ -138,7 +134,7 @@ class OrderDao extends BaseDao
 
     function update($id, $data)
     {
-        
+
     }
 
     function updateOrderToPaid($orderId)

@@ -68,10 +68,20 @@ class TagDao extends BaseDao
 
     function getUserTags($userId)
     {
-        $sql = "SELECT tags.* FROM users_tags JOIN tags USING (tagId) WHERE userId=?";
-        $array[] = $userId;
+        return $this->getUsersOrOrdersTags(TABLE_USERS_TAGS, KEY_USER_ID, $userId);
+    }
+
+    private function getUsersOrOrdersTags($tableName, $fieldName, $fieldValue)
+    {
+        $sql = "SELECT tags.* FROM $tableName JOIN tags USING (tagId) WHERE $fieldName=?";
+        $array[] = $fieldValue;
         $tags = $this->db->query($sql, $array)->result();
         $this->mergeTagsColor($tags);
         return $tags;
+    }
+
+    function getOrderTags($orderId)
+    {
+        return $this->getUsersOrOrdersTags(TABLE_ORDERS_TAGS, KEY_ORDER_ID, $orderId);
     }
 }

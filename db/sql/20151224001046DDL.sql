@@ -29,7 +29,7 @@ CREATE TABLE `users_tags` (
 DROP TABLE IF EXISTS `orders_tags` /
 CREATE TABLE `orders_tags` (
   `id`      INT(11) UNSIGNED NOT NULL AUTO_INCREMENT,
-  `orderId` VARCHAR(31)      NOT NULL,
+  `orderId` INT(11)      NOT NULL,
   `tagId`   INT(11) UNSIGNED NOT NULL,
 
   PRIMARY KEY (`id`),
@@ -37,6 +37,9 @@ CREATE TABLE `orders_tags` (
 
   FOREIGN KEY (`tagId`)
   REFERENCES `tags` (`tagId`)
+    ON DELETE CASCADE,
+  FOREIGN KEY (`orderId`)
+  REFERENCES `orders` (`orderId`)
     ON DELETE CASCADE
 )
   ENGINE InnoDB

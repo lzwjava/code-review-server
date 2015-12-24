@@ -153,4 +153,23 @@ class Orders extends BaseController
         return getToken(16);
     }
 
+    public function tag()
+    {
+        if ($this->checkIfParamsNotExist($_POST, array(KEY_OP, KEY_TAG_ID, KEY_ORDER_ID))) {
+            return;
+        }
+        $op = $_POST[KEY_OP];
+        $tagId = $_POST[KEY_TAG_ID];
+        $orderId = $_POST[KEY_ORDER_ID];
+        if ($op != KEY_OP_ADD && $op != KEY_OP_REMOVE) {
+            $this->failure(ERROR_PARAMETER_ILLEGAL, "无效的操作");
+        } else {
+            if ($op == KEY_OP_ADD) {
+                $this->tagDao->addOrderTag($orderId, $tagId);
+            } else {
+                $this->tagDao->removeOrderTag($orderId, $tagId);
+            }
+            $this->succeed($this->tagDao->getOrderTags($orderId));
+        }
+    }
 }

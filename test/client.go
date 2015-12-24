@@ -167,8 +167,6 @@ func (c *Client) do(req *http.Request) (io.ReadCloser, error) {
 		return res.Body, err
 	}
 
-	defer res.Body.Close()
-
 	e := &Error{
 		Status:     http.StatusText(res.StatusCode),
 		StatusCode: res.StatusCode,
@@ -183,15 +181,20 @@ func (c *Client) do(req *http.Request) (io.ReadCloser, error) {
 		} else {
 			return nil, err
 		}
+		res.Body.Close()
 	}
 
 	if (strings.Contains(kind, "text/html")) {
-		panic("PHP Error, Please see error.html");
+
+		fmt.Println("PHP Error, Please see error.html");
+		return res.Body, nil
 	}
 
 	if err := json.NewDecoder(res.Body).Decode(e); err != nil {
 		return nil, err
 	}
+
+	res.Body.Close()
 
 	return nil, e
 }
