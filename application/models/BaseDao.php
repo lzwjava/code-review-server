@@ -30,9 +30,9 @@ class BaseDao extends CI_Model
         return $filedStr;
     }
 
-    protected function getOneFromTable($table, $field, $value)
+    protected function getOneFromTable($table, $field, $value, $fields = "*")
     {
-        $sql = "SELECT * FROM $table WHERE $field=?";
+        $sql = "SELECT $fields FROM $table WHERE $field=?";
         $array = $value;
         $result = $this->db->query($sql, $array)->row();
         return $result;

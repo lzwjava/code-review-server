@@ -56,6 +56,17 @@ class BaseController extends CI_Controller
         return false;
     }
 
+    protected function checkIfNotAtLeastOneParam($request, $params)
+    {
+        foreach ($params as $param) {
+            if (isset($request[$param])) {
+                return false;
+            }
+        }
+        $this->failure(ERROR_AT_LEAST_ONE_UPDATE, "请至少提供一个可以修改的信息");
+        return true;
+    }
+
     protected function checkIfObjectNotExists($object)
     {
         if ($object == null) {

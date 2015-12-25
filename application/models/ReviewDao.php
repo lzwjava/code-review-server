@@ -8,10 +8,24 @@
  */
 class ReviewDao extends BaseDao
 {
-    function add($orderId, $content)
+
+    private function getPublicFields()
+    {
+        return $this->mergeFields(array(
+            KEY_REVIEW_ID,
+            KEY_ORDER_ID,
+            KEY_TITLE,
+            KEY_CONTENT,
+            KEY_CREATED,
+            KEY_UPDATED
+        ));
+    }
+
+    function add($orderId, $title, $content)
     {
         $data = array(
             KEY_ORDER_ID => $orderId,
+            KEY_TITLE => $title,
             KEY_CONTENT => $content
         );
         $this->db->trans_start();
@@ -21,24 +35,19 @@ class ReviewDao extends BaseDao
         return $insertId;
     }
 
-    function getOneByOrderId($orderId) {
+    function getOneByOrderId($orderId)
+    {
         return $this->getOneFromReviews(KEY_ORDER_ID, $orderId);
     }
 
-    function getOne($reviewId) {
+    function getOne($reviewId)
+    {
         return $this->getOneFromReviews(KEY_REVIEW_ID, $reviewId);
     }
 
     function getOneFromReviews($field, $value)
     {
-        return $this->getOneFromTable(TABLE_REVIEWS, $field, $value);
-    }
-
-    function updateContent($reviewId, $content)
-    {
-        $this->update($reviewId, array(
-            KEY_CONTENT => $content
-        ));
+        return $this->getOneFromTable(TABLE_REVIEWS, $field, $value, $this->getPublicFields());
     }
 
     function update($reviewId, $data)

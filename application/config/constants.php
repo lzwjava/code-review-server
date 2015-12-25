@@ -149,6 +149,7 @@ define('KEY_UPDATED', 'updated');
 
 // reviews table
 define('KEY_REVIEW_ID', 'reviewId');
+define('KEY_TITLE', 'title');
 define('KEY_CONTENT', 'content');
 
 // rewards rable

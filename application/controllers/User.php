@@ -184,17 +184,6 @@ class User extends BaseController
         $this->succeed();
     }
 
-    private function checkIfNotAtLeastOneParam($request, $params)
-    {
-        foreach ($params as $param) {
-            if (isset($request[$param])) {
-                return false;
-            }
-        }
-        $this->failure(ERROR_AT_LEAST_ONE_UPDATE, "请至少提供一个可以修改的信息");
-        return true;
-    }
-
     public function update()
     {
         if ($this->checkIfNotAtLeastOneParam($_POST, array(KEY_AVATAR_URL, KEY_USERNAME,

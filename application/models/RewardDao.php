@@ -8,6 +8,18 @@
  */
 class RewardDao extends BaseDao
 {
+
+    function getPublicFields()
+    {
+        return $this->mergeFields(array(
+            KEY_REWARD_ID,
+            KEY_CREATOR,
+            KEY_CREATED,
+            KEY_UPDATED,
+            KEY_CHARGE_ID
+        ));
+    }
+
     function add($orderId, $creator, $chargeId)
     {
         $data = array(
@@ -31,12 +43,12 @@ class RewardDao extends BaseDao
 
     function getOne($field, $value)
     {
-        return $this->getOneFromTable('rewards', $field, $value);
+        return $this->getOneFromTable(TABLE_REWARDS, $field, $value, $this->getPublicFields());
     }
 
     function getOneByChargeId($chargeId)
     {
-        return $this->getOne('chargeId', $chargeId);
+        return $this->getOne(KEY_CHARGE_ID, $chargeId);
     }
 
 }

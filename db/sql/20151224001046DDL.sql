@@ -92,3 +92,5 @@ ALTER TABLE `reviewers` ADD COLUMN `maxOrders` INT UNSIGNED DEFAULT 8 /
 
 ALTER TABLE `orders` ADD COLUMN `codeLines` INT UNSIGNED NOT NULL
 AFTER `reviewerId` /
+
+ALTER TABLE `reviews` ADD COLUMN `title` VARCHAR(255) NOT NULL AFTER `orderId` /
