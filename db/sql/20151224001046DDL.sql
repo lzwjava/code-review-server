@@ -1,6 +1,8 @@
 SET FOREIGN_KEY_CHECKS = 1 /
 
+SET FOREIGN_KEY_CHECKS = 0  /
 DROP TABLE IF EXISTS `tags` /
+SET FOREIGN_KEY_CHECKS = 1  /
 CREATE TABLE `tags` (
   `tagId`   INT(11) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tagName` VARCHAR(127)     NOT NULL,
@@ -46,8 +48,8 @@ CREATE TABLE `orders_tags` (
   DEFAULT CHARSET utf8 /
 
 DELETE FROM `tags` /
-INSERT INTO `tags` (`tagName`) VALUES ("图像"), ("动画"), ("IM 通信"), ("音视频"), ("支付"),
-("测试发布"), ("AutoLayout"), ("iOS 底层"), ("地图"), ("主流 SDK 使用"), ("UI") /
+
+# INSERT INTO `tags` (`tagName`) VALUES ("图像"), ("动画"), ("IM 通信"), ("音视频"), ("支付"),("测试发布"), ("AutoLayout"), ("iOS 底层"), ("地图"), ("主流 SDK 使用"), ("UI")
 
 ALTER TABLE `learners` ADD COLUMN `introduction` VARCHAR(511) /
 
