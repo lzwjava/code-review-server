@@ -16,6 +16,7 @@ class OrderDao extends BaseDao
             KEY_GITHUB_URL,
             KEY_LEARNER_ID,
             KEY_REVIEWER_ID,
+            KEY_CODE_LINES,
             KEY_STATUS,
             KEY_REMARK,
             dbField(TABLE_ORDERS, KEY_CREATED),
@@ -125,13 +126,14 @@ class OrderDao extends BaseDao
         return $order;
     }
 
-    function add($gitHubUrl, $remark, $reviewerId, $learnerId)
+    function add($gitHubUrl, $remark, $reviewerId, $learnerId, $codeLines)
     {
         $data = array(
             KEY_GITHUB_URL => $gitHubUrl,
             KEY_REMARK => $remark,
             KEY_REVIEWER_ID => $reviewerId,
-            KEY_LEARNER_ID => $learnerId
+            KEY_LEARNER_ID => $learnerId,
+            KEY_CODE_LINES => $codeLines
         );
         $this->db->trans_start();
         $this->db->insert(TABLE_ORDERS, $data);

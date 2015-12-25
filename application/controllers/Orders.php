@@ -26,9 +26,15 @@ class Orders extends BaseController
 
     function add()
     {
-        if ($this->checkIfParamsNotExist($_POST, array(KEY_GITHUB_URL, KEY_REMARK, KEY_REVIEWER_ID))) {
+        if ($this->checkIfParamsNotExist($_POST, array(KEY_GITHUB_URL, KEY_REMARK,
+            KEY_REVIEWER_ID, KEY_CODE_LINES))) {
             return;
         }
+        $gitHubUrl = $_POST[KEY_GITHUB_URL];
+        $remark = $_POST[KEY_REMARK];
+        $reviewerId = $_POST[KEY_REVIEWER_ID];
+        $codeLines = $_POST[KEY_CODE_LINES];
+
         if ($this->checkIfNotInSessionAndResponse()) {
             return;
         }
@@ -37,9 +43,6 @@ class Orders extends BaseController
             $this->failure(ERROR_ONLY_LEARNER_CAN_ORDER, "仅是新手才能提交 Review 请求");
             return;
         }
-        $gitHubUrl = $_POST[KEY_GITHUB_URL];
-        $remark = $_POST[KEY_REMARK];
-        $reviewerId = $_POST[KEY_REVIEWER_ID];
         $reviewer = $this->reviewerDao->getOne($reviewerId);
         if ($reviewer == null) {
             $this->failure(ERROR_OBJECT_NOT_EXIST, "无法找到相应的大神");
@@ -53,7 +56,11 @@ class Orders extends BaseController
             $this->failure(ERROR_EXCEED_MAX_ORDERS, "该大神 Review 申请已满,请稍后再申请");
             return;
         }
-        $insertId = $this->orderDao->add($gitHubUrl, $remark, $reviewerId, $user->id);
+        if ($codeLines <= 0) {
+            $this->failure(ERROR_CODE_LINES_INVALID, "codeLines 必须大于 0");
+            return;
+        }
+        $insertId = $this->orderDao->add($gitHubUrl, $remark, $reviewerId, $user->id, $codeLines);
         $order = $this->orderDao->getOne($insertId);
         $this->succeed($order);
     }

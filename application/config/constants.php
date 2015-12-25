@@ -105,6 +105,7 @@ define('ERROR_INVALID_IP', 17);
 define('ERROR_ALREADY_DO_IT', 18);
 define('ERROR_PASSWORD_FORMAT', 19);
 define('ERROR_EXCEED_MAX_ORDERS', 20);
+define('ERROR_CODE_LINES_INVALID', 21);
 
 define('TYPE_REVIEWER', 1);
 define('TYPE_LEARNER', 0);
@@ -140,6 +141,7 @@ define('KEY_ORDER_ID', 'orderId');
 define('KEY_GITHUB_URL', 'gitHubUrl');
 define('KEY_LEARNER_ID', 'learnerId');
 define('KEY_REVIEWER_ID', 'reviewerId');
+define('KEY_CODE_LINES', 'codeLines');
 define('KEY_REMARK', 'remark');
 define('KEY_STATUS', 'status');
 define('KEY_CREATED', 'created');

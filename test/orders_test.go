@@ -23,7 +23,7 @@ func TestOrders_View(t *testing.T) {
 	reviewerId := reviewer["id"].(string);
 
 	order := c.callData("orders/add", url.Values{"gitHubUrl": {"https://github.com/lzwjava/Reveal-In-GitHub"},
-		"remark": {"麻烦大神了"}, "reviewerId":{reviewerId}});
+		"remark": {"麻烦大神了"}, "reviewerId":{reviewerId}, "codeLines":{"3500"}});
 
 	orderId := floatToStr(order["orderId"])
 	theOrder := c.getData("orders/view", url.Values{"orderId": {orderId}})
@@ -40,7 +40,7 @@ func addOrder(c *Client, t *testing.T) (map[string]interface{}, map[string]inter
 	learnerId := learner["id"].(string)
 
 	order := c.callData("orders/add", url.Values{"gitHubUrl": {"https://github.com/lzwjava/Reveal-In-GitHub"},
-		"remark": {"麻烦大神了"}, "reviewerId":{reviewerId}})
+		"remark": {"麻烦大神了"}, "reviewerId":{reviewerId}, "codeLines":{"3000"}})
 	assert.Equal(t, "https://github.com/lzwjava/Reveal-In-GitHub", order["gitHubUrl"])
 	assert.Equal(t, "麻烦大神了", order["remark"].(string))
 	assert.Equal(t, reviewerId, order["reviewerId"])
@@ -50,6 +50,7 @@ func addOrder(c *Client, t *testing.T) (map[string]interface{}, map[string]inter
 	assert.NotNil(t, order["updated"])
 	assert.NotNil(t, order["orderId"])
 	assert.Nil(t, order["reviewId"])
+	assert.Equal(t, 3000, toInt(order["codeLines"]))
 	return reviewer, learner, order
 }
 
@@ -65,6 +66,6 @@ func TestOrders_maxOrder(t *testing.T) {
 	reviewerId := reviewer["id"].(string)
 
 	order := c.call("orders/add", url.Values{"gitHubUrl": {"https://github.com/lzwjava/Reveal-In-GitHub"},
-		"remark": {"麻烦大神了"}, "reviewerId":{reviewerId}})
+		"remark": {"麻烦大神了"}, "reviewerId":{reviewerId}, "codeLines":{"1000"}})
 	assert.Equal(t, 20, toInt(order["resultCode"]))
 }

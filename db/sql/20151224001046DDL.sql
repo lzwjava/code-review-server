@@ -89,3 +89,6 @@ ALTER VIEW `users` AS SELECT
                             FROM `reviewers`  /
 
 ALTER TABLE `reviewers` ADD COLUMN `maxOrders` INT UNSIGNED DEFAULT 8 /
+
+ALTER TABLE `orders` ADD COLUMN `codeLines` INT UNSIGNED NOT NULL
+AFTER `reviewerId` /
