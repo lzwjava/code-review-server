@@ -6,6 +6,7 @@ import (
 	_ "fmt"
 	_ "reflect"
 	"net/url"
+	"time"
 )
 
 func TestUser_RegisterAndLogin(t *testing.T) {
@@ -18,6 +19,7 @@ func TestUser_RegisterAndLogin(t *testing.T) {
 	assert.Equal(t, "lzwjavaTest", res["username"])
 	assert.NotNil(t, res["id"])
 	assert.NotNil(t, res["created"])
+	assert.NotNil(t, res["updated"]);
 	assert.Equal(t, toInt(res["type"]), 0)
 
 	res = c.callData("user/login", url.Values{"mobilePhoneNumber": {"1326163092"},
@@ -28,8 +30,11 @@ func TestUser_RegisterAndLogin(t *testing.T) {
 
 func TestUser_Update(t *testing.T) {
 	c := NewClient()
-	registerLearner(c)
+	learner := registerLearner(c)
+	updated := learner["updated"].(string)
 	avatarUrl := "http://7xotd0.com1.z0.glb.clouddn.com/header_logo.png"
+
+	time.Sleep(1000 * time.Millisecond)
 
 	res := c.callData("user/update", url.Values{"username": {"lzwjavaTest1"},
 		"avatarUrl": {avatarUrl}, "company":{"LeanCloud"},
@@ -41,6 +46,7 @@ func TestUser_Update(t *testing.T) {
 	assert.Equal(t, "iOS工程师", res["jobTitle"])
 	assert.Equal(t, "lzwjava", res["gitHubUsername"])
 	assert.Equal(t, "一只 iOS 菜鸟", res["introduction"])
+	assert.NotEqual(t, updated, res["updated"].(string))
 }
 
 func TestUser_ReviewerUpdate(t *testing.T) {
