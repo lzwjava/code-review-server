@@ -50,3 +50,8 @@ ALTER VIEW `users` AS SELECT
                               `jobTitle`,
                               `gitHubUsername`
                             FROM `reviewers`  /
+
+ALTER TABLE `reviews` ADD CONSTRAINT `reviews_fk_1` FOREIGN KEY (`orderId`) REFERENCES `orders` (`orderId`) /
+
+ALTER TABLE `rewards` ADD CONSTRAINT `rewards_fk_1` FOREIGN KEY (`chargeId`) REFERENCES `charges` (`chargeId`),
+ADD CONSTRAINT `rewards_fk_2` FOREIGN KEY (`orderId`) REFERENCES `orders` (`orderId`) /

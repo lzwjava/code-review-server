@@ -11,8 +11,8 @@ func TestMain(m *testing.M) {
 }
 
 func cleanTables() {
-	tables := []string{"reviewers", "learners", "orders", "rewards", "charges", "reviews",
-		"orders_tags", "users_tags"}
+	tables := []string{"rewards", "reviews", "orders", "charges",
+		"orders_tags", "users_tags", "reviewers", "learners"}
 	for _, table := range tables {
 		deleteTable(table)
 	}
