@@ -83,15 +83,17 @@ class UserDao extends BaseDao
         return $user;
     }
 
+    function getPublicFields()
+    {
+        return $this->mergeFields(array(KEY_ID, KEY_AVATAR_URL, KEY_USERNAME));
+    }
+
     function findPublicUser($field, $value)
     {
-        $user = $this->findRawUser($field, $value);
-        if ($user) {
-            $this->mergeTags($user);
-            $this->cleanUserFieldsForAll($user);
-            $this->cleanUserFieldsForPrivacy($user);
-        }
-        return $user;
+        $fields = $this->getPublicFields();
+        $sql = "select $fields from users where $field=?";
+        $array[] = $value;
+        return $this->db->query($sql, $array)->row();
     }
 
     function findRawUser($filed, $value)

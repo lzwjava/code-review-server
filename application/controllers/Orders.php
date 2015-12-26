@@ -13,13 +13,17 @@ class Orders extends BaseController
         if ($this->checkIfNotInSessionAndResponse()) {
             return;
         }
+        if ($this->checkIfParamsNotExist($_GET, array(KEY_STATUS))) {
+            return;
+        }
+        $status = $_GET[KEY_STATUS];
         $user = $this->getSessionUser();
         $skip = $this->getSkip();
         $limit = $this->getLimit();
         if ($user->type == TYPE_LEARNER) {
-            $orders = $this->orderDao->getOrdersOfLearner($user->id, $skip, $limit);
+            $orders = $this->orderDao->getOrdersOfLearner($user->id, $status, $skip, $limit);
         } else {
-            $orders = $this->orderDao->getOrdersOfReviewer($user->id, $skip, $limit);
+            $orders = $this->orderDao->getOrdersOfReviewer($user->id, $status, $skip, $limit);
         }
         $this->succeed($orders);
     }
@@ -27,7 +31,8 @@ class Orders extends BaseController
     function add()
     {
         if ($this->checkIfParamsNotExist($_POST, array(KEY_GITHUB_URL, KEY_REMARK,
-            KEY_REVIEWER_ID, KEY_CODE_LINES))) {
+            KEY_REVIEWER_ID, KEY_CODE_LINES))
+        ) {
             return;
         }
         $gitHubUrl = $_POST[KEY_GITHUB_URL];

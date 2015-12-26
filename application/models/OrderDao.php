@@ -12,55 +12,49 @@ class OrderDao extends BaseDao
     function getPublicFields()
     {
         return $this->mergeFields(array(
-            dbField(TABLE_ORDERS, KEY_ORDER_ID),
+            KEY_ORDER_ID,
             KEY_GITHUB_URL,
             KEY_LEARNER_ID,
             KEY_REVIEWER_ID,
             KEY_CODE_LINES,
             KEY_STATUS,
             KEY_REMARK,
-            dbField(TABLE_ORDERS, KEY_CREATED),
-            dbField(TABLE_ORDERS, KEY_UPDATED),
-            dbField(TABLE_REVIEWS, KEY_REVIEW_ID)));
+            KEY_CREATED,
+            KEY_UPDATED));
     }
 
-    function getOrdersOfLearner($learnerId, $skip = 0, $limit = 100)
+
+    function getOrdersByField($field, $value, $status, $skip, $limit)
     {
         $fields = $this->getPublicFields();
-        $sql = "SELECT $fields FROM orders LEFT JOIN reviews ON orders.orderId = reviews.orderId
-          WHERE orders.learnerId = ? ORDER BY orders.updated DESC limit $limit offset $skip";
-        $array[] = $learnerId;
+        $sql = "SELECT $fields FROM orders WHERE $field = ? and status=?
+                ORDER BY updated DESC limit $limit  offset $skip";
+        $array[] = $value;
+        $array[] = $status;
         $orders = $this->db->query($sql, $array)->result();
-        foreach ($orders as $order) {
-            $this->mergeOrderChildren($order);
-        }
+        $this->mergeChildrenOfOrders($orders);
         return $orders;
     }
 
-    function getOrdersOfReviewer($reviewerId, $skip = 0, $limit = 100)
+    function getOrdersOfLearner($learnerId, $status, $skip = 0, $limit = 100)
     {
-        $fields = $this->getPublicFields();
-        $sql = "SELECT $fields FROM orders LEFT JOIN reviews ON orders.orderId = reviews.orderId
-           WHERE orders.reviewerId = ? ORDER BY orders.updated DESC limit $limit offset $skip";
-        $array[] = $reviewerId;
-        $orders = $this->db->query($sql, $array)->result();
-        foreach ($orders as $order) {
-            $this->mergeOrderChildren($order);
-        }
-        return $orders;
+        return $this->getOrdersByField(KEY_LEARNER_ID, $learnerId, $status, $skip, $limit);
+    }
+
+
+    function getOrdersOfReviewer($reviewerId, $status, $skip = 0, $limit = 100)
+    {
+        $this->getOrdersByField(KEY_REVIEWER_ID, $reviewerId, $status, $skip, $limit);
     }
 
     function getOrdersOfReviewerWithLearner($reviewerId, $learnerId)
     {
         $fields = $this->getPublicFields();
-        $sql = "select $fields from orders LEFT JOIN reviews ON orders.orderId = reviews.orderId
-                where orders.reviewerId=? and orders.learnerId = ? ORDER BY orders.updated DESC";
+        $sql = "select $fields from orders where reviewerId=? and learnerId = ? ORDER BY orders.updated DESC";
         $array[] = $reviewerId;
         $array[] = $learnerId;
         $orders = $this->db->query($sql, $array)->result();
-        foreach ($orders as $order) {
-            $this->mergeOrderChildren($order);
-        }
+        $this->mergeChildrenOfOrders($orders);
         return $orders;
     }
 
@@ -73,19 +67,18 @@ class OrderDao extends BaseDao
         return $result->cnt > 0;
     }
 
-    function mergeOrderChildren($order)
+    function mergeChildrenOfOrders($orders)
     {
-        if ($order) {
+        foreach ($orders as $order) {
             $order->learner = $this->userDao->findPublicUser(KEY_ID, $order->learnerId);
             $order->reviewer = $this->userDao->findPublicUser(KEY_ID, $order->reviewerId);
-            if ($order->reviewId) {
-                $order->review = $this->reviewDao->getOne($order->reviewId);
-            }
+            $order->review = $this->reviewDao->getOneByOrderId($order->orderId);
             $order->tags = $this->tagDao->getOrderTags($order->orderId);
         }
     }
 
-    private function countOrders($reviewerId, $status) {
+    private function countOrders($reviewerId, $status)
+    {
         $sql = "SELECT count(*) AS cnt FROM orders WHERE status=? AND reviewerId=?";
         $array[] = $status;
         $array[] = $reviewerId;
@@ -98,30 +91,19 @@ class OrderDao extends BaseDao
         return $this->countOrders($reviewerId, ORDER_STATUS_FINISHED);
     }
 
-    function countPaidOrders($reviewerId) {
+    function countPaidOrders($reviewerId)
+    {
         return $this->countOrders($reviewerId, ORDER_STATUS_PAID);
     }
 
     function getOne($orderId)
     {
         $fields = $this->getPublicFields();
-        $sql = "SELECT $fields FROM orders LEFT JOIN reviews ON orders.orderId = reviews.orderId WHERE orders.orderId = ?";
+        $sql = "SELECT $fields FROM orders WHERE orders.orderId = ?";
         $array[] = $orderId;
         $order = $this->db->query($sql, $array)->row();
         if ($order) {
-            $this->mergeOrderChildren($order);
-        }
-        return $order;
-    }
-
-    function getOneByReviewId($reviewId)
-    {
-        $fields = $this->getPublicFields();
-        $sql = "SELECT $fields FROM orders LEFT JOIN reviews ON orders.orderId = reviews.orderId WHERE reviews.reviewId = ?";
-        $array[] = $reviewId;
-        $order = $this->db->query($sql, $array)->row();
-        if ($order) {
-            $this->mergeOrderChildren($order);
+            $this->mergeChildrenOfOrders(array($order));
         }
         return $order;
     }

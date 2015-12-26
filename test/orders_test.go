@@ -15,6 +15,13 @@ func TestOrders_AddOrder(t *testing.T) {
 	addOrder(c, t)
 }
 
+func TestOrders_All(t *testing.T) {
+	c := NewClient()
+	addOrder(c, t)
+	res := c.getArrayData("orders", url.Values{"status":{"0"}});
+	assert.Equal(t, 1, len(res))
+}
+
 func TestOrders_View(t *testing.T) {
 	cleanTables()
 
