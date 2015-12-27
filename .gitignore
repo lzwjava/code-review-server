@@ -29,3 +29,4 @@ test/.idea
 
 fabfile.pyc
 vendor
+composer.lock

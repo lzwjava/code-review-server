@@ -1,6 +1,7 @@
 {
     "require": {
         "qiniu/php-sdk": "^7.0",
-        "pingplusplus/pingpp-php": "dev-master"
+        "pingplusplus/pingpp-php": "dev-master",
+        "predis/predis": "1.0.3"
     }
 }

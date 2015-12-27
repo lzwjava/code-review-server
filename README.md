@@ -2,4 +2,4 @@
 
 Deploy: fab -H root@reviewcode.cn deploy
 
-Install dependencies: composer.phar install
+Install dependencies: composer install, composer update
