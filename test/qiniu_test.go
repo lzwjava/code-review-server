@@ -7,7 +7,7 @@ import (
 
 func TestToken(t *testing.T) {
 	c := NewClient()
-	res := c.getData("qiniu/token", url.Values{})
-	assert.NotNil(t, res["token"])
+	res := c.get("qiniu/token", url.Values{})
+	assert.NotNil(t, res["uptoken"]);
 	assert.Equal(t, "http://7xotd0.com1.z0.glb.clouddn.com", res["bucketUrl"].(string))
 }

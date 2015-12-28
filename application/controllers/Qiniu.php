@@ -14,20 +14,25 @@ if (!defined('BASEPATH'))
 
 class Qiniu extends BaseController
 {
-    public function token()
-    {
+
+    private function getUpToken() {
         $bucket = 'codereview';
         $accessKey = '-ON85H3cEMUaCuj8UFpLELeEunEAqslrqYqLbn9g';
         $secretKey = 'X-oHOYDinDEhNk5nr74O1rKDvkmPq0ZQwEZfFt6x';
         $auth = new Auth($accessKey, $secretKey);
 
         $upToken = $auth->uploadToken($bucket);
-        $bucketUrl = "http://7xotd0.com1.z0.glb.clouddn.com";
+        return $upToken;
+    }
 
+    public function token()
+    {
+        $upToken = $this->getUpToken();
+        $bucketUrl = "http://7xotd0.com1.z0.glb.clouddn.com";
         $result = array(
-            "token" => $upToken,
+            "uptoken" => $upToken,
             "bucketUrl" => $bucketUrl
         );
-        $this->succeed($result);
+        $this->responseJSON($result);
     }
 }

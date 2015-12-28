@@ -25,9 +25,13 @@ class BaseController extends CI_Controller
             'resultData' => $resultData,
             'resultInfo' => $resultInfo
         );
+        $this->responseJSON($arr);
+    }
+
+    protected function responseJSON($obj) {
         $this->output->set_status_header(200)
             ->set_content_type('application/json', 'utf-8')
-            ->set_output(json_encode($arr));
+            ->set_output(json_encode($obj));
     }
 
     protected function succeed($resultData = null)
