@@ -33,6 +33,6 @@ class Qiniu extends BaseController
             "uptoken" => $upToken,
             "bucketUrl" => $bucketUrl
         );
-        $this->responseJSON($result);
+        $this->succeed($result);
     }
 }
