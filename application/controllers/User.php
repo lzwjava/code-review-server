@@ -199,8 +199,10 @@ class User extends BaseController
         $data = array();
         if (isset($_POST[KEY_USERNAME])) {
             $username = $_POST[KEY_USERNAME];
-            if ($this->checkIfUsernameUsedAndReponse($username)) {
-                return;
+            if ($username != $user->username) {
+                if ($this->checkIfUsernameUsedAndReponse($username)) {
+                    return;
+                }
             }
             $data[KEY_USERNAME] = $username;
         }

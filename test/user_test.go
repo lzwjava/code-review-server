@@ -47,6 +47,10 @@ func TestUser_Update(t *testing.T) {
 	assert.Equal(t, "lzwjava", res["gitHubUsername"])
 	assert.Equal(t, "一只 iOS 菜鸟", res["introduction"])
 	assert.NotEqual(t, updated, res["updated"].(string))
+
+	// Same username
+	res = c.callData("user/update", url.Values{"username": {"lzwjavaTest1"}});
+	assert.Equal(t, "lzwjavaTest1", res["username"]);
 }
 
 func TestUser_ReviewerUpdate(t *testing.T) {
