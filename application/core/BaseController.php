@@ -12,18 +12,18 @@ class BaseController extends CI_Controller
         \Pingpp\Pingpp::setApiKey('sk_test_9Giz1SPG8mD4OW94OSTmPGyL');
     }
 
-    protected function response($resultCode, $resultData = null, $resultInfo = null)
+    protected function response($code, $result = null, $error = null)
     {
-        if ($resultData === null) {
-            $resultData = new stdClass;
+        if ($result === null) {
+            $result = new stdClass;
         }
-        if ($resultInfo === null) {
-            $resultInfo = new stdClass;
+        if ($error === null) {
+            $error = "";
         }
         $arr = array(
-            'resultCode' => $resultCode,
-            'resultData' => $resultData,
-            'resultInfo' => $resultInfo
+            'code' => $code,
+            'result' => $result,
+            'error' => $error
         );
         $this->responseJSON($arr);
     }

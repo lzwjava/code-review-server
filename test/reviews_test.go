@@ -34,7 +34,7 @@ func TestReviews_Duplicate(t *testing.T) {
 
 	reviewRes = c.call("reviews/add", url.Values{"orderId": {orderId},
 		"content": {"代码写得不错！"}, "title":{"标题"}})
-	assert.Equal(t, 18, toInt(reviewRes["resultCode"]))
+	assert.Equal(t, 18, toInt(reviewRes["code"]))
 }
 
 func TestReviews_EditReview(t *testing.T) {

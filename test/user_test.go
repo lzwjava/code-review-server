@@ -74,7 +74,7 @@ func TestUser_ReviewerRegisterAndLogin(t *testing.T) {
 	assert.Equal(t, 1, toInt(res["experience"]))
 
 	result := c.call("user/update", url.Values{"experience": {"100"}})
-	assert.Equal(t, toInt(result["resultCode"]), 15)
+	assert.Equal(t, toInt(result["code"]), 15)
 }
 
 func TestUser_Self(t *testing.T) {

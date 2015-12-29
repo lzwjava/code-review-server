@@ -74,5 +74,5 @@ func TestOrders_maxOrder(t *testing.T) {
 
 	order := c.call("orders/add", url.Values{"gitHubUrl": {"https://github.com/lzwjava/Reveal-In-GitHub"},
 		"remark": {"麻烦大神了"}, "reviewerId":{reviewerId}, "codeLines":{"1000"}})
-	assert.Equal(t, 20, toInt(order["resultCode"]))
+	assert.Equal(t, 20, toInt(order["code"]))
 }
