@@ -125,10 +125,13 @@ func TestTags_AddUserTag(t *testing.T) {
 	assert.Equal(t, 1, len(tags))
 
 	learner := c.callData("user/self", url.Values{})
-	fmt.Println(learner)
+	assert.Equal(t, 1, len(learner["tags"].([]interface{})))
 
 	tags = c.callArrayData("user/tag", url.Values{"op":{"remove"}, "tagId":{fmt.Sprintf("%d", tag.TagId)}})
 	assert.Equal(t, 0, len(tags))
+
+	learner = c.callData("user/self", url.Values{})
+	assert.NotNil(t, learner["tags"].([]interface{}));
 }
 
 type Order struct {

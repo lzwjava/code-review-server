@@ -39,6 +39,7 @@ $skip";
         $reviewer->orderCount = $this->orderDao->countFinishOrders($reviewer->id);
         $reviewer->rewardCount = $this->rewardDao->countRewards($reviewer->id);
         $reviewer->busy = $this->isReviewerBusy($reviewer);
+        $this->userDao->mergeTags($reviewer);
     }
 
     public function getOne($id)

@@ -135,6 +135,7 @@ define('KEY_COMPANY', 'company');
 define('KEY_JOB_TITLE', 'jobTitle');
 define('KEY_GITHUB_USERNAME', 'gitHubUsername');
 define('KEY_MAX_ORDERS', 'maxOrders');
+define('KEY_TAGS', 'tags');
 
 // orders table
 define('KEY_ORDER_ID', 'orderId');
