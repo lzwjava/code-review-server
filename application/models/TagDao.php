@@ -6,15 +6,11 @@
  * Date: 15/12/24
  * Time: 下午2:39
  */
+
+require_once(APPPATH . 'helpers/ColorConvert.php');
+
 class TagDao extends BaseDao
 {
-    function stringToColorCode($str)
-    {
-        $code = dechex(crc32($str));
-        $code = substr($code, 0, 6);
-        return $code;
-    }
-
     function getList()
     {
         $sql = "SELECT * FROM tags";
@@ -25,8 +21,9 @@ class TagDao extends BaseDao
 
     function mergeTagsColor($tags)
     {
+        $convert = new ColorConvert();
         foreach ($tags as $tag) {
-            $tag->color = $this->stringToColorCode($tag->tagName);
+            $tag->color = $convert->stringToColorCode($tag->tagName);
         }
     }
 
