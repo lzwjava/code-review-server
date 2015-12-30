@@ -45,13 +45,14 @@ class OrderDao extends BaseDao
 
     function getOrdersOfLearner($learnerId, $status = null, $skip = 0, $limit = 100)
     {
-        return $this->getOrdersByField(KEY_LEARNER_ID, $learnerId, $status, $skip, $limit);
+        $orders = $this->getOrdersByField(KEY_LEARNER_ID, $learnerId, $status, $skip, $limit);
+        return $orders;
     }
-
 
     function getOrdersOfReviewer($reviewerId, $status = null, $skip = 0, $limit = 100)
     {
-        $this->getOrdersByField(KEY_REVIEWER_ID, $reviewerId, $status, $skip, $limit);
+        $orders = $this->getOrdersByField(KEY_REVIEWER_ID, $reviewerId, $status, $skip, $limit);
+        return $orders;
     }
 
     function getOrdersOfReviewerWithLearner($reviewerId, $learnerId)
