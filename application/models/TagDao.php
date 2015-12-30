@@ -11,6 +11,13 @@ require_once(APPPATH . 'helpers/ColorConvert.php');
 
 class TagDao extends BaseDao
 {
+
+    function insertDefaultTags()
+    {
+        $tags = array("图像", "动画", "IM 通信", "音视频", "支付", "测试发布", "AutoLayout",
+            "iOS 底层", "地图", "主流 SDK 使用", "UI");
+    }
+
     function getList()
     {
         $sql = "SELECT * FROM tags";

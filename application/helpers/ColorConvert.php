@@ -25,8 +25,8 @@ class ColorConvert
         $brightness = $this->hexToDecimal($brightness);
 
         $hue = round(($hue / 255.0) * 360);
-        $saturation = $saturation % 50 + 50;
-        $brightness = $brightness % 50 + 50;
+        $saturation = $saturation % 100;
+        $brightness = $brightness % 20 + 80;
         $rgb = $this->hsb2rgb($hue, $saturation, $brightness);
         return $rgb;
     }

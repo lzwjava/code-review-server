@@ -5,7 +5,7 @@ from fabric.contrib.project import rsync_project
 from fabric.contrib.files import exists, sed
 
 server_dir = '/home/project/code-review-server'
-tmp_dir = '/tmp/code-review-server' + str(os.getpid())
+tmp_dir = '/tmp/code-review-server' + str(os.getpid()) + '/'
 
 def _set_user_dir():
 	global server_dir
@@ -14,7 +14,7 @@ def _set_user_dir():
 
 def _prepare_local_website(install='true'):
 	local('mkdir -p %s' % tmp_dir)
-	local('cp -rv * %s' % tmp_dir)
+	local('cp -rv application vendor system index.php %s' % tmp_dir)
 
 def prepare_remote_dirs():
 	_set_user_dir()
@@ -29,4 +29,4 @@ def host_type():
 def deploy(install='false'):
 	_prepare_local_website(install)
 	prepare_remote_dirs()
-	rsync_project(local_dir=tmp_dir + '/',remote_dir=server_dir,delete=True)
+	rsync_project(local_dir=tmp_dir,remote_dir=server_dir,delete=True)

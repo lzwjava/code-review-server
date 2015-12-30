@@ -49,8 +49,6 @@ CREATE TABLE `orders_tags` (
 
 DELETE FROM `tags` /
 
-# INSERT INTO `tags` (`tagName`) VALUES ("图像"), ("动画"), ("IM 通信"), ("音视频"), ("支付"),("测试发布"), ("AutoLayout"), ("iOS 底层"), ("地图"), ("主流 SDK 使用"), ("UI")
-
 ALTER TABLE `learners` ADD COLUMN `introduction` VARCHAR(511) /
 
 ALTER TABLE `reviewers` ADD COLUMN `company` VARCHAR(127),
