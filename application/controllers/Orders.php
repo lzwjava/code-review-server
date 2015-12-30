@@ -13,10 +13,10 @@ class Orders extends BaseController
         if ($this->checkIfNotInSessionAndResponse()) {
             return;
         }
-        if ($this->checkIfParamsNotExist($_GET, array(KEY_STATUS))) {
-            return;
+        $status = null;
+        if (isset($_GET[KEY_STATUS])) {
+            $status = $_GET[KEY_STATUS];
         }
-        $status = $_GET[KEY_STATUS];
         $user = $this->getSessionUser();
         $skip = $this->getSkip();
         $limit = $this->getLimit();

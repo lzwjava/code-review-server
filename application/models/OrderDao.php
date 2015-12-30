@@ -24,25 +24,32 @@ class OrderDao extends BaseDao
     }
 
 
-    function getOrdersByField($field, $value, $status, $skip, $limit)
+    function getOrdersByField($field, $value, $status = null, $skip, $limit)
     {
         $fields = $this->getPublicFields();
-        $sql = "SELECT $fields FROM orders WHERE $field = ? and status=?
+        if ($status === null) {
+            $statusSql = '';
+        } else {
+            $statusSql = ' AND status = ? ';
+        }
+        $sql = "SELECT $fields FROM orders WHERE $field = ? $statusSql
                 ORDER BY updated DESC limit $limit  offset $skip";
         $array[] = $value;
-        $array[] = $status;
+        if ($status !== null) {
+            $array[] = $status;
+        }
         $orders = $this->db->query($sql, $array)->result();
         $this->mergeChildrenOfOrders($orders);
         return $orders;
     }
 
-    function getOrdersOfLearner($learnerId, $status, $skip = 0, $limit = 100)
+    function getOrdersOfLearner($learnerId, $status = null, $skip = 0, $limit = 100)
     {
         return $this->getOrdersByField(KEY_LEARNER_ID, $learnerId, $status, $skip, $limit);
     }
 
 
-    function getOrdersOfReviewer($reviewerId, $status, $skip = 0, $limit = 100)
+    function getOrdersOfReviewer($reviewerId, $status = null, $skip = 0, $limit = 100)
     {
         $this->getOrdersByField(KEY_REVIEWER_ID, $reviewerId, $status, $skip, $limit);
     }

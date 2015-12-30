@@ -20,6 +20,9 @@ func TestOrders_All(t *testing.T) {
 	addOrder(c, t)
 	res := c.getArrayData("orders", url.Values{"status":{"0"}});
 	assert.Equal(t, 1, len(res))
+
+	res = c.getArrayData("orders", url.Values{});
+	assert.Equal(t, 1, len(res))
 }
 
 func TestOrders_View(t *testing.T) {
