@@ -175,6 +175,7 @@ define('TABLE_REVIEWERS', 'reviewers');
 define('TABLE_TAGS', 'tags');
 define('TABLE_USERS_TAGS', 'users_tags');
 define('TABLE_ORDERS_TAGS', 'orders_tags');
+define('TABLE_USERS', 'users');
 
 define('CHARGE_UNPAID', 0);
 define('CHARGE_PAID', 1);

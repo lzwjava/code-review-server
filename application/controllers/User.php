@@ -40,14 +40,12 @@ class User extends BaseController
         ));
         if ($data != null) {
             $encoded = json_encode($data);
-            error_log($encoded);
+            logInfo($encoded);
             curl_setopt($ch, CURLOPT_POSTFIELDS, $encoded);
         }
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
         $result = curl_exec($ch);
         $status = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-        error_log("result: " . $result);
-        error_log("status: " . $status);
         curl_close($ch);
         if ($status != 200) {
             $resultJson = json_decode($result);
@@ -214,8 +212,7 @@ class User extends BaseController
         if (isset($_POST[KEY_MAX_ORDERS])) {
             $data[KEY_MAX_ORDERS] = $_POST[KEY_MAX_ORDERS];
         }
-        $this->userDao->updateUser($user, $data);
-        $user = $this->userDao->findActualUser($user);
+        $user = $this->userDao->updateUser($user, $data);
         $this->succeed($user);
     }
 

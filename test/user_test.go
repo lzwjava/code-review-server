@@ -21,6 +21,7 @@ func TestUser_RegisterAndLogin(t *testing.T) {
 	assert.NotNil(t, res["created"])
 	assert.NotNil(t, res["updated"]);
 	assert.Equal(t, toInt(res["type"]), 0)
+	assert.NotNil(t, res["tags"]);
 
 	res = c.callData("user/login", url.Values{"mobilePhoneNumber": {"1326163092"},
 		"password": {md5password("123456")}});

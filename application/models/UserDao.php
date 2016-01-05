@@ -73,12 +73,14 @@ class UserDao extends BaseDao
         return $this->db->query($sql, $array)->num_rows() == 1;
     }
 
-    private function findUser($filed, $value)
+    private function findUser($filed, $value, $cleanFields = true)
     {
-        $user = $this->findRawUser($filed, $value);
+        $user = $this->findTypeAndActualUser($filed, $value);
         if ($user) {
             $this->mergeTags($user);
-            $this->cleanUserFieldsForAll($user);
+            if ($cleanFields) {
+                $this->cleanUserFieldsForAll($user);
+            }
         }
         return $user;
     }
@@ -88,32 +90,43 @@ class UserDao extends BaseDao
         return $this->mergeFields(array(KEY_ID, KEY_AVATAR_URL, KEY_USERNAME));
     }
 
+    private function getSessionUserFields()
+    {
+        return $this->mergeFields(array(
+            KEY_ID,
+            KEY_AVATAR_URL,
+            KEY_USERNAME,
+            KEY_TYPE,
+            KEY_MOBILE_PHONE_NUMBER,
+            KEY_SESSION_TOKEN,
+            KEY_CREATED,
+            KEY_UPDATED,
+            KEY_INTRODUCTION,
+            KEY_COMPANY,
+            KEY_JOB_TITLE,
+            KEY_GITHUB_USERNAME
+        ));
+    }
+
     function findPublicUser($field, $value)
     {
         $fields = $this->getPublicFields();
-        $sql = "select $fields from users where $field=?";
-        $array[] = $value;
-        return $this->db->query($sql, $array)->row();
+        return $this->getOneFromTable(TABLE_USERS, $field, $value, $fields);
     }
 
-    private function findRawUser($filed, $value)
+    private function findActualUser($type, $field, $value)
     {
-        $sql = "SELECT * FROM users WHERE $filed=?";
-        $array[] = $value;
-        $user = $this->db->query($sql, $array)->row();
+        $tableName = $this->tableNameByType($type);
+        $user = $this->getOneFromTable($tableName, $field, $value);
         return $user;
     }
 
-    function findActualUser($user)
+    private function findTypeAndActualUser($field, $value)
     {
-        $tableName = $this->tableNameByType($user->type);
-        $sql = "select * from $tableName where id=?";
-        $array[] = $user->id;
-        $user = $this->db->query($sql, $array)->row();
-        if ($user) {
-            $this->cleanUserFieldsForAll($user);
-        }
-        return $user;
+        $fields = $this->mergeFields(array(KEY_TYPE));
+        $user = $this->getOneFromTable(TABLE_USERS, $field, $value, $fields);
+        $type = $user->type;
+        return $this->findActualUser($type, $field, $value);
     }
 
     // 还用在 ReviewerDao.php
@@ -122,38 +135,26 @@ class UserDao extends BaseDao
         $user->tags = $this->tagDao->getUserTags($user->id);
     }
 
-    private function findUserById($id)
-    {
-        return $this->findUser(KEY_ID, $id);
-    }
-
-    private function findUserByMobilePhoneNumber($mobilePhoneNumber)
-    {
-        return $this->findUser(KEY_MOBILE_PHONE_NUMBER, $mobilePhoneNumber);
-    }
-
     function findUserBySessionToken($sessionToken)
     {
         return $this->findUser(KEY_SESSION_TOKEN, $sessionToken);
     }
 
-    private function deleteUser($mobilePhoneNumber)
+    private function updateSessionToken($user)
     {
-        $user = $this->findUserByMobilePhoneNumber($mobilePhoneNumber);
-        if ($user != null) {
-            $tableName = $this->tableNameByType($user->type);
-            $sql = "delete from $tableName where mobilePhoneNumber=?";
-            $array[] = $mobilePhoneNumber;
-            $this->db->query($sql, $array);
-            return true;
-        } else {
-            return false;
+        $token = $this->genSessionToken();
+        $result = $this->updateUser($user, array(
+            KEY_SESSION_TOKEN => $token,
+            KEY_SESSION_TOKEN_CREATED => dateWithMs()
+        ));
+        if ($result) {
+            $user->sessionToken = $token;
         }
     }
 
     function updateSessionTokenIfNeeded($mobilePhoneNumber)
     {
-        $user = $this->findRawUser(KEY_MOBILE_PHONE_NUMBER, $mobilePhoneNumber);
+        $user = $this->findUser(KEY_MOBILE_PHONE_NUMBER, $mobilePhoneNumber, false);
         $created = strtotime($user->sessionTokenCreated);
         $now = dateWithMs();
         $nowMillis = strtotime($now);
@@ -161,25 +162,20 @@ class UserDao extends BaseDao
         if ($user->sessionToken == null || $user->sessionTokenCreated == null
             || $duration > 60 * 60 * 24 * 30
         ) {
-            $tableName = $this->tableNameByType($user->type);
-            $sql = "UPDATE $tableName SET sessionToken = ?, sessionTokenCreated = ? WHERE id = ?";
-            $array[] = $this->genSessionToken();
-            $array[] = $now;
-            $array[] = $user->id;
-            $this->db->query($sql, $array);
-            $actualUser = $this->findUserById($user->id);
-        } else {
-            $actualUser = $user;
+            $this->updateSessionToken($user);
         }
-        $this->cleanUserFieldsForAll($actualUser);
-        return $actualUser;
+        $this->cleanUserFieldsForAll($user);
+        return $user;
     }
 
     function updateUser($user, $data)
     {
         $tableName = $this->tableNameByType($user->type);
         $this->db->where(KEY_ID, $user->id);
-        $this->db->update($tableName, $data);
+        $result = $this->db->update($tableName, $data);
+        if ($result) {
+            return $this->findUser(KEY_ID, $user->id);
+        }
     }
 
     private function cleanUserFieldsForAll($user)
