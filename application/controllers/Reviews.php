@@ -24,10 +24,10 @@ class Reviews extends BaseController
             $this->failure(ERROR_OBJECT_NOT_EXIST, "找不到相应的 review 订单");
             return;
         }
-        if ($this->checkIfNotInSessionAndResponse()) {
+        $user = $this->checkAndGetSessionUser();
+        if (!$user) {
             return;
         }
-        $user = $this->getSessionUser();
         if ($user->id != $order->reviewerId) {
             $this->failure(ERROR_NOT_ALLOW_DO_IT, "当前登录的用户不是该 review 指定的大神");
             return;
@@ -63,10 +63,10 @@ class Reviews extends BaseController
         if (isset($_POST[KEY_TITLE])) {
             $data[KEY_TITLE] = $_POST[KEY_TITLE];
         }
-        if ($this->checkIfNotInSessionAndResponse()) {
+        $user = $this->checkAndGetSessionUser();
+        if (!$user) {
             return;
         }
-        $user = $this->getSessionUser();
         $review = $this->reviewDao->getOne($reviewId);
         if ($review == null) {
             $this->failure(ERROR_OBJECT_NOT_EXIST, "找不到相应的 Review");

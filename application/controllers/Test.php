@@ -52,4 +52,10 @@ class Test extends BaseController
         echo md5("123456");
         $this->load->view('test', $data);
     }
+
+
+    public function test()
+    {
+        echo getenv('CRDEBUG');
+    }
 }

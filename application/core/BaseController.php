@@ -117,23 +117,14 @@ class BaseController extends CI_Controller
         }
     }
 
-    protected function checkIfNotInSessionAndResponse($type = null)
+    protected function checkAndGetSessionUser()
     {
-        if ($this->checkIfInSession()) {
-            if ($type == null) {
-                return false;
-            } else {
-                $user = $this->getSessionUser();
-                if ($user->type != $type) {
-                    $this->failure(ERROR_NOT_ALLOW_DO_IT, "当前登录用户不允许此操作");
-                    return true;
-                } else {
-                    return false;
-                }
-            }
-        } else {
+        $user = $this->getSessionUser();
+        if ($user == null) {
             $this->failure(ERROR_NOT_IN_SESSION, "未登录");
-            return true;
+            return null;
+        } else {
+            return $user;
         }
     }
 
@@ -163,8 +154,11 @@ class BaseController extends CI_Controller
     protected function getSessionUser()
     {
         $token = $this->requestToken();
-        $user = $this->userDao->findUserBySessionToken($token);
-        return $user;
+        if ($token) {
+            return $this->userDao->findUserBySessionToken($token);
+        } else {
+            return null;
+        }
     }
 
     protected function getSkip()

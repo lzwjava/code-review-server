@@ -8,7 +8,7 @@
  */
 class UserDao extends BaseDao
 {
-    function checkIfUserUsed($field, $value)
+    private function checkIfUserUsed($field, $value)
     {
         $sql = "SELECT * FROM users WHERE $field =?";
         $array[] = $value;
@@ -73,7 +73,7 @@ class UserDao extends BaseDao
         return $this->db->query($sql, $array)->num_rows() == 1;
     }
 
-    function findUser($filed, $value)
+    private function findUser($filed, $value)
     {
         $user = $this->findRawUser($filed, $value);
         if ($user) {
@@ -83,7 +83,7 @@ class UserDao extends BaseDao
         return $user;
     }
 
-    function getPublicFields()
+    private function getPublicFields()
     {
         return $this->mergeFields(array(KEY_ID, KEY_AVATAR_URL, KEY_USERNAME));
     }
@@ -96,7 +96,7 @@ class UserDao extends BaseDao
         return $this->db->query($sql, $array)->row();
     }
 
-    function findRawUser($filed, $value)
+    private function findRawUser($filed, $value)
     {
         $sql = "SELECT * FROM users WHERE $filed=?";
         $array[] = $value;
@@ -116,17 +116,18 @@ class UserDao extends BaseDao
         return $user;
     }
 
+    // 还用在 ReviewerDao.php
     function mergeTags($user)
     {
         $user->tags = $this->tagDao->getUserTags($user->id);
     }
 
-    function findUserById($id)
+    private function findUserById($id)
     {
         return $this->findUser(KEY_ID, $id);
     }
 
-    function findUserByMobilePhoneNumber($mobilePhoneNumber)
+    private function findUserByMobilePhoneNumber($mobilePhoneNumber)
     {
         return $this->findUser(KEY_MOBILE_PHONE_NUMBER, $mobilePhoneNumber);
     }
@@ -136,7 +137,7 @@ class UserDao extends BaseDao
         return $this->findUser(KEY_SESSION_TOKEN, $sessionToken);
     }
 
-    function deleteUser($mobilePhoneNumber)
+    private function deleteUser($mobilePhoneNumber)
     {
         $user = $this->findUserByMobilePhoneNumber($mobilePhoneNumber);
         if ($user != null) {
@@ -181,7 +182,7 @@ class UserDao extends BaseDao
         $this->db->update($tableName, $data);
     }
 
-    function cleanUserFieldsForAll($user)
+    private function cleanUserFieldsForAll($user)
     {
         if ($user) {
             unset($user->sessionTokenCreated);
@@ -189,7 +190,7 @@ class UserDao extends BaseDao
         }
     }
 
-    function cleanUserFieldsForPrivacy($user)
+    private function cleanUserFieldsForPrivacy($user)
     {
         if ($user) {
             unset($user->sessionToken);

@@ -11,14 +11,15 @@ class Orders extends BaseController
 
     function index()
     {
-        if ($this->checkIfNotInSessionAndResponse()) {
+        $user = $this->checkAndGetSessionUser();
+        if (!$user) {
             return;
         }
         $status = null;
         if (isset($_GET[KEY_STATUS])) {
             $status = $_GET[KEY_STATUS];
         }
-        $user = $this->getSessionUser();
+
         $skip = $this->getSkip();
         $limit = $this->getLimit();
         if ($user->type == TYPE_LEARNER) {
@@ -41,10 +42,10 @@ class Orders extends BaseController
         $reviewerId = $_POST[KEY_REVIEWER_ID];
         $codeLines = $_POST[KEY_CODE_LINES];
 
-        if ($this->checkIfNotInSessionAndResponse()) {
+        $user = $this->checkAndGetSessionUser();
+        if (!$user) {
             return;
         }
-        $user = $this->getSessionUser();
         if ($user->type != TYPE_LEARNER) {
             $this->failure(ERROR_ONLY_LEARNER_CAN_ORDER, "仅是新手才能提交 Review 请求");
             return;
@@ -95,11 +96,10 @@ class Orders extends BaseController
             $this->failure(ERROR_AMOUNT_UNIT, 'amount 必须为整数, 单位为分钱. 例如 10 元, amount = 1000.');
             return;
         }
-        if ($this->checkIfNotInSessionAndResponse()) {
+        $user = $this->checkAndGetSessionUser();
+        if (!$user) {
             return;
         }
-        $user = $this->getSessionUser();
-
         $order = $this->orderDao->getOne($orderId);
         if ($order == null) {
             $this->failure(ERROR_OBJECT_NOT_EXIST, '没有找到相应的 review 订单');
@@ -195,13 +195,14 @@ class Orders extends BaseController
             return;
         }
         $status = $_POST[KEY_STATUS];
-        if ($this->checkIfNotInSessionAndResponse()) {
+        $user = $this->checkAndGetSessionUser();
+        if (!$user) {
             return;
         }
         if ($this->checkIfNotInArray($status, $this->allOrderStatus())) {
             return;
         }
-        $user = $this->getSessionUser();
+
         $order = $this->orderDao->getOne($orderId);
         if ($order == null) {
             $this->failure(ERROR_OBJECT_NOT_EXIST, "无法找到当前的订单");

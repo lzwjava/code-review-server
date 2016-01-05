@@ -124,24 +124,6 @@ class User extends BaseController
         }
     }
 
-    private function delete()
-    {
-        if ($this->checkIfParamsNotExist($_POST, array(KEY_MOBILE_PHONE_NUMBER))) {
-            return;
-        }
-        $mobilePhoneNumber = $_POST[KEY_MOBILE_PHONE_NUMBER];
-        if ($this->userDao->deleteUser($mobilePhoneNumber)) {
-            $this->succeed();
-        } else {
-            $this->failure(ERROR_USER_NOT_EXIST, "user not exists");
-        }
-    }
-
-    public function test()
-    {
-        echo getenv('CRDEBUG');
-    }
-
     public function login()
     {
         if ($this->checkIfParamsNotExist($_POST, array(KEY_MOBILE_PHONE_NUMBER, KEY_PASSWORD))) {
@@ -167,13 +149,13 @@ class User extends BaseController
 
     public function self()
     {
-        if ($this->checkIfInSession()) {
-            $user = $this->userDao->findUserBySessionToken($this->requestToken());
-            $this->succeed($user);
-        } else {
+        $user = $this->getSessionUser();
+        if ($user == null) {
             // $login_url = 'Location: /';
             // header($login_url);
             $this->failure(ERROR_NOT_IN_SESSION, "当前没有用户登录");
+        } else {
+            $this->succeed($user);
         }
     }
 
@@ -192,10 +174,10 @@ class User extends BaseController
         ) {
             return;
         }
-        if ($this->checkIfNotInSessionAndResponse()) {
+        $user = $this->checkAndGetSessionUser();
+        if (!$user) {
             return;
         }
-        $user = $this->getSessionUser();
         $data = array();
         if (isset($_POST[KEY_USERNAME])) {
             $username = $_POST[KEY_USERNAME];
@@ -244,10 +226,10 @@ class User extends BaseController
         }
         $op = $_POST[KEY_OP];
         $tagId = $_POST[KEY_TAG_ID];
-        if ($this->checkIfNotInSessionAndResponse()) {
+        $user = $this->checkAndGetSessionUser();
+        if (!$user) {
             return;
         }
-        $user = $this->getSessionUser();
         if ($op != KEY_OP_ADD && $op != KEY_OP_REMOVE) {
             $this->failure(ERROR_PARAMETER_ILLEGAL, "无效的操作");
         } else {
