@@ -162,10 +162,11 @@ define('KEY_PAID', 'paid');
 define('KEY_CREATOR', 'creator');
 define('KEY_CREATOR_IP', 'creatorIP');
 
-define('ORDER_STATUS_NOT_PAID', 0);
-define('ORDER_STATUS_PAID', 1);
-define('ORDER_STATUS_FINISHED', 2);
-define('ORDER_STATUS_REJECTED', 3);
+define('ORDER_STATUS_NOT_PAID', 'unpaid');
+define('ORDER_STATUS_PAID', 'paid');
+define('ORDER_STATUS_FINISHED', 'finished');
+define('ORDER_STATUS_REJECTED', 'rejected');
+define('ORDER_STATUS_CONSENTED', 'consented');
 
 define('TABLE_ORDERS', 'orders');
 define('TABLE_REVIEWS', 'reviews');
@@ -195,3 +196,6 @@ define('KEY_TAG_ID', 'tagId');
 define('KEY_COLOR', 'color');
 
 define('KEY_USER_ID', 'userId');
+
+define('STATUS_OP_CONSENT', 'consent');
+define('STATUS_OP_REJECT', 'reject');

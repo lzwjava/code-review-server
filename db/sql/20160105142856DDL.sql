@@ -1,0 +1,1 @@
+ALTER TABLE `orders` MODIFY COLUMN `status` VARCHAR(31) NOT NULL DEFAULT 'unpaid' /

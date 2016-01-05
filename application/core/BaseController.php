@@ -28,7 +28,8 @@ class BaseController extends CI_Controller
         $this->responseJSON($arr);
     }
 
-    protected function responseJSON($obj) {
+    protected function responseJSON($obj)
+    {
         $this->output->set_status_header(200)
             ->set_content_type('application/json', 'utf-8')
             ->set_output(json_encode($obj));
@@ -56,6 +57,15 @@ class BaseController extends CI_Controller
                 $this->failureOfParam($param);
                 return true;
             }
+        }
+        return false;
+    }
+
+    private function checkIfParamNotExists($param, $value)
+    {
+        if ($value == null || trim($value) === '') {
+            $this->failureOfParam($param);
+            return true;
         }
         return false;
     }
@@ -107,14 +117,47 @@ class BaseController extends CI_Controller
         }
     }
 
-    protected function checkIfNotInSessionAndResponse()
+    protected function checkIfNotInSessionAndResponse($type = null)
     {
         if ($this->checkIfInSession()) {
-            return false;
+            if ($type == null) {
+                return false;
+            } else {
+                $user = $this->getSessionUser();
+                if ($user->type != $type) {
+                    $this->failure(ERROR_NOT_ALLOW_DO_IT, "当前登录用户不允许此操作");
+                    return true;
+                } else {
+                    return false;
+                }
+            }
         } else {
             $this->failure(ERROR_NOT_IN_SESSION, "未登录");
             return true;
         }
+    }
+
+    protected function checkIfNotInArray($value, $array)
+    {
+        foreach ($array as $obj) {
+            if ($obj === $value) {
+                return false;
+            }
+        }
+        $json = json_encode($array);
+        $this->failure(ERROR_PARAMETER_ILLEGAL, "$value 不在 $json 之中");
+        return true;
+    }
+
+    protected function allOrderStatus()
+    {
+        return array(
+            ORDER_STATUS_NOT_PAID,
+            ORDER_STATUS_PAID,
+            ORDER_STATUS_CONSENTED,
+            ORDER_STATUS_REJECTED,
+            ORDER_STATUS_FINISHED
+        );
     }
 
     protected function getSessionUser()

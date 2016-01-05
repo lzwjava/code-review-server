@@ -33,7 +33,7 @@ class Reviews extends BaseController
             return;
         }
         if ($order->review != null) {
-            $this->failure(ERROR_ALREADY_DO_IT, "已经给该Review 申请填写过 Review 了, 请编辑相应的 Review");
+            $this->failure(ERROR_ALREADY_DO_IT, "已经填写过 Review 了, 请编辑相应的 Review");
             return;
         }
         if (strlen($title) <= 0) {

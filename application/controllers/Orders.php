@@ -8,6 +8,7 @@
  */
 class Orders extends BaseController
 {
+
     function index()
     {
         if ($this->checkIfNotInSessionAndResponse()) {
@@ -68,11 +69,6 @@ class Orders extends BaseController
         $insertId = $this->orderDao->add($gitHubUrl, $remark, $reviewerId, $user->id, $codeLines);
         $order = $this->orderDao->getOne($insertId);
         $this->succeed($order);
-    }
-
-    private function edit()
-    {
-
     }
 
     function view()
@@ -187,5 +183,33 @@ class Orders extends BaseController
             }
             $this->succeed($this->tagDao->getOrderTags($orderId));
         }
+    }
+
+    public function order($orderId)
+    {
+        if ($this->checkIfParamsNotExist($_POST, array(KEY_STATUS))) {
+            return;
+        }
+        $status = $_POST[KEY_STATUS];
+        if ($this->checkIfNotInSessionAndResponse()) {
+            return;
+        }
+        if ($this->checkIfNotInArray($status, $this->allOrderStatus())) {
+            return;
+        }
+        $user = $this->getSessionUser();
+        $order = $this->orderDao->getOne($orderId);
+        if ($order == null) {
+            $this->failure(ERROR_OBJECT_NOT_EXIST, "无法找到当前的订单");
+            return;
+        }
+        if ($order->reviewer->id != $user->id) {
+            $this->failure(ERROR_NOT_ALLOW_DO_IT, "只有该订单指定的大神才能执行此操作");
+            return;
+        }
+        $this->orderDao->update($orderId, array(
+            KEY_STATUS => $status
+        ));
+        $this->succeed();
     }
 }

@@ -132,9 +132,10 @@ class OrderDao extends BaseDao
         return $insert_id;
     }
 
-    function update($id, $data)
+    function update($orderId, $data)
     {
-
+        $this->db->where(KEY_ORDER_ID, $orderId);
+        return $this->db->update(TABLE_ORDERS, $data);
     }
 
     function updateOrderToPaid($orderId)

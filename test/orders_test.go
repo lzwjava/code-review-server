@@ -18,7 +18,7 @@ func TestOrders_AddOrder(t *testing.T) {
 func TestOrders_All(t *testing.T) {
 	c := NewClient()
 	addOrder(c, t)
-	res := c.getArrayData("orders", url.Values{"status":{"0"}});
+	res := c.getArrayData("orders", url.Values{"status":{"unpaid"}});
 	assert.Equal(t, 1, len(res))
 
 	res = c.getArrayData("orders", url.Values{});
@@ -55,7 +55,7 @@ func addOrder(c *Client, t *testing.T) (map[string]interface{}, map[string]inter
 	assert.Equal(t, "麻烦大神了", order["remark"].(string))
 	assert.Equal(t, reviewerId, order["reviewerId"])
 	assert.Equal(t, learnerId, order["learnerId"])
-	assert.Equal(t, 0, toInt(order["status"]))
+	assert.Equal(t, "unpaid", order["status"])
 	assert.NotNil(t, order["created"])
 	assert.NotNil(t, order["updated"])
 	assert.NotNil(t, order["orderId"])
@@ -78,4 +78,16 @@ func TestOrders_maxOrder(t *testing.T) {
 	order := c.call("orders/add", url.Values{"gitHubUrl": {"https://github.com/lzwjava/Reveal-In-GitHub"},
 		"remark": {"麻烦大神了"}, "reviewerId":{reviewerId}, "codeLines":{"1000"}})
 	assert.Equal(t, 20, toInt(order["code"]))
+}
+
+func TestOrders_Consent(t *testing.T) {
+	c := NewClient()
+	reviewer, _, order := addOrder(c, t)
+	c.sessionToken = reviewer["sessionToken"].(string)
+	orderId := floatToStr(order["orderId"])
+	res := c.callData("orders/" + orderId, url.Values{"status":{"consented"}, "orderId":{orderId}})
+	assert.NotNil(t, res)
+	theOrder := c.getData("orders/view", url.Values{"orderId": {orderId}})
+	assert.NotNil(t, theOrder)
+	assert.Equal(t, "consented", theOrder["status"])
 }
