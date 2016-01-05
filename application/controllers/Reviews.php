@@ -40,7 +40,10 @@ class Reviews extends BaseController
             $this->failure(ERROR_PARAMETER_ILLEGAL, "标题长度应该大于 0");
             return;
         }
+        $this->db->trans_start();
         $insertId = $this->reviewDao->add($orderId, $title, $content);
+        $this->orderDao->updateStatus($orderId, ORDER_STATUS_FINISHED);
+        $this->db->trans_complete();
         $this->succeed($this->reviewDao->getOne($insertId));
     }
 

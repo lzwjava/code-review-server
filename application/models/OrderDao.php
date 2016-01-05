@@ -138,11 +138,15 @@ class OrderDao extends BaseDao
         return $this->db->update(TABLE_ORDERS, $data);
     }
 
+    function updateStatus($orderId, $status)
+    {
+        return $this->update($orderId, array(
+            KEY_STATUS => $status
+        ));
+    }
+
     function updateOrderToPaid($orderId)
     {
-        $sql = "UPDATE orders SET status=? WHERE orderId= ?";
-        $array[] = ORDER_STATUS_PAID;
-        $array[] = $orderId;
-        return $this->db->query($sql, $array);
+        return $this->updateStatus($orderId, ORDER_STATUS_PAID);
     }
 }

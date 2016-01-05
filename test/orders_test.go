@@ -86,7 +86,7 @@ func TestOrders_maxOrder(t *testing.T) {
 	assert.Equal(t, 20, toInt(order["code"]))
 }
 
-func TestOrders_Consent(t *testing.T) {
+func TestOrders_consent(t *testing.T) {
 	c := NewClient()
 	reviewer, _, order := addOrderAndReward(c, t)
 	c.sessionToken = reviewer["sessionToken"].(string)
@@ -96,4 +96,16 @@ func TestOrders_Consent(t *testing.T) {
 	theOrder := c.getData("orders/view", url.Values{"orderId": {orderId}})
 	assert.NotNil(t, theOrder)
 	assert.Equal(t, "consented", theOrder["status"])
+}
+
+func TestOrders_reject(t *testing.T) {
+	c := NewClient()
+	reviewer, _, order := addOrderAndReward(c, t)
+	c.sessionToken = reviewer["sessionToken"].(string)
+	orderId := floatToStr(order["orderId"])
+	res := c.callData("orders/" + orderId, url.Values{"status": {"rejected"}})
+	assert.NotNil(t, res)
+	theOrder := c.getData("orders/view", url.Values{"orderId": {orderId}})
+	assert.NotNil(t, theOrder)
+	assert.Equal(t, "rejected", theOrder["status"])
 }

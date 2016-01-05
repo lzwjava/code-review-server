@@ -183,8 +183,9 @@ define('CHARGE_PAID', 1);
 define('TABLE_CHARGES', 'charges');
 define('KEY_CHARGE_ID', 'chargeId');
 
-define('LEAST_FIRST_REWARD', 5000);
-define('LEAST_COMMON_REWARD', 1000);
+define('LEAST_FIRST_REWARD', 500);
+define('LEAST_COMMON_REWARD', 100);
+define('MAX_COMMON_REWARD', 100 * 1000);
 
 define('KEY_OP', 'op');
 define('KEY_OP_ADD', 'add');

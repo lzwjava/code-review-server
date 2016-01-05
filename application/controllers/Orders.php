@@ -108,13 +108,17 @@ class Orders extends BaseController
         $firstReward = false;
         if ($user->id == $order->learnerId && $order->status == ORDER_STATUS_NOT_PAID) {
             if ($amount < LEAST_FIRST_REWARD) {
-                $this->failure(ERROR_AMOUNT_UNIT, '申请者打赏金额至少为 5 元');
+                $this->failure(ERROR_AMOUNT_UNIT, '申请者打赏金额至少为 5 元(amount=500)');
                 return;
             }
             $firstReward = true;
         } else {
             if ($amount < LEAST_COMMON_REWARD) {
-                $this->failure(ERROR_AMOUNT_UNIT, '打赏金额至少为 1 元');
+                $this->failure(ERROR_AMOUNT_UNIT, '打赏金额至少为 1 元(amount=100)');
+                return;
+            }
+            if ($amount > MAX_COMMON_REWARD) {
+                $this->failure(ERROR_AMOUNT_UNIT, '打赏金额最多为 1000 元');
                 return;
             }
         }
