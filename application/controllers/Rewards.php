@@ -49,12 +49,10 @@ class Rewards extends BaseController
             return;
         }
         $metadata = $object->metadata;
-        logInfo("object: ".json_encode($object));
         if (!isset($metadata->orderId)) {
             $this->failure(ERROR_PARAMETER_ILLEGAL, "not set orderId in metadata");
             return;
         }
-        logInfo("metadata: ".json_encode($metadata));
         $orderId = $metadata->orderId;
         $order = $this->orderDao->getOne($orderId);
         if ($order == null) {
@@ -65,13 +63,17 @@ class Rewards extends BaseController
         $this->rewardDao->add($order->orderId, $charge->creator, $charge->chargeId);
         $amount = $object->amount;
 
-        if ($order->status == ORDER_STATUS_NOT_PAID ) {
+        if ($order->status == ORDER_STATUS_NOT_PAID) {
             if ($amount < LEAST_FIRST_REWARD) {
-                logInfo('status is not paid but amount less than 5000');
+                $info = 'status is not paid but amount less than 5000';
+                logInfo($info);
+                $this->failure(ERROR_PARAMETER_ILLEGAL, $info);
             } else {
                 $this->orderDao->updateOrderToPaid($order->orderId);
+                $this->succeed();
             }
+        } else {
+            $this->succeed();
         }
-        $this->succeed();
     }
 }

@@ -207,6 +207,10 @@ class Orders extends BaseController
             $this->failure(ERROR_NOT_ALLOW_DO_IT, "只有该订单指定的大神才能执行此操作");
             return;
         }
+        if ($order->status != ORDER_STATUS_PAID) {
+            $this->failure(ERROR_NOT_ALLOW_DO_IT, "订单不是已打赏状态, 不能执行操作");
+            return;
+        }
         $this->orderDao->update($orderId, array(
             KEY_STATUS => $status
         ));

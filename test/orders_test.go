@@ -64,6 +64,12 @@ func addOrder(c *Client, t *testing.T) (map[string]interface{}, map[string]inter
 	return reviewer, learner, order
 }
 
+func addOrderAndReward(c *Client, t *testing.T) (map[string]interface{}, map[string]interface{}, map[string]interface{}) {
+	reviewer, learner, order := addOrder(c, t)
+	reward(c, floatToStr(order["orderId"]), t)
+	return reviewer, learner, order
+}
+
 func TestOrders_maxOrder(t *testing.T) {
 	cleanTables()
 	c := NewClient()
@@ -82,7 +88,7 @@ func TestOrders_maxOrder(t *testing.T) {
 
 func TestOrders_Consent(t *testing.T) {
 	c := NewClient()
-	reviewer, _, order := addOrder(c, t)
+	reviewer, _, order := addOrderAndReward(c, t)
 	c.sessionToken = reviewer["sessionToken"].(string)
 	orderId := floatToStr(order["orderId"])
 	res := c.callData("orders/" + orderId, url.Values{"status":{"consented"}, "orderId":{orderId}})
