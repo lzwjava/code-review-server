@@ -29,6 +29,8 @@ func TestUser_RegisterAndLogin(t *testing.T) {
 	assert.Equal(t, "1326163092", res["mobilePhoneNumber"])
 }
 
+
+
 func TestUser_Update(t *testing.T) {
 	c := NewClient()
 	learner := registerLearner(c)
@@ -56,7 +58,8 @@ func TestUser_Update(t *testing.T) {
 
 func TestUser_ReviewerUpdate(t *testing.T) {
 	c := NewClient()
-	registerReviewer(c)
+	reviewer := registerReviewer(c)
+	assert.NotNil(t, reviewer["maxOrders"])
 
 	res := c.callData("user/update", url.Values{"maxOrders":{"7"}})
 	assert.Equal(t, 7, toInt(res["maxOrders"]));
