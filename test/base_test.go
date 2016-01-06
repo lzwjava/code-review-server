@@ -100,7 +100,7 @@ func runSql(sentence string) {
 }
 
 func setOrderAsGood(orderId string) {
-	statement := fmt.Sprintf("update orders set good=1 where orderId=%s", orderId);
+	statement := fmt.Sprintf("update orders set displaying=1 where orderId=%s", orderId);
 	runSql(statement)
 }
 

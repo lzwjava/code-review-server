@@ -147,7 +147,7 @@ define('KEY_REMARK', 'remark');
 define('KEY_STATUS', 'status');
 define('KEY_CREATED', 'created');
 define('KEY_UPDATED', 'updated');
-define('KEY_GOOD', 'good');
+define('KEY_DISPLAYING', 'displaying');
 define('KEY_COVER_URL', 'coverUrl');
 
 // reviews table

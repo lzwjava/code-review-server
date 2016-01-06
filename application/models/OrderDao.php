@@ -54,9 +54,9 @@ class OrderDao extends BaseDao
         return $orders;
     }
 
-    function getGoodOrders($skip = 0, $limit = 100)
+    function getDisplayingOrders($skip = 0, $limit = 100)
     {
-        $orders = $this->getOrdersByField(KEY_GOOD, 1, ORDER_STATUS_FINISHED, $skip, $limit);
+        $orders = $this->getOrdersByField(KEY_DISPLAYING, 1, ORDER_STATUS_FINISHED, $skip, $limit);
         return $orders;
     }
 

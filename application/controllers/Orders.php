@@ -244,7 +244,7 @@ class Orders extends BaseController
     {
         $skip = $this->getSkip();
         $limit = $this->getLimit();
-        $orders = $this->orderDao->getGoodOrders($skip, $limit);
+        $orders = $this->orderDao->getDisplayingOrders($skip, $limit);
         $this->succeed($orders);
     }
 }
