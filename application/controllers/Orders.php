@@ -9,7 +9,7 @@
 class Orders extends BaseController
 {
 
-    function index()
+    function myOrders()
     {
         $user = $this->checkAndGetSessionUser();
         if (!$user) {
@@ -189,7 +189,7 @@ class Orders extends BaseController
         }
     }
 
-    public function order($orderId)
+    public function update($orderId)
     {
         if ($this->checkIfParamsNotExist($_POST, array(KEY_STATUS))) {
             return;
@@ -220,5 +220,31 @@ class Orders extends BaseController
             KEY_STATUS => $status
         ));
         $this->succeed();
+    }
+
+    public function userOrders($userId)
+    {
+        $skip = $this->getSkip();
+        $limit = $this->getLimit();
+        $this->succeed();
+        $user = $this->userDao->findPublicUserById($userId);
+        if ($user == null) {
+            $this->failure(ERROR_OBJECT_NOT_EXIST, '用户不存在');
+            return;
+        }
+        if ($user->type == KEY_LEARNER_ID) {
+            $this->failure(ERROR_NOT_ALLOW_DO_IT, '只能请求大神的订单案例');
+            return;
+        }
+        $orders = $this->orderDao->getOrdersOfReviewer($userId, ORDER_STATUS_FINISHED, $skip, $limit);
+        $this->succeed($orders);
+    }
+
+    public function allOrders()
+    {
+        $skip = $this->getSkip();
+        $limit = $this->getLimit();
+        $orders = $this->orderDao->getGoodOrders($skip, $limit);
+        $this->succeed($orders);
     }
 }

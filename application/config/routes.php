@@ -53,4 +53,7 @@ $route['default_controller'] = 'welcome';
 $route['404_override'] = '';
 $route['translate_uri_dashes'] = FALSE;
 
-$route['orders/(:num)'] = 'orders/order/$1';
+$route['orders/(:num)'] = 'orders/update/$1';
+$route['users/([a-zA-Z0-9]+)/orders'] = 'orders/userOrders/$1';
+$route['user/orders'] = 'orders/myOrders';
+$route['orders'] = 'orders/allOrders';

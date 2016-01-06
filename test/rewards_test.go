@@ -13,7 +13,7 @@ import (
 
 func TestOrders_Reward(t *testing.T) {
 	c := NewClient()
-	_, learner, order := addOrder(c, t)
+	_, learner, order := addOrder(c)
 
 	c.sessionToken = learner["sessionToken"].(string)
 	orderId := floatToStr(order["orderId"])
@@ -37,20 +37,12 @@ func TestOrders_Reward(t *testing.T) {
 
 func TestRewards_Count(t *testing.T) {
 	c := NewClient()
-	reviewer, _, order := addOrder(c, t)
+	reviewer, _, order := addOrder(c)
 	orderId := floatToStr(order["orderId"])
-	reward(c, orderId, t);
-	reward(c, orderId, t);
+	reward(c, orderId);
+	reward(c, orderId);
 	afterReviewer := c.getData("reviewers/view", url.Values{"id": {reviewer["id"].(string)}});
 	assert.Equal(t, toInt(afterReviewer["rewardCount"]), 2);
-}
-
-func reward(c *Client, orderId string, t *testing.T) {
-	rewardRes := c.call("orders/reward", url.Values{"orderId": {orderId},
-		"amount": {"500"}})
-	orderNo := rewardRes["order_no"].(string)
-	callbackRes := c.callWithStr("rewards/callback", testCallbackStr(orderNo, orderId, 500))
-	assert.Equal(t, toInt(callbackRes["code"]), 0);
 }
 
 func testCallbackStr(orderNo string, orderId string, amount int) string {

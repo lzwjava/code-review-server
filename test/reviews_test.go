@@ -11,7 +11,7 @@ import (
 
 func TestReviews_AddReview(t *testing.T) {
 	c := NewClient()
-	reviewer, _, order := addOrder(c, t)
+	reviewer, _, order := addOrder(c)
 
 	c.sessionToken = reviewer["sessionToken"].(string)
 	orderId := floatToStr(order["orderId"])
@@ -24,7 +24,7 @@ func TestReviews_AddReview(t *testing.T) {
 
 func TestReviews_Duplicate(t *testing.T) {
 	c := NewClient()
-	reviewer, _, order := addOrder(c, t)
+	reviewer, _, order := addOrder(c)
 
 	c.sessionToken = reviewer["sessionToken"].(string)
 	orderId := floatToStr(order["orderId"])
@@ -39,7 +39,7 @@ func TestReviews_Duplicate(t *testing.T) {
 
 func TestReviews_EditReview(t *testing.T) {
 	c := NewClient()
-	reviewer, _, order := addOrder(c, t)
+	reviewer, _, order := addOrder(c)
 
 	c.sessionToken = reviewer["sessionToken"].(string)
 	orderId := floatToStr(order["orderId"])

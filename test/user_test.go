@@ -29,8 +29,6 @@ func TestUser_RegisterAndLogin(t *testing.T) {
 	assert.Equal(t, "1326163092", res["mobilePhoneNumber"])
 }
 
-
-
 func TestUser_Update(t *testing.T) {
 	c := NewClient()
 	learner := registerLearner(c)

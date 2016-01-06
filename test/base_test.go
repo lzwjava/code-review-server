@@ -3,6 +3,11 @@ import (
 	"testing"
 	"os"
 	"fmt"
+	"crypto/md5"
+	"database/sql"
+	"strconv"
+	_ "reflect"
+	"net/url"
 )
 
 func TestMain(m *testing.M) {
@@ -17,4 +22,135 @@ func cleanTables() {
 		deleteTable(table)
 	}
 	fmt.Println()
+}
+
+func checkErr(err error) {
+	if err != nil {
+		panic(err)
+	}
+}
+
+func registerLearner(c *Client) map[string]interface{} {
+	res := c.call("user/register", url.Values{"mobilePhoneNumber": {"1326163092"},
+		"username": {"lzwjavaTest"}, "smsCode": {"5555"}, "password":{md5password("123456")}, "type": {"0"}})
+	if (toInt(res["code"]) == 0) {
+		registerRes := res["result"].(map[string]interface{})
+		c.sessionToken = registerRes["sessionToken"].(string)
+		return registerRes
+	} else {
+		loginRes := c.callData("user/login", url.Values{"mobilePhoneNumber": {"1326163092"},
+			"password":{md5password("123456")}});
+		return loginRes
+	}
+}
+
+func registerReviewer(c *Client) map[string]interface{} {
+	res := c.call("user/register", url.Values{"mobilePhoneNumber": {"13261630924"},
+		"username": {"lzwjavaReviewer"}, "smsCode": {"5555"}, "password":{md5password("123456")}, "type": {"1"}})
+	if (toInt(res["code"]) == 0) {
+		registerRes := res["result"].(map[string]interface{})
+		c.sessionToken = registerRes["sessionToken"].(string)
+		validReviewer(c, registerRes["id"].(string))
+		return registerRes
+	} else {
+		loginRes := c.callData("user/login", url.Values{"mobilePhoneNumber": {"13261630924"},
+			"password":{md5password("123456")}});
+		return loginRes
+	}
+}
+
+func registerUsers(c *Client) (map[string]interface{}, map[string]interface{}) {
+	reviewer := registerReviewer(c)
+	learner := registerLearner(c)
+	return reviewer, learner
+}
+
+func md5password(password string) string {
+	data := []byte(password)
+	return fmt.Sprintf("%x", md5.Sum(data))
+}
+
+func validReviewer(c *Client, reviewerId string) {
+	c.getData("reviewers/valid", url.Values{"id": {reviewerId}})
+}
+
+func deleteTable(table string) {
+	deleteRecord(table, "1", "1");
+}
+
+func runSql(sentence string) {
+	db, err := sql.Open("mysql", "lzw:@/codereview")
+	checkErr(err)
+
+	err = db.Ping()
+	checkErr(err)
+
+	stmt, err := db.Prepare(sentence)
+	checkErr(err)
+
+	res, err := stmt.Exec()
+	checkErr(err)
+
+	affect, err := res.RowsAffected()
+	checkErr(err)
+
+	fmt.Println(sentence, "affected", affect)
+
+	db.Close()
+}
+
+func setOrderAsGood(orderId string) {
+	statement := fmt.Sprintf("update orders set good=1 where orderId=%s", orderId);
+	runSql(statement)
+}
+
+func deleteRecord(table string, column string, id string) {
+	sqlStr := fmt.Sprintf("delete from %s where %s=%s", table, column, id)
+	runSql(sqlStr)
+}
+
+func toInt(obj interface{}) (int) {
+	return int(obj.(float64))
+}
+
+func floatToStr(flt interface{}) string {
+	return strconv.Itoa(toInt(flt))
+}
+
+func addOrder(c *Client) (map[string]interface{}, map[string]interface{}, map[string]interface{}) {
+	cleanTables()
+	reviewer, learner := registerUsers(c)
+
+	reviewerId := reviewer["id"].(string)
+
+	order := c.callData("orders/add", url.Values{"gitHubUrl": {"https://github.com/lzwjava/Reveal-In-GitHub"},
+		"remark": {"麻烦大神了"}, "reviewerId":{reviewerId}, "codeLines":{"3000"}})
+	return reviewer, learner, order
+}
+
+func addOrderAndReward(c *Client) (map[string]interface{}, map[string]interface{}, map[string]interface{}) {
+	reviewer, learner, order := addOrder(c)
+	reward(c, floatToStr(order["orderId"]))
+	return reviewer, learner, order
+}
+
+func reward(c *Client, orderId string) {
+	rewardRes := c.call("orders/reward", url.Values{"orderId": {orderId},
+		"amount": {"500"}})
+	orderNo := rewardRes["order_no"].(string)
+	c.callWithStr("rewards/callback", testCallbackStr(orderNo, orderId, 500))
+}
+
+func addReview(c *Client, orderId string) (map[string]interface{}) {
+	return c.callData("reviews/add", url.Values{"orderId": {orderId},
+		"content": {"代码写得不错！"}, "title":{"记一次动画效果"}})
+}
+
+func addOrderAndReview(c *Client) (map[string]interface{}, map[string]interface{}, map[string]interface{},
+map[string]interface{}) {
+	reviewer, learner, order := addOrder(c)
+	orderId := floatToStr(order["orderId"])
+	c.sessionToken = reviewer["sessionToken"].(string)
+	review := addReview(c, orderId)
+	return reviewer, learner, order, review
 }

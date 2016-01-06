@@ -141,7 +141,7 @@ type Order struct {
 func TestTags_AddOrderTag(t *testing.T) {
 	c := NewClient()
 	tag := getTag()
-	_, _, order := addOrder(c, t)
+	_, _, order := addOrder(c)
 	myOrder := Order{}
 	convertToStruct(order, &myOrder)
 	tags := c.callArrayData("orders/tag", url.Values{"op":{"add"}, "tagId":{fmt.Sprintf("%d", tag.TagId)},

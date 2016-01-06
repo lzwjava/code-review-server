@@ -9,7 +9,7 @@
 class OrderDao extends BaseDao
 {
 
-    function getPublicFields()
+    private function getPublicFields()
     {
         return $this->mergeFields(array(
             KEY_ORDER_ID,
@@ -23,8 +23,7 @@ class OrderDao extends BaseDao
             KEY_UPDATED));
     }
 
-
-    function getOrdersByField($field, $value, $status = null, $skip, $limit)
+    private function getOrdersByField($field, $value, $status = null, $skip, $limit)
     {
         $fields = $this->getPublicFields();
         if ($status === null) {
@@ -55,7 +54,13 @@ class OrderDao extends BaseDao
         return $orders;
     }
 
-    function getOrdersOfReviewerWithLearner($reviewerId, $learnerId)
+    function getGoodOrders($skip = 0, $limit = 100)
+    {
+        $orders = $this->getOrdersByField(KEY_GOOD, 1, ORDER_STATUS_FINISHED, $skip, $limit);
+        return $orders;
+    }
+
+    private function getOrdersOfReviewerWithLearner($reviewerId, $learnerId)
     {
         $fields = $this->getPublicFields();
         $sql = "select $fields from orders where reviewerId=? and learnerId = ? ORDER BY orders.updated DESC";
@@ -75,7 +80,7 @@ class OrderDao extends BaseDao
         return $result->cnt > 0;
     }
 
-    function mergeChildrenOfOrders($orders)
+    private function mergeChildrenOfOrders($orders)
     {
         foreach ($orders as $order) {
             $order->learner = $this->userDao->findPublicUser(KEY_ID, $order->learnerId);
