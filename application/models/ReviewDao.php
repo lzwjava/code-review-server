@@ -18,7 +18,7 @@ class ReviewDao extends BaseDao
             KEY_CONTENT,
             KEY_CREATED,
             KEY_UPDATED
-        ));
+        ), TABLE_REVIEWS);
     }
 
     function add($orderId, $title, $content)
@@ -47,12 +47,43 @@ class ReviewDao extends BaseDao
 
     function getOneFromReviews($field, $value)
     {
-        return $this->getOneFromTable(TABLE_REVIEWS, $field, $value, $this->getPublicFields());
+        $review = $this->getOneFromTable(TABLE_REVIEWS, $field, $value, $this->getPublicFields());
+        if ($review) {
+            $this->mergeChildrenOfReviews(array($review));
+        }
+        return $review;
     }
 
     function update($reviewId, $data)
     {
         $this->db->where(KEY_REVIEW_ID, $reviewId);
         $this->db->update(TABLE_REVIEWS, $data);
+    }
+
+    function getList($displaying = 1, $skip, $limit)
+    {
+        $fields = $this->getPublicFields();
+        $reviews = $this->getListFromTable(TABLE_REVIEWS, KEY_DISPLAYING, $displaying, $fields,
+            'updated DESC', $skip, $limit);
+        $this->mergeChildrenOfReviews($reviews);
+        return $reviews;
+    }
+
+    private function mergeChildrenOfReviews($reviews)
+    {
+        foreach ($reviews as $review) {
+            $review->tags = $this->tagDao->getReviewTags($review->reviewId);
+        }
+    }
+
+    function getListForReviewer($reviewerId, $skip, $limit)
+    {
+        $fields = $this->getPublicFields();
+        $sql = "select $fields from reviews join orders USING (orderId) " .
+            "where reviewerId=? limit $limit offset $skip";
+        $values[] = $reviewerId;
+        $reviews = $this->db->query($sql, $values)->result();
+        $this->mergeChildrenOfReviews($reviews);
+        return $reviews;
     }
 }

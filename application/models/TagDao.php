@@ -34,48 +34,50 @@ class TagDao extends BaseDao
         }
     }
 
-    function addUserTag($userId, $tagId)
+    private function addTag($tagsTable, $fieldName, $id, $tagId)
     {
         $data = array(
-            KEY_USER_ID => $userId,
+            $fieldName => $id,
             KEY_TAG_ID => $tagId
         );
-        return $this->db->insert(TABLE_USERS_TAGS, $data);
+        return $this->db->insert($tagsTable, $data);
+    }
+
+    private function removeTag($tagsTable, $fieldName, $id, $tagId)
+    {
+        $where = array(
+            $fieldName => $id,
+            KEY_TAG_ID => $tagId
+        );
+        return $this->db->delete($tagsTable, $where);
+    }
+
+    function addUserTag($userId, $tagId)
+    {
+        return $this->addTag(TABLE_USERS_TAGS, KEY_USER_ID, $userId, $tagId);
     }
 
     function removeUserTag($userId, $tagId)
     {
-        $where = array(
-            KEY_USER_ID => $userId,
-            KEY_TAG_ID => $tagId
-        );
-        return $this->db->delete(TABLE_USERS_TAGS, $where);
+        return $this->removeTag(TABLE_USERS_TAGS, KEY_USER_ID, $userId, $tagId);
     }
 
-    function addOrderTag($orderId, $tagId)
+    function addReviewTag($reviewId, $tagId)
     {
-        $data = array(
-            KEY_ORDER_ID => $orderId,
-            KEY_TAG_ID => $tagId
-        );
-        return $this->db->insert(TABLE_ORDERS_TAGS, $data);
+        return $this->addTag(TABLE_REVIEWS_TAGS, KEY_REVIEW_ID, $reviewId, $tagId);
     }
 
-    function removeOrderTag($orderId, $tagId)
+    function removeReviewTag($reviewId, $tagId)
     {
-        $where = array(
-            KEY_ORDER_ID => $orderId,
-            KEY_TAG_ID => $tagId
-        );
-        return $this->db->delete(TABLE_ORDERS_TAGS, $where);
+        return $this->removeTag(TABLE_REVIEWS_TAGS, KEY_REVIEW_ID, $reviewId, $tagId);
     }
 
     function getUserTags($userId)
     {
-        return $this->getUsersOrOrdersTags(TABLE_USERS_TAGS, KEY_USER_ID, $userId);
+        return $this->getUsersOrReviewsTags(TABLE_USERS_TAGS, KEY_USER_ID, $userId);
     }
 
-    private function getUsersOrOrdersTags($tableName, $fieldName, $fieldValue)
+    private function getUsersOrReviewsTags($tableName, $fieldName, $fieldValue)
     {
         $sql = "SELECT tags.* FROM $tableName JOIN tags USING (tagId) WHERE $fieldName=?";
         $array[] = $fieldValue;
@@ -84,8 +86,8 @@ class TagDao extends BaseDao
         return $tags;
     }
 
-    function getOrderTags($orderId)
+    function getReviewTags($reviewId)
     {
-        return $this->getUsersOrOrdersTags(TABLE_ORDERS_TAGS, KEY_ORDER_ID, $orderId);
+        return $this->getUsersOrReviewsTags(TABLE_REVIEWS_TAGS, KEY_REVIEW_ID, $reviewId);
     }
 }

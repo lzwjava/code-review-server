@@ -38,6 +38,10 @@ func (c *Client) get(path string, params url.Values) (map[string]interface{}) {
 	return c.request("GET", path, params)
 }
 
+func (c *Client) delete(path string) (map[string]interface{}) {
+	return c.request("DELETE", path, url.Values{});
+}
+
 func (c *Client) getData(path string, params url.Values) (map[string]interface{}) {
 	var res = c.get(path, params)
 	return c.resultFromRes(res).(map[string]interface{})
@@ -67,14 +71,17 @@ func (c *Client) request(method string, path string, params url.Values) (map[str
 	urlStr := baseUrl(path)
 	paramStr := bytes.NewBufferString(params.Encode())
 
-	req, err := http.NewRequest(method, urlStr, paramStr)
+	var req *http.Request;
+	var err error;
 	if (method == "GET") {
 		req, err = http.NewRequest(method, fmt.Sprintf("%s?%s", urlStr, paramStr), nil)
+	} else if (method == "POST") {
+		req, err = http.NewRequest(method, urlStr, paramStr)
+		req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
+	} else {
+		req, err = http.NewRequest(method, urlStr, paramStr);
 	}
 	checkErr(err)
-	if (method == "POST") {
-		req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
-	}
 	if len(c.sessionToken) > 0 {
 		req.Header.Set("X-CR-Session", c.sessionToken)
 	}

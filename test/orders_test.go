@@ -98,32 +98,3 @@ func TestOrders_reject(t *testing.T) {
 	assert.NotNil(t, theOrder)
 	assert.Equal(t, "rejected", theOrder["status"])
 }
-
-func TestOrders_userOrders(t *testing.T) {
-	c := NewClient();
-	reviewer, _, order := addOrderAndReward(c)
-	reviewerId := reviewer["id"].(string)
-	res := c.getArrayData("users/" + reviewerId + "/orders", url.Values{});
-	assert.NotNil(t, res);
-	assert.Equal(t, 0, len(res))
-
-	c.sessionToken = reviewer["sessionToken"].(string)
-	orderId := floatToStr(order["orderId"])
-
-	addReview(c, orderId)
-
-	res = c.getArrayData("users/" + reviewerId + "/orders", url.Values{});
-	assert.Equal(t, 1, len(res))
-}
-
-func TestOrders_outstanding(t *testing.T) {
-	c := NewClient()
-	_, _, order, _ := addOrderAndReview(c)
-	orderId := floatToStr(order["orderId"])
-
-	setOrderAsGood(orderId)
-
-	res := c.getArrayData("orders", url.Values{})
-	assert.NotNil(t, res)
-	assert.Equal(t, len(res), 1)
-}

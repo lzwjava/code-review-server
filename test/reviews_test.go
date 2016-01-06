@@ -54,3 +54,29 @@ func TestReviews_EditReview(t *testing.T) {
 	assert.Equal(t, "这里有几个问题。", editRes["content"])
 	assert.Equal(t, "新标题", editRes["title"])
 }
+
+func TestReviews_all(t *testing.T) {
+	c := NewClient();
+	_, _, _, review := addOrderAndReview(c)
+	reviewId := floatToStr(review["reviewId"])
+	setReviewAsDisplaying(reviewId)
+	res := c.getArrayData("reviews", url.Values{})
+	assert.Equal(t, 1, len(res));
+
+	res = c.getArrayData("reviews", url.Values{"skip": {"1"}})
+	assert.Equal(t, 0, len(res));
+}
+
+func TestReviews_userReviews(t *testing.T) {
+	c := NewClient();
+	reviewer, _, _, review := addOrderAndReview(c)
+	reviewId := floatToStr(review["reviewId"])
+	setReviewAsDisplaying(reviewId)
+
+	reviewerId := reviewer["id"].(string)
+	res := c.getArrayData("reviewers/" + reviewerId + "/reviews", url.Values{});
+	assert.Equal(t, 1, len(res))
+
+	res = c.getArrayData("reviewers/" + reviewerId + "/reviews", url.Values{"limit": {"0"}});
+	assert.Equal(t, 0, len(res))
+}

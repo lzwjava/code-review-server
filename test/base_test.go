@@ -17,7 +17,7 @@ func TestMain(m *testing.M) {
 
 func cleanTables() {
 	tables := []string{"rewards", "reviews", "orders", "charges",
-		"orders_tags", "users_tags", "reviewers", "learners"}
+		"reviews_tags", "users_tags", "reviewers", "learners"}
 	for _, table := range tables {
 		deleteTable(table)
 	}
@@ -99,8 +99,8 @@ func runSql(sentence string) {
 	db.Close()
 }
 
-func setOrderAsGood(orderId string) {
-	statement := fmt.Sprintf("update orders set displaying=1 where orderId=%s", orderId);
+func setReviewAsDisplaying(reviewId string) {
+	statement := fmt.Sprintf("update reviews set displaying=1 where reviewId=%s", reviewId);
 	runSql(statement)
 }
 
@@ -110,7 +110,11 @@ func deleteRecord(table string, column string, id string) {
 }
 
 func toInt(obj interface{}) (int) {
-	return int(obj.(float64))
+	if _, isFloat := obj.(float64); isFloat {
+		return int(obj.(float64))
+	} else {
+		return obj.(int)
+	}
 }
 
 func floatToStr(flt interface{}) string {

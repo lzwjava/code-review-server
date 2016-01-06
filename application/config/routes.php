@@ -54,6 +54,11 @@ $route['404_override'] = '';
 $route['translate_uri_dashes'] = FALSE;
 
 $route['orders/(:num)'] = 'orders/update/$1';
-$route['users/([a-zA-Z0-9]+)/orders'] = 'orders/userOrders/$1';
 $route['user/orders'] = 'orders/myOrders';
-$route['orders'] = 'orders/allOrders';
+$route['reviews'] = 'reviews/allReviews';
+$route['reviewers/(\w+)/reviews'] = 'reviews/userReviews/$1';
+
+$route['reviews/(\d+)/tags']['POST'] = 'reviews/addTag/$1';
+$route['reviews/(\d+)/tags/(\d+)']['DELETE'] = 'reviews/removeTag/$1/$2';
+
+$route['reviews/(\d+)'] = 'reviews/view/$1';

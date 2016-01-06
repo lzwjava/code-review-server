@@ -32,7 +32,7 @@ class Reviews extends BaseController
             $this->failure(ERROR_NOT_ALLOW_DO_IT, "当前登录的用户不是该 review 指定的大神");
             return;
         }
-        if ($order->review != null) {
+        if ($order->status == ORDER_STATUS_FINISHED) {
             $this->failure(ERROR_ALREADY_DO_IT, "已经填写过 Review 了, 请编辑相应的 Review");
             return;
         }
@@ -58,7 +58,7 @@ class Reviews extends BaseController
         $reviewId = $_POST[KEY_REVIEW_ID];
         $data = array();
         if (isset($_POST[KEY_CONTENT])) {
-            $data[KEY_CONTENT]= $_POST[KEY_CONTENT];
+            $data[KEY_CONTENT] = $_POST[KEY_CONTENT];
         }
         if (isset($_POST[KEY_TITLE])) {
             $data[KEY_TITLE] = $_POST[KEY_TITLE];
@@ -84,6 +84,47 @@ class Reviews extends BaseController
         }
         $this->reviewDao->update($reviewId, $data);
         $this->succeed($this->reviewDao->getOne($reviewId));
+    }
+
+    public function allReviews()
+    {
+        $displaying = 1;
+        if (isset($_GET[KEY_DISPLAYING])) {
+            $displaying = $_GET[KEY_DISPLAYING];
+        }
+        $skip = $this->getSkip();
+        $limit = $this->getLimit();
+        $reviews = $this->reviewDao->getList($displaying, $skip, $limit);
+        $this->succeed($reviews);
+    }
+
+    public function view($reviewId)
+    {
+        $review = $this->reviewDao->getOne($reviewId);
+        $this->succeed($review);
+    }
+
+    public function userReviews($reviewerId)
+    {
+        $reviews = $this->reviewDao->getListForReviewer($reviewerId,
+            $this->getSkip(), $this->getLimit());
+        $this->succeed($reviews);
+    }
+
+    public function addTag($reviewId)
+    {
+        if ($this->checkIfParamsNotExist($_POST, array(KEY_TAG_ID))) {
+            return;
+        }
+        $tagId = $_POST[KEY_TAG_ID];
+        $this->tagDao->addReviewTag($reviewId, $tagId);
+        $this->succeed($this->tagDao->getReviewTags($reviewId));
+    }
+
+    public function removeTag($reviewId, $tagId)
+    {
+        $this->tagDao->removeReviewTag($reviewId, $tagId);
+        $this->succeed($this->tagDao->getReviewTags($reviewId));
     }
 
 }

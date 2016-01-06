@@ -15,7 +15,7 @@ class BaseDao extends CI_Model
         $this->db->query("SET NAMES UTF8");
     }
 
-    protected function mergeFields($fields)
+    protected function mergeFields($fields, $prefixTableName = null)
     {
         $filedStr = '';
         $first = true;
@@ -25,7 +25,11 @@ class BaseDao extends CI_Model
             } else {
                 $filedStr .= ',';
             }
-            $filedStr .= $field;
+            if ($prefixTableName) {
+                $filedStr .= $prefixTableName . '.' . $field;
+            } else {
+                $filedStr .= $field;
+            }
         }
         return $filedStr;
     }
@@ -37,4 +41,19 @@ class BaseDao extends CI_Model
         $result = $this->db->query($sql, $array)->row();
         return $result;
     }
+
+    protected function getListFromTable($table, $field, $value, $fields = "*", $orderBy = null,
+                                        $skip = 0, $limit = 100)
+    {
+        $order = '';
+        if ($orderBy) {
+            $order = ' order by ' . $orderBy . ' ';
+        }
+        $sql = "SELECT $fields FROM $table WHERE $field=? $order limit $limit offset $skip";
+        $values[] = $value;
+        $result = $this->db->query($sql, $values)->result();
+        return $result;
+    }
+
+
 }

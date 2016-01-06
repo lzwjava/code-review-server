@@ -54,12 +54,6 @@ class OrderDao extends BaseDao
         return $orders;
     }
 
-    function getDisplayingOrders($skip = 0, $limit = 100)
-    {
-        $orders = $this->getOrdersByField(KEY_DISPLAYING, 1, ORDER_STATUS_FINISHED, $skip, $limit);
-        return $orders;
-    }
-
     private function getOrdersOfReviewerWithLearner($reviewerId, $learnerId)
     {
         $fields = $this->getPublicFields();
@@ -85,8 +79,6 @@ class OrderDao extends BaseDao
         foreach ($orders as $order) {
             $order->learner = $this->userDao->findPublicUser(KEY_ID, $order->learnerId);
             $order->reviewer = $this->userDao->findPublicUser(KEY_ID, $order->reviewerId);
-            $order->review = $this->reviewDao->getOneByOrderId($order->orderId);
-            $order->tags = $this->tagDao->getOrderTags($order->orderId);
         }
     }
 

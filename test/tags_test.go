@@ -7,7 +7,6 @@ import (
 	"errors"
 	"github.com/stretchr/testify/assert"
 	"encoding/json"
-	"strconv"
 )
 
 func SetField(obj interface{}, name string, value interface{}) error {
@@ -138,17 +137,24 @@ type Order struct {
 	OrderId int
 }
 
-func TestTags_AddOrderTag(t *testing.T) {
+type Review struct {
+	ReviewId int
+}
+
+func TestTags_AddReviewTag(t *testing.T) {
 	c := NewClient()
 	tag := getTag()
-	_, _, order := addOrder(c)
-	myOrder := Order{}
-	convertToStruct(order, &myOrder)
-	tags := c.callArrayData("orders/tag", url.Values{"op":{"add"}, "tagId":{fmt.Sprintf("%d", tag.TagId)},
-		"orderId":{strconv.Itoa(myOrder.OrderId)}});
+	_, _, _, review := addOrderAndReview(c)
+	myReview := Review{}
+	convertToStruct(review, &myReview)
+	reviewId := floatToStr(myReview.ReviewId)
+	tagId := fmt.Sprintf("%d", tag.TagId)
+	tags := c.callArrayData("reviews/" + reviewId + "/tags", url.Values{"tagId":{tagId}});
 	assert.Equal(t, 1, len(tags))
 
-	theOrder := c.getData("orders/view", url.Values{"orderId":{strconv.Itoa(myOrder.OrderId)}})
-	fmt.Println(theOrder)
-	assert.Equal(t, 1, len((theOrder["tags"]).([]interface{})))
+	theReview := c.getData("reviews/" + reviewId, url.Values{})
+	assert.Equal(t, 1, len((theReview["tags"]).([]interface{})))
+
+	res := c.delete("reviews/" + reviewId + "/tags/" + tagId)
+	assert.Equal(t, 0, len(res["result"].([]interface{})))
 }

@@ -169,26 +169,6 @@ class Orders extends BaseController
         return getToken(16);
     }
 
-    public function tag()
-    {
-        if ($this->checkIfParamsNotExist($_POST, array(KEY_OP, KEY_TAG_ID, KEY_ORDER_ID))) {
-            return;
-        }
-        $op = $_POST[KEY_OP];
-        $tagId = $_POST[KEY_TAG_ID];
-        $orderId = $_POST[KEY_ORDER_ID];
-        if ($op != KEY_OP_ADD && $op != KEY_OP_REMOVE) {
-            $this->failure(ERROR_PARAMETER_ILLEGAL, "无效的操作");
-        } else {
-            if ($op == KEY_OP_ADD) {
-                $this->tagDao->addOrderTag($orderId, $tagId);
-            } else {
-                $this->tagDao->removeOrderTag($orderId, $tagId);
-            }
-            $this->succeed($this->tagDao->getOrderTags($orderId));
-        }
-    }
-
     public function update($orderId)
     {
         if ($this->checkIfParamsNotExist($_POST, array(KEY_STATUS))) {
@@ -222,29 +202,4 @@ class Orders extends BaseController
         $this->succeed();
     }
 
-    public function userOrders($userId)
-    {
-        $skip = $this->getSkip();
-        $limit = $this->getLimit();
-        $this->succeed();
-        $user = $this->userDao->findPublicUserById($userId);
-        if ($user == null) {
-            $this->failure(ERROR_OBJECT_NOT_EXIST, '用户不存在');
-            return;
-        }
-        if ($user->type == KEY_LEARNER_ID) {
-            $this->failure(ERROR_NOT_ALLOW_DO_IT, '只能请求大神的订单案例');
-            return;
-        }
-        $orders = $this->orderDao->getOrdersOfReviewer($userId, ORDER_STATUS_FINISHED, $skip, $limit);
-        $this->succeed($orders);
-    }
-
-    public function allOrders()
-    {
-        $skip = $this->getSkip();
-        $limit = $this->getLimit();
-        $orders = $this->orderDao->getDisplayingOrders($skip, $limit);
-        $this->succeed($orders);
-    }
 }
