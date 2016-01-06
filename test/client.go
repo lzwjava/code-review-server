@@ -34,12 +34,37 @@ func (c *Client) call(path string, params url.Values) (map[string]interface{}) {
 	return c.request("POST", path, params)
 }
 
+
 func (c *Client) get(path string, params url.Values) (map[string]interface{}) {
 	return c.request("GET", path, params)
 }
 
 func (c *Client) delete(path string) (map[string]interface{}) {
 	return c.request("DELETE", path, url.Values{});
+}
+
+func (c *Client) patch(path string, params url.Values) (map[string]interface{}) {
+	return c.request("PATCH", path, params);
+}
+
+func (c *Client) patchData(path string, params url.Values) (map[string]interface{}) {
+	res := c.patch(path, params)
+	return c.resultFromRes(res).(map[string]interface{})
+}
+
+func (c *Client) patchArrayData(path string, params url.Values) ([]interface{}) {
+	res := c.patch(path, params)
+	return c.resultFromRes(res).([]interface{})
+}
+
+func (c *Client) callData(path string, params url.Values) (map[string]interface{}) {
+	res := c.call(path, params)
+	return c.resultFromRes(res).(map[string]interface{})
+}
+
+func (c *Client) callArrayData(path string, params url.Values) ([]interface{}) {
+	res := c.call(path, params)
+	return c.resultFromRes(res).([]interface{})
 }
 
 func (c *Client) deleteData(path string) (map[string]interface{}) {
@@ -85,7 +110,7 @@ func (c *Client) request(method string, path string, params url.Values) (map[str
 	var err error;
 	if (method == "GET") {
 		req, err = http.NewRequest(method, fmt.Sprintf("%s?%s", urlStr, paramStr), nil)
-	} else if (method == "POST") {
+	} else if (method == "POST" || method == "PATCH") {
 		req, err = http.NewRequest(method, urlStr, paramStr)
 		req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
 	} else {
@@ -157,16 +182,6 @@ func (c *Client)resultFromRes(res map[string]interface{}) interface{} {
 	}
 
 	return data
-}
-
-func (c *Client) callData(path string, params url.Values) (map[string]interface{}) {
-	res := c.call(path, params)
-	return c.resultFromRes(res).(map[string]interface{})
-}
-
-func (c *Client) callArrayData(path string, params url.Values) ([]interface{}) {
-	res := c.call(path, params)
-	return c.resultFromRes(res).([]interface{})
 }
 
 // perform the request.

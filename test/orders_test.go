@@ -53,7 +53,7 @@ func TestOrders_View(t *testing.T) {
 		"remark": {"麻烦大神了"}, "reviewerId":{reviewerId}, "codeLines":{"3500"}});
 
 	orderId := floatToStr(order["orderId"])
-	theOrder := c.getData("orders/view", url.Values{"orderId": {orderId}})
+	theOrder := c.getData("orders/" + orderId, url.Values{"orderId": {orderId}})
 
 	assert.Equal(t, floatToStr(theOrder["orderId"]), orderId)
 	assert.Equal(t, theOrder["reviewerId"].(string), reviewerId)
@@ -82,7 +82,7 @@ func TestOrders_consent(t *testing.T) {
 	orderId := floatToStr(order["orderId"])
 	res := c.callData("orders/" + orderId, url.Values{"status":{"consented"}, "orderId":{orderId}})
 	assert.NotNil(t, res)
-	theOrder := c.getData("orders/view", url.Values{"orderId": {orderId}})
+	theOrder := c.getData("orders/" + orderId, url.Values{})
 	assert.NotNil(t, theOrder)
 	assert.Equal(t, "consented", theOrder["status"])
 }
@@ -94,7 +94,7 @@ func TestOrders_reject(t *testing.T) {
 	orderId := floatToStr(order["orderId"])
 	res := c.callData("orders/" + orderId, url.Values{"status": {"rejected"}})
 	assert.NotNil(t, res)
-	theOrder := c.getData("orders/view", url.Values{"orderId": {orderId}})
+	theOrder := c.getData("orders/" + orderId, url.Values{})
 	assert.NotNil(t, theOrder)
 	assert.Equal(t, "rejected", theOrder["status"])
 }

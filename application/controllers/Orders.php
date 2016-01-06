@@ -72,12 +72,8 @@ class Orders extends BaseController
         $this->succeed($order);
     }
 
-    function view()
+    function view($orderId)
     {
-        if ($this->checkIfParamsNotExist($_GET, array(KEY_ORDER_ID))) {
-            return;
-        }
-        $orderId = $_GET[KEY_ORDER_ID];
         $order = $this->orderDao->getOne($orderId);
         if ($this->checkIfObjectNotExists($order)) {
             return;
@@ -85,12 +81,11 @@ class Orders extends BaseController
         $this->succeed($order);
     }
 
-    public function reward()
+    public function reward($orderId)
     {
-        if ($this->checkIfParamsNotExist($_POST, array(KEY_ORDER_ID, KEY_AMOUNT))) {
+        if ($this->checkIfParamsNotExist($_POST, array(KEY_AMOUNT))) {
             return;
         }
-        $orderId = $_POST[KEY_ORDER_ID];
         $amount = $this->castToNumber($_POST[KEY_AMOUNT]);
         if (is_int($amount) == false) {
             $this->failure(ERROR_AMOUNT_UNIT, 'amount 必须为整数, 单位为分钱. 例如 10 元, amount = 1000.');

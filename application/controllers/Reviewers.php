@@ -8,12 +8,8 @@
  */
 class Reviewers extends BaseController
 {
-    public function valid()
+    public function valid($id)
     {
-        if ($this->checkIfParamsNotExist($_GET, array(KEY_ID))) {
-            return;
-        }
-        $id = $_GET[KEY_ID];
         $result = $this->reviewerDao->setReviewerValid($id);
         if ($result) {
             $this->succeed();
@@ -30,12 +26,8 @@ class Reviewers extends BaseController
         $this->succeed($list);
     }
 
-    public function view()
+    public function view($id)
     {
-        if ($this->checkIfParamsNotExist($_GET, array(KEY_ID))) {
-            return;
-        }
-        $id = $_GET[KEY_ID];
         $reviewer = $this->reviewerDao->getOne($id);
         if ($this->checkIfObjectNotExists($reviewer)) {
             return;

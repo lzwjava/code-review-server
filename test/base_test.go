@@ -71,7 +71,7 @@ func md5password(password string) string {
 }
 
 func validReviewer(c *Client, reviewerId string) {
-	c.getData("reviewers/valid", url.Values{"id": {reviewerId}})
+	c.getData("reviewers/" + reviewerId + "/valid", url.Values{})
 }
 
 func deleteTable(table string) {
@@ -139,14 +139,13 @@ func addOrderAndReward(c *Client) (map[string]interface{}, map[string]interface{
 }
 
 func reward(c *Client, orderId string) {
-	rewardRes := c.call("orders/reward", url.Values{"orderId": {orderId},
-		"amount": {"500"}})
+	rewardRes := c.call("orders/" + orderId + "/reward", url.Values{"amount": {"500"}})
 	orderNo := rewardRes["order_no"].(string)
 	c.callWithStr("rewards/callback", testCallbackStr(orderNo, orderId, 500))
 }
 
 func addReview(c *Client, orderId string) (map[string]interface{}) {
-	return c.callData("reviews/add", url.Values{"orderId": {orderId},
+	return c.callData("reviews", url.Values{"orderId": {orderId},
 		"content": {"代码写得不错！"}, "title":{"记一次动画效果"}})
 }
 

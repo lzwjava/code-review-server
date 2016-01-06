@@ -53,15 +53,23 @@ $route['default_controller'] = 'welcome';
 $route['404_override'] = '';
 $route['translate_uri_dashes'] = FALSE;
 
-$route['orders/(:num)'] = 'orders/update/$1';
-$route['user/orders'] = 'orders/myOrders';
-$route['reviews'] = 'reviews/allReviews';
-$route['reviewers/(\w+)/reviews'] = 'reviews/userReviews/$1';
-
 $route['user/tags']['POST'] = 'user/addTag';
 $route['user/tags/(\d+)']['DELETE'] = 'user/removeTag/$1';
 
+$route['orders']['POST'] = 'orders/add';
+$route['orders/(\d+)']['POST'] = 'orders/update/$1';
+$route['orders/(\d+)']['GET'] = 'orders/view/$1';
+$route['orders/(\d+)/reward']['POST'] = 'orders/reward/$1';
+$route['user/orders']['GET'] = 'orders/myOrders';
+
+$route['reviewers/(\w+)/valid']['GET'] = 'reviewers/valid/$1';
+$route['reviewers/(\w+)']['GET'] = 'reviewers/view/$1';
+
+$route['reviewers/(\w+)/reviews']['GET'] = 'reviews/userReviews/$1';
+$route['reviews']['GET'] = 'reviews/allReviews';
 $route['reviews/(\d+)/tags']['POST'] = 'reviews/addTag/$1';
 $route['reviews/(\d+)/tags/(\d+)']['DELETE'] = 'reviews/removeTag/$1/$2';
+$route['reviews/(\d+)']['POST'] = 'reviews/update/$1';
+$route['reviews']['POST'] = 'reviews/add';
+$route['reviews/(\d+)']['GET'] = 'reviews/view/$1';
 
-$route['reviews/(\d+)'] = 'reviews/view/$1';

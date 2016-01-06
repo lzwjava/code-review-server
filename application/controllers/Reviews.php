@@ -47,15 +47,11 @@ class Reviews extends BaseController
         $this->succeed($this->reviewDao->getOne($insertId));
     }
 
-    public function edit()
+    public function update($reviewId)
     {
-        if ($this->checkIfParamsNotExist($_POST, array(KEY_REVIEW_ID))) {
-            return;
-        }
         if ($this->checkIfNotAtLeastOneParam($_POST, array(KEY_CONTENT, KEY_TITLE))) {
             return;
         }
-        $reviewId = $_POST[KEY_REVIEW_ID];
         $data = array();
         if (isset($_POST[KEY_CONTENT])) {
             $data[KEY_CONTENT] = $_POST[KEY_CONTENT];
