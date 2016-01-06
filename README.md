@@ -8,10 +8,28 @@ Install dependencies: composer install, composer update
 
 ### 快速参考
 
-描述 | 请求  | 返回
------|------|--------------
-移除领域| DELETE /user/tags/:tagId | 剩余的 tags 数组
-添加领域| POST /user/tags  tagId=10| 当前 tags 数组
+描述 |方法|请求  |参数|返回
+-----|----|------|----|----
+注册|POST|/user/register|mobilePhoneNumber,username,smsCode,password,type| 注册的用户
+登录|POST|/user/login |mobilePhoneNumber,password|登录用户
+更新用户信息|POST|/user/update|company,jobTitle,gitHubUsername,introduction,avatarUrl,maxOrders...|更新后的用户
+获取当前用户|POST|/user/self||当前用户
+移除领域|DELETE| /user/tags/:tagId|| 剩余的 tags 数组
+添加领域|POST|/user/tags |tagId| 当前 tags 数组
+创建审核订单|POST|/orders/add|gitHubUrl,remark,reviewerId,codeLines|新创建的订单
+查看我的订单|GET|/user/orders|status,skip,limit|订单数组
+查看一个订单|GET|/orders/view|orderId|
+接手订单|POST|/orders/:orderId | status=consented |
+拒绝订单|POST|/orders/:orderId | status=rejected |
+七牛token|GET|/qiniu/token||
+大神列表|GET|/reviewers |skip,limit|
+查看一个大神|GET|/reviewers/view|id|
+创建审核|POST|/reviews/add|orderId,content,title|
+更新审核|POST|/reviews/edit|reviewId,content,title|
+精选审核案例|GET|/reviews | displaying,skip,limit|
+一个大神的审核案例|GET|/reviewers/:reviewerId/reviews | skip,limit
+打赏|POST|orders/reward|orderId,amount
+
 
 ## user
 
