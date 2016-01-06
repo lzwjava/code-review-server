@@ -120,13 +120,14 @@ func TestTags_AddUserTag(t *testing.T) {
 	c := NewClient()
 	registerLearner(c)
 	tag := getTag()
-	tags := c.callArrayData("user/tag", url.Values{"op":{"add"}, "tagId":{fmt.Sprintf("%d", tag.TagId)}})
+	tagId := fmt.Sprintf("%d", tag.TagId)
+	tags := c.callArrayData("user/tags", url.Values{"tagId":{tagId}})
 	assert.Equal(t, 1, len(tags))
 
 	learner := c.callData("user/self", url.Values{})
 	assert.Equal(t, 1, len(learner["tags"].([]interface{})))
 
-	tags = c.callArrayData("user/tag", url.Values{"op":{"remove"}, "tagId":{fmt.Sprintf("%d", tag.TagId)}})
+	tags = c.deleteArrayData("user/tags/" + tagId)
 	assert.Equal(t, 0, len(tags))
 
 	learner = c.callData("user/self", url.Values{})

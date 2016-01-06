@@ -42,6 +42,16 @@ func (c *Client) delete(path string) (map[string]interface{}) {
 	return c.request("DELETE", path, url.Values{});
 }
 
+func (c *Client) deleteData(path string) (map[string]interface{}) {
+	var res = c.delete(path)
+	return c.resultFromRes(res).(map[string]interface{})
+}
+
+func (c *Client) deleteArrayData(path string) ([]interface{}) {
+	var res = c.delete(path)
+	return c.resultFromRes(res).([]interface{})
+}
+
 func (c *Client) getData(path string, params url.Values) (map[string]interface{}) {
 	var res = c.get(path, params)
 	return c.resultFromRes(res).(map[string]interface{})
@@ -86,7 +96,7 @@ func (c *Client) request(method string, path string, params url.Values) (map[str
 		req.Header.Set("X-CR-Session", c.sessionToken)
 	}
 
-	fmt.Println("curl", urlStr, params)
+	fmt.Println("curl -X", method, urlStr, params)
 
 	body, doErr := c.do(req)
 	checkErr(doErr)

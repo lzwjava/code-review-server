@@ -58,6 +58,9 @@ $route['user/orders'] = 'orders/myOrders';
 $route['reviews'] = 'reviews/allReviews';
 $route['reviewers/(\w+)/reviews'] = 'reviews/userReviews/$1';
 
+$route['user/tags']['POST'] = 'user/addTag';
+$route['user/tags/(\d+)']['DELETE'] = 'user/removeTag/$1';
+
 $route['reviews/(\d+)/tags']['POST'] = 'reviews/addTag/$1';
 $route['reviews/(\d+)/tags/(\d+)']['DELETE'] = 'reviews/removeTag/$1/$2';
 
