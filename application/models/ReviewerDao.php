@@ -37,7 +37,7 @@ $skip";
     private function mergeCount($reviewer)
     {
         $reviewer->orderCount = $this->orderDao->countFinishOrders($reviewer->id);
-        $reviewer->rewardCount = $this->rewardDao->countRewards($reviewer->id);
+        $reviewer->rewardCount = $this->rewardDao->countRewardsByReviewerId($reviewer->id);
         $reviewer->busy = $this->isReviewerBusy($reviewer);
         $this->userDao->mergeTags($reviewer);
     }

@@ -32,7 +32,7 @@ class RewardDao extends BaseDao
         return $insertId;
     }
 
-    function countRewards($reviewerId)
+    function countRewardsByReviewerId($reviewerId)
     {
         $sql = "SELECT count(*) AS cnt FROM rewards LEFT JOIN orders ON orders.orderId = rewards.orderId
                 WHERE reviewerId=?";

@@ -153,6 +153,7 @@ func addOrderAndReview(c *Client) (map[string]interface{}, map[string]interface{
 map[string]interface{}) {
 	reviewer, learner, order := addOrder(c)
 	orderId := floatToStr(order["orderId"])
+	reward(c, orderId)
 	c.sessionToken = reviewer["sessionToken"].(string)
 	review := addReview(c, orderId)
 	return reviewer, learner, order, review

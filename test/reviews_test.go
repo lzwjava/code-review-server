@@ -63,8 +63,14 @@ func TestReviews_all(t *testing.T) {
 	_, _, _, review := addOrderAndReview(c)
 	reviewId := floatToStr(review["reviewId"])
 	setReviewAsDisplaying(reviewId)
+
+	orderId := floatToStr(review["orderId"])
+	reward(c, orderId)
+
 	res := c.getArrayData("reviews", url.Values{})
 	assert.Equal(t, 1, len(res));
+	theReview := res[0].(map[string]interface{})
+	assert.Equal(t, 2, toInt(theReview["rewardCount"]))
 
 	res = c.getArrayData("reviews", url.Values{"skip": {"1"}})
 	assert.Equal(t, 0, len(res));
@@ -79,6 +85,8 @@ func TestReviews_userReviews(t *testing.T) {
 	reviewerId := reviewer["id"].(string)
 	res := c.getArrayData("reviewers/" + reviewerId + "/reviews", url.Values{});
 	assert.Equal(t, 1, len(res))
+	theReview := res[0].(map[string]interface{})
+	assert.Equal(t, 1, toInt(theReview["rewardCount"]))
 
 	res = c.getArrayData("reviewers/" + reviewerId + "/reviews", url.Values{"limit": {"0"}});
 	assert.Equal(t, 0, len(res))

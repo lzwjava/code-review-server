@@ -65,8 +65,11 @@ class ReviewDao extends BaseDao
     function getList($displaying = 1, $skip, $limit)
     {
         $fields = $this->getPublicFields();
-        $reviews = $this->getListFromTable(TABLE_REVIEWS, KEY_DISPLAYING, $displaying, $fields,
-            'updated DESC', $skip, $limit);
+        $sql = "SELECT $fields,count(rewards.orderId) as rewardCount FROM reviews
+                 left JOIN rewards USING(orderId)
+                 WHERE displaying=?  group by orderId ORDER BY reviews.created DESC limit $limit offset $skip";
+        $array[] = $displaying;
+        $reviews = $this->db->query($sql, $array)->result();
         $this->mergeChildrenOfReviews($reviews);
         return $reviews;
     }
@@ -81,8 +84,9 @@ class ReviewDao extends BaseDao
     function getListForReviewer($reviewerId, $skip, $limit)
     {
         $fields = $this->getPublicFields();
-        $sql = "select $fields from reviews join orders USING (orderId) " .
-            "where reviewerId=? limit $limit offset $skip";
+        $sql = "select $fields,count(rewards.orderId) as rewardCount from reviews
+                join orders USING (orderId) left JOIN rewards USING(orderId)
+                where reviewerId=? GROUP BY orderId ORDER BY reviews.created DESC limit $limit offset $skip";
         $values[] = $reviewerId;
         $reviews = $this->db->query($sql, $values)->result();
         $this->mergeChildrenOfReviews($reviews);
