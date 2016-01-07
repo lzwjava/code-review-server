@@ -17,7 +17,9 @@ class ReviewDao extends BaseDao
             KEY_TITLE,
             KEY_CONTENT,
             KEY_CREATED,
-            KEY_UPDATED
+            KEY_UPDATED,
+            KEY_DISPLAYING,
+            KEY_COVER_URL
         ), TABLE_REVIEWS);
     }
 

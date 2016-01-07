@@ -95,6 +95,11 @@ class Reviews extends BaseController
         $this->succeed($review);
     }
 
+    public function viewByOrder_get($orderId) {
+        $review = $this->reviewDao->getOneByOrderId($orderId);
+        $this->succeed($review);
+    }
+
     public function userReviews_get($reviewerId)
     {
         $reviews = $this->reviewDao->getListForReviewer($reviewerId,

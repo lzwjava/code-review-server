@@ -20,6 +20,9 @@ func TestReviews_AddReview(t *testing.T) {
 	assert.NotNil(t, reviewRes["reviewId"])
 	assert.Equal(t, "代码写得不错！", reviewRes["content"])
 	assert.Equal(t, "记一次动画效果", reviewRes["title"])
+	assert.NotNil(t, reviewRes["displaying"])
+	_, has := reviewRes["coverUrl"]
+	assert.Equal(t, true, has)
 }
 
 func TestReviews_Duplicate(t *testing.T) {
@@ -79,4 +82,12 @@ func TestReviews_userReviews(t *testing.T) {
 
 	res = c.getArrayData("reviewers/" + reviewerId + "/reviews", url.Values{"limit": {"0"}});
 	assert.Equal(t, 0, len(res))
+}
+
+func TestReviews_ViewByOrderId(t *testing.T) {
+	c := NewClient()
+	_, _, order, review := addOrderAndReview(c)
+	orderId := floatToStr(order["orderId"])
+	res := c.getData("orders/" + orderId + "/review", url.Values{})
+	assert.Equal(t, review["reviewId"], res["reviewId"])
 }

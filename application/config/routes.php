@@ -60,6 +60,7 @@ $route['orders']['POST'] = 'orders/add';
 $route['orders/(\d+)']['POST'] = 'orders/update/$1';
 $route['orders/(\d+)']['GET'] = 'orders/view/$1';
 $route['orders/(\d+)/reward']['POST'] = 'orders/reward/$1';
+$route['orders/(\d+)/review'] = 'reviews/viewByOrder/$1';
 $route['user/orders']['GET'] = 'orders/myOrders';
 
 $route['reviewers/(\w+)/valid']['GET'] = 'reviewers/valid/$1';
