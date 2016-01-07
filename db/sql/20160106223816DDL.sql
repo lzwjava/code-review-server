@@ -6,10 +6,11 @@ AFTER `content` /
 ALTER TABLE `orders` DROP COLUMN `coverUrl` /
 
 ALTER TABLE `reviews` ADD COLUMN `coverUrl` VARCHAR(255)
-AFTER `displaying`
+AFTER `displaying` /
 
 DROP TABLE IF EXISTS `orders_tags` /
 
+DROP TABLE IF EXISTS `reviews_tags` /
 CREATE TABLE `reviews_tags` (
   `id`       INT(11) UNSIGNED NOT NULL AUTO_INCREMENT,
   `reviewId` INT(11)          NOT NULL,
