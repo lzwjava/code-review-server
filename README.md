@@ -13,7 +13,7 @@ Install dependencies: composer install, composer update
 注册|POST|/user/register|mobilePhoneNumber,username,smsCode,password,type| 注册的用户
 登录|POST|/user/login |mobilePhoneNumber,password|登录用户
 更新用户信息|POST|/user/update|company,jobTitle,gitHubUsername,introduction,avatarUrl,maxOrders...|更新后的用户
-获取当前用户|POST|/user/self||当前用户
+获取当前用户|GET|/user/self||当前用户
 移除领域|DELETE| /user/tags/:tagId|| 剩余的 tags 数组
 添加领域|POST|/user/tags |tagId| 当前 tags 数组
 创建审核订单|POST|/orders|gitHubUrl,remark,reviewerId,codeLines|新创建的订单
