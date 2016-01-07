@@ -10,6 +10,7 @@ Install dependencies: composer install, composer update
 
 描述 |方法|请求  |参数|返回
 -----|----|------|----|----
+发送验证码|POST|user/requestSmsCode|mobilePhoneNumber|
 注册|POST|/user/register|mobilePhoneNumber,username,smsCode,password,type| 注册的用户
 登录|POST|/user/login |mobilePhoneNumber,password|登录用户
 更新用户信息|POST|/user/update|company,jobTitle,gitHubUsername,introduction,avatarUrl,maxOrders...|更新后的用户
