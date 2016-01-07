@@ -13,7 +13,7 @@ Install dependencies: composer install, composer update
 发送验证码|POST|/user/requestSmsCode|mobilePhoneNumber|
 注册|POST|/user/register|mobilePhoneNumber,username,smsCode,password,type| 注册的用户
 登录|POST|/user/login |mobilePhoneNumber,password|登录用户
-更新用户信息|POST|/user/update|company,jobTitle,gitHubUsername,introduction,avatarUrl,maxOrders...|更新后的用户
+更新用户信息|PATCH|/user|company,jobTitle,gitHubUsername,introduction,avatarUrl,maxOrders...|更新后的用户
 获取当前用户|GET|/user/self||当前用户
 移除领域|DELETE| /user/tags/:tagId|| 剩余的 tags 数组
 添加领域|POST|/user/tags |tagId| 当前 tags 数组
@@ -26,7 +26,7 @@ Install dependencies: composer install, composer update
 大神列表|GET|/reviewers |skip,limit|
 查看一个大神|GET|/reviewers/:reviewerId||
 创建审核|POST|/reviews|orderId,content,title|
-更新审核|POST|/reviews/:reviewId|content,title|
+更新审核|PATCH|/reviews/:reviewId|content,title|
 精选审核案例|GET|/reviews | displaying,skip,limit|
 一个大神的审核案例|GET|/reviewers/:reviewerId/reviews | skip,limit
 打赏|POST|orders/:orderId/reward|amount
