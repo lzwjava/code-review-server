@@ -189,4 +189,16 @@ class BaseController extends REST_Controller
     {
         return $genericStringNumber + 0;
     }
+
+    protected function patchParams($selectedKeys)
+    {
+        $toArray = array();
+        foreach ($selectedKeys as $field) {
+            $value = $this->patch($field);
+            if ($value !== null) {
+                $toArray[$field] = $value;
+            }
+        }
+        return $toArray;
+    }
 }

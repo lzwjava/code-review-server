@@ -30,10 +30,9 @@ func unused() {
 	reflect.TypeOf("string")
 }
 
-func (c *Client) call(path string, params url.Values) (map[string]interface{}) {
+func (c *Client) post(path string, params url.Values) (map[string]interface{}) {
 	return c.request("POST", path, params)
 }
-
 
 func (c *Client) get(path string, params url.Values) (map[string]interface{}) {
 	return c.request("GET", path, params)
@@ -57,13 +56,13 @@ func (c *Client) patchArrayData(path string, params url.Values) ([]interface{}) 
 	return c.resultFromRes(res).([]interface{})
 }
 
-func (c *Client) callData(path string, params url.Values) (map[string]interface{}) {
-	res := c.call(path, params)
+func (c *Client) postData(path string, params url.Values) (map[string]interface{}) {
+	res := c.post(path, params)
 	return c.resultFromRes(res).(map[string]interface{})
 }
 
-func (c *Client) callArrayData(path string, params url.Values) ([]interface{}) {
-	res := c.call(path, params)
+func (c *Client) postArrayData(path string, params url.Values) ([]interface{}) {
+	res := c.post(path, params)
 	return c.resultFromRes(res).([]interface{})
 }
 

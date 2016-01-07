@@ -18,12 +18,12 @@ func TestOrders_Reward(t *testing.T) {
 	c.sessionToken = learner["sessionToken"].(string)
 	orderId := floatToStr(order["orderId"])
 
-	rewardRes := c.call("orders/" + orderId + "/reward", url.Values{"amount": {"100"}})
+	rewardRes := c.post("orders/" + orderId + "/reward", url.Values{"amount": {"100"}})
 	assert.NotNil(t, rewardRes)
 	assert.Equal(t, 16, toInt(rewardRes["code"]));
 	assert.Equal(t, "申请者打赏金额至少为 5 元(amount=500)", rewardRes["error"].(string));
 
-	rewardRes = c.call("orders/" + orderId + "/reward", url.Values{"orderId": {orderId},
+	rewardRes = c.post("orders/" + orderId + "/reward", url.Values{"orderId": {orderId},
 		"amount": {"500"}})
 
 	orderNo := rewardRes["order_no"].(string)

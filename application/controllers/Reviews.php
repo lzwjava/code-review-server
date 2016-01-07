@@ -47,18 +47,13 @@ class Reviews extends BaseController
         $this->succeed($this->reviewDao->getOne($insertId));
     }
 
-    public function update_post($reviewId)
+    public function update_patch($reviewId)
     {
-        if ($this->checkIfNotAtLeastOneParam($_POST, array(KEY_CONTENT, KEY_TITLE))) {
+        $keys = array(KEY_CONTENT, KEY_TITLE);
+        if ($this->checkIfNotAtLeastOneParam($this->patch(), $keys)) {
             return;
         }
-        $data = array();
-        if (isset($_POST[KEY_CONTENT])) {
-            $data[KEY_CONTENT] = $_POST[KEY_CONTENT];
-        }
-        if (isset($_POST[KEY_TITLE])) {
-            $data[KEY_TITLE] = $_POST[KEY_TITLE];
-        }
+        $data = $this->patchParams($keys);
         $user = $this->checkAndGetSessionUser();
         if (!$user) {
             return;

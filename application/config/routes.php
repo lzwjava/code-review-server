@@ -69,9 +69,11 @@ $route['reviewers/(\w+)/reviews']['GET'] = 'reviews/userReviews/$1';
 $route['reviews']['GET'] = 'reviews/allReviews';
 $route['reviews/(\d+)/tags']['POST'] = 'reviews/addTag/$1';
 $route['reviews/(\d+)/tags/(\d+)']['DELETE'] = 'reviews/removeTag/$1/$2';
-$route['reviews/(\d+)']['POST'] = 'reviews/update/$1';
+$route['reviews/(\d+)']['PATCH'] = 'reviews/update/$1';
 $route['reviews']['POST'] = 'reviews/add';
 $route['reviews/(\d+)']['GET'] = 'reviews/view/$1';
+
+$route['user']['PATCH'] = 'user/update';
 
 $route['api/example/users/(:num)'] = 'api/example/users/id/$1'; // Example 4
 $route['api/example/users/(:num)(\.)([a-zA-Z0-9_-]+)(.*)'] = 'api/example/users/id/$1/format/$3$4'; // Example 8

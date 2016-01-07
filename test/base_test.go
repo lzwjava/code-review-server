@@ -31,21 +31,21 @@ func checkErr(err error) {
 }
 
 func registerLearner(c *Client) map[string]interface{} {
-	res := c.call("user/register", url.Values{"mobilePhoneNumber": {"1326163092"},
+	res := c.post("user/register", url.Values{"mobilePhoneNumber": {"1326163092"},
 		"username": {"lzwjavaTest"}, "smsCode": {"5555"}, "password":{md5password("123456")}, "type": {"0"}})
 	if (toInt(res["code"]) == 0) {
 		registerRes := res["result"].(map[string]interface{})
 		c.sessionToken = registerRes["sessionToken"].(string)
 		return registerRes
 	} else {
-		loginRes := c.callData("user/login", url.Values{"mobilePhoneNumber": {"1326163092"},
+		loginRes := c.postData("user/login", url.Values{"mobilePhoneNumber": {"1326163092"},
 			"password":{md5password("123456")}});
 		return loginRes
 	}
 }
 
 func registerReviewer(c *Client) map[string]interface{} {
-	res := c.call("user/register", url.Values{"mobilePhoneNumber": {"13261630924"},
+	res := c.post("user/register", url.Values{"mobilePhoneNumber": {"13261630924"},
 		"username": {"lzwjavaReviewer"}, "smsCode": {"5555"}, "password":{md5password("123456")}, "type": {"1"}})
 	if (toInt(res["code"]) == 0) {
 		registerRes := res["result"].(map[string]interface{})
@@ -53,7 +53,7 @@ func registerReviewer(c *Client) map[string]interface{} {
 		validReviewer(c, registerRes["id"].(string))
 		return registerRes
 	} else {
-		loginRes := c.callData("user/login", url.Values{"mobilePhoneNumber": {"13261630924"},
+		loginRes := c.postData("user/login", url.Values{"mobilePhoneNumber": {"13261630924"},
 			"password":{md5password("123456")}});
 		return loginRes
 	}
@@ -127,7 +127,7 @@ func addOrder(c *Client) (map[string]interface{}, map[string]interface{}, map[st
 
 	reviewerId := reviewer["id"].(string)
 
-	order := c.callData("orders/add", url.Values{"gitHubUrl": {"https://github.com/lzwjava/Reveal-In-GitHub"},
+	order := c.postData("orders/add", url.Values{"gitHubUrl": {"https://github.com/lzwjava/Reveal-In-GitHub"},
 		"remark": {"麻烦大神了"}, "reviewerId":{reviewerId}, "codeLines":{"3000"}})
 	return reviewer, learner, order
 }
@@ -139,13 +139,13 @@ func addOrderAndReward(c *Client) (map[string]interface{}, map[string]interface{
 }
 
 func reward(c *Client, orderId string) {
-	rewardRes := c.call("orders/" + orderId + "/reward", url.Values{"amount": {"500"}})
+	rewardRes := c.post("orders/" + orderId + "/reward", url.Values{"amount": {"500"}})
 	orderNo := rewardRes["order_no"].(string)
 	c.callWithStr("rewards/callback", testCallbackStr(orderNo, orderId, 500))
 }
 
 func addReview(c *Client, orderId string) (map[string]interface{}) {
-	return c.callData("reviews", url.Values{"orderId": {orderId},
+	return c.postData("reviews", url.Values{"orderId": {orderId},
 		"content": {"代码写得不错！"}, "title":{"记一次动画效果"}})
 }
 

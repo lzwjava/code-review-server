@@ -121,7 +121,7 @@ func TestTags_AddUserTag(t *testing.T) {
 	registerLearner(c)
 	tag := getTag()
 	tagId := fmt.Sprintf("%d", tag.TagId)
-	tags := c.callArrayData("user/tags", url.Values{"tagId":{tagId}})
+	tags := c.postArrayData("user/tags", url.Values{"tagId":{tagId}})
 	assert.Equal(t, 1, len(tags))
 
 	learner := c.getData("user/self", url.Values{})
@@ -150,7 +150,7 @@ func TestTags_AddReviewTag(t *testing.T) {
 	convertToStruct(review, &myReview)
 	reviewId := floatToStr(myReview.ReviewId)
 	tagId := fmt.Sprintf("%d", tag.TagId)
-	tags := c.callArrayData("reviews/" + reviewId + "/tags", url.Values{"tagId":{tagId}});
+	tags := c.postArrayData("reviews/" + reviewId + "/tags", url.Values{"tagId":{tagId}});
 	assert.Equal(t, 1, len(tags))
 
 	theReview := c.getData("reviews/" + reviewId, url.Values{})

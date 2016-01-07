@@ -18,7 +18,7 @@ func TestOrders_AddOrder(t *testing.T) {
 	reviewerId := reviewer["id"].(string)
 	learnerId := learner["id"].(string)
 
-	order := c.callData("orders/add", url.Values{"gitHubUrl": {"https://github.com/lzwjava/Reveal-In-GitHub"},
+	order := c.postData("orders/add", url.Values{"gitHubUrl": {"https://github.com/lzwjava/Reveal-In-GitHub"},
 		"remark": {"麻烦大神了"}, "reviewerId":{reviewerId}, "codeLines":{"3000"}})
 	assert.Equal(t, "https://github.com/lzwjava/Reveal-In-GitHub", order["gitHubUrl"])
 	assert.Equal(t, "麻烦大神了", order["remark"].(string))
@@ -49,7 +49,7 @@ func TestOrders_View(t *testing.T) {
 	reviewer, _ := registerUsers(c)
 	reviewerId := reviewer["id"].(string);
 
-	order := c.callData("orders/add", url.Values{"gitHubUrl": {"https://github.com/lzwjava/Reveal-In-GitHub"},
+	order := c.postData("orders/add", url.Values{"gitHubUrl": {"https://github.com/lzwjava/Reveal-In-GitHub"},
 		"remark": {"麻烦大神了"}, "reviewerId":{reviewerId}, "codeLines":{"3500"}});
 
 	orderId := floatToStr(order["orderId"])
@@ -63,14 +63,14 @@ func TestOrders_maxOrder(t *testing.T) {
 	cleanTables()
 	c := NewClient()
 	reviewer := registerReviewer(c)
-	res := c.callData("user/update", url.Values{"maxOrders":{"0"}})
+	res := c.patchData("user", url.Values{"maxOrders":{"0"}})
 	assert.Equal(t, 0, toInt(res["maxOrders"]))
 
 	registerLearner(c)
 
 	reviewerId := reviewer["id"].(string)
 
-	order := c.call("orders/add", url.Values{"gitHubUrl": {"https://github.com/lzwjava/Reveal-In-GitHub"},
+	order := c.post("orders/add", url.Values{"gitHubUrl": {"https://github.com/lzwjava/Reveal-In-GitHub"},
 		"remark": {"麻烦大神了"}, "reviewerId":{reviewerId}, "codeLines":{"1000"}})
 	assert.Equal(t, 20, toInt(order["code"]))
 }
@@ -80,7 +80,7 @@ func TestOrders_consent(t *testing.T) {
 	reviewer, _, order := addOrderAndReward(c)
 	c.sessionToken = reviewer["sessionToken"].(string)
 	orderId := floatToStr(order["orderId"])
-	res := c.callData("orders/" + orderId, url.Values{"status":{"consented"}, "orderId":{orderId}})
+	res := c.postData("orders/" + orderId, url.Values{"status":{"consented"}, "orderId":{orderId}})
 	assert.NotNil(t, res)
 	theOrder := c.getData("orders/" + orderId, url.Values{})
 	assert.NotNil(t, theOrder)
@@ -92,7 +92,7 @@ func TestOrders_reject(t *testing.T) {
 	reviewer, _, order := addOrderAndReward(c)
 	c.sessionToken = reviewer["sessionToken"].(string)
 	orderId := floatToStr(order["orderId"])
-	res := c.callData("orders/" + orderId, url.Values{"status": {"rejected"}})
+	res := c.postData("orders/" + orderId, url.Values{"status": {"rejected"}})
 	assert.NotNil(t, res)
 	theOrder := c.getData("orders/" + orderId, url.Values{})
 	assert.NotNil(t, theOrder)

@@ -7,6 +7,7 @@ import (
 	_ "reflect"
 	"net/url"
 	"time"
+	"fmt"
 )
 
 func TestUser_RegisterAndLogin(t *testing.T) {
@@ -14,7 +15,7 @@ func TestUser_RegisterAndLogin(t *testing.T) {
 
 	c := NewClient()
 	md5Str := md5password("123456")
-	res := c.callData("user/register", url.Values{"mobilePhoneNumber": {"1326163092"},
+	res := c.postData("user/register", url.Values{"mobilePhoneNumber": {"1326163092"},
 		"username": {"lzwjavaTest"}, "smsCode": {"5555"}, "password":{md5Str}, "type": {"0"}})
 	assert.Equal(t, "lzwjavaTest", res["username"])
 	assert.NotNil(t, res["id"])
@@ -23,7 +24,7 @@ func TestUser_RegisterAndLogin(t *testing.T) {
 	assert.Equal(t, toInt(res["type"]), 0)
 	assert.NotNil(t, res["tags"]);
 
-	res = c.callData("user/login", url.Values{"mobilePhoneNumber": {"1326163092"},
+	res = c.postData("user/login", url.Values{"mobilePhoneNumber": {"1326163092"},
 		"password": {md5password("123456")}});
 	assert.Equal(t, "lzwjavaTest", res["username"])
 	assert.Equal(t, "1326163092", res["mobilePhoneNumber"])
@@ -37,7 +38,7 @@ func TestUser_Update(t *testing.T) {
 
 	time.Sleep(1000 * time.Millisecond)
 
-	res := c.callData("user/update", url.Values{"username": {"lzwjavaTest1"},
+	res := c.patchData("user", url.Values{"username": {"lzwjavaTest1"},
 		"avatarUrl": {avatarUrl}, "company":{"LeanCloud"},
 		"jobTitle": {"iOS工程师"}, "gitHubUsername": {"lzwjava"}, "introduction": {"一只 iOS 菜鸟"}})
 
@@ -50,7 +51,7 @@ func TestUser_Update(t *testing.T) {
 	assert.NotEqual(t, updated, res["updated"].(string))
 
 	// Same username
-	res = c.callData("user/update", url.Values{"username": {"lzwjavaTest1"}});
+	res = c.patchData("user", url.Values{"username": {"lzwjavaTest1"}});
 	assert.Equal(t, "lzwjavaTest1", res["username"]);
 }
 
@@ -59,7 +60,7 @@ func TestUser_ReviewerUpdate(t *testing.T) {
 	reviewer := registerReviewer(c)
 	assert.NotNil(t, reviewer["maxOrders"])
 
-	res := c.callData("user/update", url.Values{"maxOrders":{"7"}})
+	res := c.patchData("user", url.Values{"maxOrders":{"7"}})
 	assert.Equal(t, 7, toInt(res["maxOrders"]));
 }
 
@@ -67,15 +68,15 @@ func TestUser_ReviewerRegisterAndLogin(t *testing.T) {
 	cleanTables()
 
 	c := NewClient()
-	res := c.callData("user/register", url.Values{"mobilePhoneNumber": {"13261630924"},
+	res := c.postData("user/register", url.Values{"mobilePhoneNumber": {"13261630924"},
 		"username": {"lzwjavaReviewer"}, "smsCode": {"5555"}, "password":{md5password("123456")}, "type": {"1"}})
 
-	res = c.callData("user/update", url.Values{"introduction": {"I'm lzwjava"},
+	res = c.patchData("user", url.Values{"introduction": {"I'm lzwjava"},
 		"experience": {"1"}})
 	assert.Equal(t, "I'm lzwjava", res["introduction"])
 	assert.Equal(t, 1, toInt(res["experience"]))
 
-	result := c.call("user/update", url.Values{"experience": {"100"}})
+	result := c.patch("user", url.Values{"experience": {"100"}})
 	assert.Equal(t, toInt(result["code"]), 15)
 }
 
@@ -85,4 +86,10 @@ func TestUser_Self(t *testing.T) {
 	self := c.getData("user/self", url.Values{})
 	assert.Equal(t, self["id"].(string), learner["id"].(string))
 	assert.Equal(t, self["username"].(string), learner["username"].(string))
+}
+
+func TestUser_requestSmsCode(t *testing.T) {
+	c := NewClient()
+	res := c.post("user/requestSmsCode", url.Values{"mobilePhoneNumber": {"xx"}})
+	fmt.Println(res)
 }
