@@ -124,13 +124,13 @@ func TestTags_AddUserTag(t *testing.T) {
 	tags := c.callArrayData("user/tags", url.Values{"tagId":{tagId}})
 	assert.Equal(t, 1, len(tags))
 
-	learner := c.callData("user/self", url.Values{})
+	learner := c.getData("user/self", url.Values{})
 	assert.Equal(t, 1, len(learner["tags"].([]interface{})))
 
 	tags = c.deleteArrayData("user/tags/" + tagId)
 	assert.Equal(t, 0, len(tags))
 
-	learner = c.callData("user/self", url.Values{})
+	learner = c.getData("user/self", url.Values{})
 	assert.NotNil(t, learner["tags"].([]interface{}));
 }
 

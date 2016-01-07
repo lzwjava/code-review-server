@@ -9,7 +9,7 @@
 class Orders extends BaseController
 {
 
-    function myOrders()
+    function myOrders_get()
     {
         $user = $this->checkAndGetSessionUser();
         if (!$user) {
@@ -30,7 +30,7 @@ class Orders extends BaseController
         $this->succeed($orders);
     }
 
-    function add()
+    function add_post()
     {
         if ($this->checkIfParamsNotExist($_POST, array(KEY_GITHUB_URL, KEY_REMARK,
             KEY_REVIEWER_ID, KEY_CODE_LINES))
@@ -72,7 +72,7 @@ class Orders extends BaseController
         $this->succeed($order);
     }
 
-    function view($orderId)
+    function view_get($orderId)
     {
         $order = $this->orderDao->getOne($orderId);
         if ($this->checkIfObjectNotExists($order)) {
@@ -81,7 +81,7 @@ class Orders extends BaseController
         $this->succeed($order);
     }
 
-    public function reward($orderId)
+    public function reward_post($orderId)
     {
         if ($this->checkIfParamsNotExist($_POST, array(KEY_AMOUNT))) {
             return;
@@ -164,7 +164,7 @@ class Orders extends BaseController
         return getToken(16);
     }
 
-    public function update($orderId)
+    public function update_post($orderId)
     {
         if ($this->checkIfParamsNotExist($_POST, array(KEY_STATUS))) {
             return;

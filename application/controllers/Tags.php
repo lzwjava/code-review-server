@@ -8,7 +8,7 @@
  */
 class Tags extends BaseController
 {
-    public function index()
+    public function index_get()
     {
         $this->succeed($this->tagDao->getList());
     }

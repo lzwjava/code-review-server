@@ -8,7 +8,7 @@
  */
 class Rewards extends BaseController
 {
-    public function callback()
+    public function callback_post()
     {
 
         $content = file_get_contents("php://input");

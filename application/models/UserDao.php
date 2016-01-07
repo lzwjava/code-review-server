@@ -130,8 +130,12 @@ class UserDao extends BaseDao
     {
         $fields = $this->mergeFields(array(KEY_TYPE));
         $user = $this->getOneFromTable(TABLE_USERS, $field, $value, $fields);
-        $type = $user->type;
-        return $this->findActualUser($type, $field, $value);
+        if ($user) {
+            $type = $user->type;
+            return $this->findActualUser($type, $field, $value);
+        } else {
+            return $user;
+        }
     }
 
     // 还用在 ReviewerDao.php

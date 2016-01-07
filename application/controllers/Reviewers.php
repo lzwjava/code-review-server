@@ -8,7 +8,7 @@
  */
 class Reviewers extends BaseController
 {
-    public function valid($id)
+    public function valid_get($id)
     {
         $result = $this->reviewerDao->setReviewerValid($id);
         if ($result) {
@@ -18,7 +18,7 @@ class Reviewers extends BaseController
         }
     }
 
-    public function index()
+    public function index_get()
     {
         $skip = $this->getSkip();
         $limit = $this->getLimit();
@@ -26,7 +26,7 @@ class Reviewers extends BaseController
         $this->succeed($list);
     }
 
-    public function view($id)
+    public function view_get($id)
     {
         $reviewer = $this->reviewerDao->getOne($id);
         if ($this->checkIfObjectNotExists($reviewer)) {

@@ -9,7 +9,7 @@
 class Reviews extends BaseController
 {
 
-    public function add()
+    public function add_post()
     {
         if ($this->checkIfParamsNotExist($_POST, array(KEY_ORDER_ID,
             KEY_CONTENT, KEY_TITLE))
@@ -47,7 +47,7 @@ class Reviews extends BaseController
         $this->succeed($this->reviewDao->getOne($insertId));
     }
 
-    public function update($reviewId)
+    public function update_post($reviewId)
     {
         if ($this->checkIfNotAtLeastOneParam($_POST, array(KEY_CONTENT, KEY_TITLE))) {
             return;
@@ -82,7 +82,7 @@ class Reviews extends BaseController
         $this->succeed($this->reviewDao->getOne($reviewId));
     }
 
-    public function allReviews()
+    public function allReviews_get()
     {
         $displaying = 1;
         if (isset($_GET[KEY_DISPLAYING])) {
@@ -94,20 +94,20 @@ class Reviews extends BaseController
         $this->succeed($reviews);
     }
 
-    public function view($reviewId)
+    public function view_get($reviewId)
     {
         $review = $this->reviewDao->getOne($reviewId);
         $this->succeed($review);
     }
 
-    public function userReviews($reviewerId)
+    public function userReviews_get($reviewerId)
     {
         $reviews = $this->reviewDao->getListForReviewer($reviewerId,
             $this->getSkip(), $this->getLimit());
         $this->succeed($reviews);
     }
 
-    public function addTag($reviewId)
+    public function addTag_post($reviewId)
     {
         if ($this->checkIfParamsNotExist($_POST, array(KEY_TAG_ID))) {
             return;
@@ -117,7 +117,7 @@ class Reviews extends BaseController
         $this->succeed($this->tagDao->getReviewTags($reviewId));
     }
 
-    public function removeTag($reviewId, $tagId)
+    public function removeTag_delete($reviewId, $tagId)
     {
         $this->tagDao->removeReviewTag($reviewId, $tagId);
         $this->succeed($this->tagDao->getReviewTags($reviewId));

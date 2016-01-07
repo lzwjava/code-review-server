@@ -84,7 +84,7 @@ class User extends BaseController
         return false;
     }
 
-    public function register()
+    public function register_post()
     {
         if ($this->checkIfParamsNotExist($_POST, array(KEY_USERNAME, KEY_MOBILE_PHONE_NUMBER,
             KEY_PASSWORD, KEY_TYPE, KEY_SMS_CODE))
@@ -122,7 +122,7 @@ class User extends BaseController
         }
     }
 
-    public function login()
+    public function login_post()
     {
         if ($this->checkIfParamsNotExist($_POST, array(KEY_MOBILE_PHONE_NUMBER, KEY_PASSWORD))) {
             return;
@@ -145,7 +145,7 @@ class User extends BaseController
         $this->succeed($user);
     }
 
-    public function self()
+    public function self_get()
     {
         $user = $this->getSessionUser();
         if ($user == null) {
@@ -157,14 +157,14 @@ class User extends BaseController
         }
     }
 
-    public function logout()
+    public function logout_get()
     {
         session_unset(KEY_COOKIE_TOKEN);
         deleteCookie(KEY_COOKIE_TOKEN);
         $this->succeed();
     }
 
-    public function update()
+    public function update_post()
     {
         if ($this->checkIfNotAtLeastOneParam($_POST, array(KEY_AVATAR_URL, KEY_USERNAME,
             KEY_INTRODUCTION, KEY_EXPERIENCE, KEY_GITHUB_USERNAME, KEY_JOB_TITLE, KEY_COMPANY,
@@ -216,7 +216,7 @@ class User extends BaseController
         $this->succeed($user);
     }
 
-    public function addTag()
+    public function addTag_post()
     {
         if ($this->checkIfParamsNotExist($_POST, array(KEY_TAG_ID))) {
             return;
@@ -225,7 +225,7 @@ class User extends BaseController
         $this->addOrRemoveTag(true, $tagId);
     }
 
-    public function removeTag($tagId)
+    public function removeTag_delete($tagId)
     {
         $this->addOrRemoveTag(false, $tagId);
     }

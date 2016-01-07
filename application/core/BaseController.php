@@ -3,7 +3,9 @@
 if (!defined('BASEPATH'))
     exit ('No direct script access allowed');
 
-class BaseController extends CI_Controller
+require_once APPPATH . '/libraries/REST_Controller.php';
+
+class BaseController extends REST_Controller
 {
 
     function __construct()
@@ -12,7 +14,7 @@ class BaseController extends CI_Controller
         \Pingpp\Pingpp::setApiKey('sk_test_9Giz1SPG8mD4OW94OSTmPGyL');
     }
 
-    protected function response($code, $result = null, $error = null)
+    protected function responseResult($code, $result = null, $error = null)
     {
         if ($result === null) {
             $result = new stdClass;
@@ -25,7 +27,8 @@ class BaseController extends CI_Controller
             'result' => $result,
             'error' => $error
         );
-        $this->responseJSON($arr);
+        $this->response($arr, REST_Controller::HTTP_OK);
+        //$this->responseJSON($arr);
     }
 
     protected function responseJSON($obj)
@@ -37,12 +40,12 @@ class BaseController extends CI_Controller
 
     protected function succeed($resultData = null)
     {
-        $this->response(REQ_OK, $resultData);
+        $this->responseResult(REQ_OK, $resultData);
     }
 
     protected function failure($resultCode, $resultInfo)
     {
-        $this->response($resultCode, null, $resultInfo);
+        $this->responseResult($resultCode, null, $resultInfo);
     }
 
     protected function checkIfParamsNotExist($request, $params)
