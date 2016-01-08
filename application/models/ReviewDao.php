@@ -66,12 +66,13 @@ class ReviewDao extends BaseDao
     private function getReviews($field, $value, $skip, $limit)
     {
         $fields = $this->getPublicFields();
-        $sql = "SELECT $fields,count(rewards.orderId) as rewardCount,
-                 count(review_visits.visitId) as visitCount FROM reviews
+        $sql = "SELECT $fields,
+                 count(distinct(rewards.orderId)) as rewardCount,
+                 count(distinct(review_visits.visitId)) as visitCount FROM reviews
                  left JOIN rewards USING(orderId)
                  left join review_visits USING(reviewId)
                  left join orders using (orderId)
-                 WHERE $field=? group by orderId ORDER BY reviews.created
+                 WHERE $field=? group by reviewId ORDER BY reviews.created
                  DESC limit $limit offset $skip";
         $array[] = $value;
         $reviews = $this->db->query($sql, $array)->result();
