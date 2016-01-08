@@ -22,14 +22,15 @@ Install dependencies: composer install, composer update
 查看一个订单|GET|/orders/:orderId||
 接手订单|POST|/orders/:orderId | status=consented |
 拒绝订单|POST|/orders/:orderId | status=rejected |
+打赏|POST|orders/:orderId/reward|amount
 七牛token|GET|/qiniu/token||
 大神列表|GET|/reviewers |skip,limit|
 查看一个大神|GET|/reviewers/:reviewerId||
 创建审核|POST|/reviews|orderId,content,title|
 更新审核|PATCH|/reviews/:reviewId|content,title|
 精选审核案例|GET|/reviews | displaying,skip,limit|
-一个大神的审核案例|GET|/reviewers/:reviewerId/reviews | skip,limit
-打赏|POST|orders/:orderId/reward|amount
+一个大神的审核案例|GET|/reviewers/:reviewerId/reviews | skip,limit|
+记录案例页阅读数|POST|/reviews/:reviewId/visits|referrer|
 
 
 ## user
