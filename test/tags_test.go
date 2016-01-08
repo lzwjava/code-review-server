@@ -74,15 +74,6 @@ func getTag() Tag {
 	return myTag
 }
 
-func TestTags_Get(t *testing.T) {
-	tag := getTag()
-	assert.NotNil(t, tag)
-	assert.True(t, tag.TagId > 0)
-	assert.NotNil(t, tag.TagName)
-	assert.NotNil(t, tag.Color)
-	//StructTest()
-}
-
 func StructTest() {
 	type t struct {
 		N int
@@ -114,6 +105,15 @@ func StructTest() {
 	}
 	// N at end
 	fmt.Println(n.N)
+}
+
+func TestTags_Get(t *testing.T) {
+	tag := getTag()
+	assert.NotNil(t, tag)
+	assert.True(t, tag.TagId > 0)
+	assert.NotNil(t, tag.TagName)
+	assert.NotNil(t, tag.Color)
+	//StructTest()
 }
 
 func TestTags_AddUserTag(t *testing.T) {

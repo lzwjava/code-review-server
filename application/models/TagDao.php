@@ -7,6 +7,9 @@
  * Time: 下午2:39
  */
 
+
+use \Colors\RandomColor;
+
 require_once(APPPATH . 'helpers/ColorConvert.php');
 
 class TagDao extends BaseDao
@@ -30,7 +33,9 @@ class TagDao extends BaseDao
     {
         $convert = new ColorConvert();
         foreach ($tags as $tag) {
-            $tag->color = $convert->stringToColorCode($tag->tagName);
+            $color = RandomColor::one();
+            $tag->color = substr($color, 1);
+            // $tag->color = $convert->stringToColorCode($tag->tagName);
         }
     }
 
