@@ -95,7 +95,8 @@ class Reviews extends BaseController
         $this->succeed($review);
     }
 
-    public function viewByOrder_get($orderId) {
+    public function viewByOrder_get($orderId)
+    {
         $review = $this->reviewDao->getOneByOrderId($orderId);
         $this->succeed($review);
     }
@@ -122,5 +123,6 @@ class Reviews extends BaseController
         $this->tagDao->removeReviewTag($reviewId, $tagId);
         $this->succeed($this->tagDao->getReviewTags($reviewId));
     }
+
 
 }

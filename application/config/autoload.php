@@ -83,7 +83,7 @@ $autoload['drivers'] = array();
 |
 |	$autoload['helper'] = array('url', 'file');
 */
-$autoload['helper'] = array();
+$autoload['helper'] = array('base');
 
 /*
 | -------------------------------------------------------------------
@@ -128,5 +128,3 @@ $autoload['language'] = array();
 */
 $autoload['model'] = array('BaseDao', 'userDao', 'reviewerDao', 'orderDao',
     'reviewDao', 'rewardDao', 'chargeDao', 'tagDao');
-
-require_once(APPPATH . "core/Utils.php");

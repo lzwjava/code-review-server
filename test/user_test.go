@@ -36,7 +36,7 @@ func TestUser_Update(t *testing.T) {
 	updated := learner["updated"].(string)
 	avatarUrl := "http://7xotd0.com1.z0.glb.clouddn.com/header_logo.png"
 
-	time.Sleep(1000 * time.Millisecond)
+	time.Sleep(time.Second)
 
 	res := c.patchData("user", url.Values{"username": {"lzwjavaTest1"},
 		"avatarUrl": {avatarUrl}, "company":{"LeanCloud"},

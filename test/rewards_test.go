@@ -27,7 +27,7 @@ func TestOrders_Reward(t *testing.T) {
 		"amount": {"500"}})
 
 	orderNo := rewardRes["order_no"].(string)
-	callbackRes := c.callWithStr("rewards/callback", testCallbackStr(orderNo, orderId, 5000))
+	callbackRes := c.postWithStr("rewards/callback", testCallbackStr(orderNo, orderId, 5000))
 	assert.Equal(t, toInt(callbackRes["code"]), 0);
 
 	theOrder := c.getData("orders/" + orderId, url.Values{})

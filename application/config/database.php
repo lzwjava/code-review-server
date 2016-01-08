@@ -71,7 +71,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 | the query builder class.
 */
 
-if (getenv('CRDEBUG')) {
+if (isLocalDebug()) {
 	$active_group = 'lzwjava';
 } else {
 	$active_group = 'default';

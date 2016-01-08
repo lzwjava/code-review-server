@@ -49,11 +49,12 @@ class ReviewDao extends BaseDao
 
     function getOneFromReviews($field, $value)
     {
-        $review = $this->getOneFromTable(TABLE_REVIEWS, $field, $value, $this->getPublicFields());
-        if ($review) {
-            $this->mergeChildrenOfReviews(array($review));
+        $reviews = $this->getReviews($field, $value, 0, 1);
+        if (count($reviews) > 0) {
+            return $reviews[0];
+        } else {
+            return null;
         }
-        return $review;
     }
 
     function update($reviewId, $data)
@@ -62,16 +63,25 @@ class ReviewDao extends BaseDao
         $this->db->update(TABLE_REVIEWS, $data);
     }
 
-    function getList($displaying = 1, $skip, $limit)
+    private function getReviews($field, $value, $skip, $limit)
     {
         $fields = $this->getPublicFields();
-        $sql = "SELECT $fields,count(rewards.orderId) as rewardCount FROM reviews
+        $sql = "SELECT $fields,count(rewards.orderId) as rewardCount,
+                 count(review_visits.visitId) as visitCount FROM reviews
                  left JOIN rewards USING(orderId)
-                 WHERE displaying=?  group by orderId ORDER BY reviews.created DESC limit $limit offset $skip";
-        $array[] = $displaying;
+                 left join review_visits USING(reviewId)
+                 left join orders using (orderId)
+                 WHERE $field=? group by orderId ORDER BY reviews.created
+                 DESC limit $limit offset $skip";
+        $array[] = $value;
         $reviews = $this->db->query($sql, $array)->result();
         $this->mergeChildrenOfReviews($reviews);
         return $reviews;
+    }
+
+    function getList($displaying = 1, $skip, $limit)
+    {
+        return $this->getReviews(KEY_DISPLAYING, $displaying, $skip, $limit);
     }
 
     private function mergeChildrenOfReviews($reviews)
@@ -83,13 +93,6 @@ class ReviewDao extends BaseDao
 
     function getListForReviewer($reviewerId, $skip, $limit)
     {
-        $fields = $this->getPublicFields();
-        $sql = "select $fields,count(rewards.orderId) as rewardCount from reviews
-                join orders USING (orderId) left JOIN rewards USING(orderId)
-                where reviewerId=? GROUP BY orderId ORDER BY reviews.created DESC limit $limit offset $skip";
-        $values[] = $reviewerId;
-        $reviews = $this->db->query($sql, $values)->result();
-        $this->mergeChildrenOfReviews($reviews);
-        return $reviews;
+        return $this->getReviews(KEY_REVIEWER_ID, $reviewerId, $skip, $limit);
     }
 }

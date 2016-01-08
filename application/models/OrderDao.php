@@ -20,7 +20,7 @@ class OrderDao extends BaseDao
             KEY_STATUS,
             KEY_REMARK,
             KEY_CREATED,
-            KEY_UPDATED));
+            KEY_UPDATED), TABLE_ORDERS);
     }
 
     private function getOrdersByField($field, $value, $status = null, $skip, $limit)
@@ -31,7 +31,8 @@ class OrderDao extends BaseDao
         } else {
             $statusSql = ' AND status = ? ';
         }
-        $sql = "SELECT $fields FROM orders WHERE $field = ? $statusSql
+        $sql = "SELECT $fields,charges.amount FROM orders LEFT JOIN rewards USING(orderId)
+                LEFT JOIN charges USING(chargeId) WHERE $field = ? $statusSql
                 ORDER BY updated DESC limit $limit  offset $skip";
         $array[] = $value;
         if ($status !== null) {
@@ -103,14 +104,8 @@ class OrderDao extends BaseDao
 
     function getOne($orderId)
     {
-        $fields = $this->getPublicFields();
-        $sql = "SELECT $fields FROM orders WHERE orders.orderId = ?";
-        $array[] = $orderId;
-        $order = $this->db->query($sql, $array)->row();
-        if ($order) {
-            $this->mergeChildrenOfOrders(array($order));
-        }
-        return $order;
+        $orders = $this->getOrdersByField(KEY_ORDER_ID, $orderId, null, 0, 1);
+        return count($orders) ? $orders[0] : null;
     }
 
     function add($gitHubUrl, $remark, $reviewerId, $learnerId, $codeLines)

@@ -71,6 +71,7 @@ func TestReviews_all(t *testing.T) {
 	assert.Equal(t, 1, len(res));
 	theReview := res[0].(map[string]interface{})
 	assert.Equal(t, 2, toInt(theReview["rewardCount"]))
+	assert.Equal(t, 0, toInt(theReview["visitCount"]))
 
 	res = c.getArrayData("reviews", url.Values{"skip": {"1"}})
 	assert.Equal(t, 0, len(res));

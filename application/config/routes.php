@@ -73,6 +73,7 @@ $route['reviews/(\d+)/tags/(\d+)']['DELETE'] = 'reviews/removeTag/$1/$2';
 $route['reviews/(\d+)']['PATCH'] = 'reviews/update/$1';
 $route['reviews']['POST'] = 'reviews/add';
 $route['reviews/(\d+)']['GET'] = 'reviews/view/$1';
+$route['reviews/(\d+)/visits']['POST'] = 'visits/visitReview/$1';
 
 $route['user']['PATCH'] = 'user/update';
 

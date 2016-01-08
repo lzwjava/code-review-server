@@ -207,7 +207,15 @@ $config['directory_trigger'] = 'd';
 | your log files will fill up very fast.
 |
 */
-if (getenv('CRDEBUG')) {
+
+if (!function_exists('isLocalDebug')) {
+    function isLocalDebug()
+    {
+        return getenv("CRDEBUG");
+    }
+}
+
+if (isLocalDebug()) {
     $config['log_threshold'] = 2;
 } else {
     $config['log_threshold'] = 1;
@@ -222,7 +230,7 @@ if (getenv('CRDEBUG')) {
 | application/logs/ directory. Use a full server path with trailing slash.
 |
 */
-if (getenv('CRDEBUG')) {
+if (isLocalDebug()) {
     $config['log_path'] = '/Users/lzw/code-review/logs/';
 } else {
     $config['log_path'] = '/home/code-review-logs/';

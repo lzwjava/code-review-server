@@ -111,6 +111,7 @@ define('TYPE_REVIEWER', 1);
 define('TYPE_LEARNER', 0);
 
 define('KEY_COOKIE_TOKEN', 'crtoken');
+define('COOKIE_VID', 'vid');
 define('KEY_SESSION_HEADER', 'X-CR-Session');
 
 define('KEY_SKIP', 'skip');
@@ -203,3 +204,9 @@ define('KEY_USER_ID', 'userId');
 
 define('STATUS_OP_CONSENT', 'consent');
 define('STATUS_OP_REJECT', 'reject');
+
+// review_visits table
+define('TABLE_REVIEW_VISITS', 'review_visits');
+define('KEY_VISITOR_ID', 'visitorId');
+define('KEY_REFERRER', 'referrer');
+define('KEY_VISIT_ID', 'visitId');

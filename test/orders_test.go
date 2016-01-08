@@ -53,7 +53,7 @@ func TestOrders_View(t *testing.T) {
 		"remark": {"麻烦大神了"}, "reviewerId":{reviewerId}, "codeLines":{"3500"}});
 
 	orderId := floatToStr(order["orderId"])
-	theOrder := c.getData("orders/" + orderId, url.Values{"orderId": {orderId}})
+	theOrder := c.getData("orders/" + orderId, url.Values{})
 
 	assert.Equal(t, floatToStr(theOrder["orderId"]), orderId)
 	assert.Equal(t, theOrder["reviewerId"].(string), reviewerId)
@@ -97,4 +97,12 @@ func TestOrders_reject(t *testing.T) {
 	theOrder := c.getData("orders/" + orderId, url.Values{})
 	assert.NotNil(t, theOrder)
 	assert.Equal(t, "rejected", theOrder["status"])
+}
+
+func TestOrders_amount(t *testing.T) {
+	c := NewClient()
+	_, _, order := addOrderAndReward(c)
+	orderId := floatToStr(order["orderId"])
+	theOrder := c.getData("orders/" + orderId, url.Values{})
+	assert.NotNil(t, theOrder["amount"])
 }

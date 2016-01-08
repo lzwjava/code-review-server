@@ -32,7 +32,7 @@ if (!function_exists('uuid')) {
 if (!function_exists('setCookieForever')) {
     function setCookieForever($name, $value)
     {
-        setcookie($name, $value, time() + 3600 * 24 * 165 * 20, "/");
+        setcookie($name, $value, time() + 3600 * 24 * 365 * 20, "/");
     }
 }
 
@@ -67,8 +67,9 @@ if (!function_exists('deleteCookie')) {
 }
 
 if (!function_exists('logInfo')) {
-    function logInfo($info) {
-        if (getenv('CRDEBUG')) {
+    function logInfo($info)
+    {
+        if (isLocalDebug()) {
             error_log($info);
         } else {
             log_message('error', $info);

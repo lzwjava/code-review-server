@@ -128,10 +128,17 @@ class Orders extends BaseController
             // local debug case
             $ipAddress = '127.0.0.1';
         }
+        if (isLocalDebug()) {
+            // CodeReviewTest
+            $appId = 'app_erTGG4vrzrP008ij';
+        } else {
+            // CodeReviewProd
+            $appId = 'app_XzDynH4qX5u510mz';
+        }
         $ch = \Pingpp\Charge::create(
             array(
                 'order_no' => $orderNo,
-                'app' => array('id' => 'app_erTGG4vrzrP008ij'),
+                'app' => array('id' => $appId),
                 'channel' => 'alipay_qr',
                 'amount' => $amount,
                 'client_ip' => $ipAddress,

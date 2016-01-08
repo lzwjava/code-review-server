@@ -16,7 +16,7 @@ func TestMain(m *testing.M) {
 }
 
 func cleanTables() {
-	tables := []string{"rewards", "reviews", "orders", "charges",
+	tables := []string{"review_visits", "rewards", "reviews", "orders", "charges",
 		"reviews_tags", "users_tags", "reviewers", "learners"}
 	for _, table := range tables {
 		deleteTable(table)
@@ -141,7 +141,7 @@ func addOrderAndReward(c *Client) (map[string]interface{}, map[string]interface{
 func reward(c *Client, orderId string) {
 	rewardRes := c.post("orders/" + orderId + "/reward", url.Values{"amount": {"500"}})
 	orderNo := rewardRes["order_no"].(string)
-	c.callWithStr("rewards/callback", testCallbackStr(orderNo, orderId, 500))
+	c.postWithStr("rewards/callback", testCallbackStr(orderNo, orderId, 500))
 }
 
 func addReview(c *Client, orderId string) (map[string]interface{}) {

@@ -11,16 +11,20 @@ import (
 	"net/url"
 	"strings"
 	"reflect"
+	"net/http/cookiejar"
 )
 
 type Client struct {
 	HTTPClient   *http.Client
 	sessionToken string
+	cookieJar    *cookiejar.Jar
 }
 
 func NewClient() *Client {
+	cookieJar, _ := cookiejar.New(nil)
 	return &Client{
-		HTTPClient: http.DefaultClient,
+		HTTPClient: &http.Client{Jar:cookieJar},
+		cookieJar: cookieJar,
 	}
 }
 
@@ -142,7 +146,7 @@ func (c *Client) request(method string, path string, params url.Values) (map[str
 	return dat
 }
 
-func (c *Client) callWithStr(path string, body string) map[string]interface{} {
+func (c *Client) postWithStr(path string, body string) map[string]interface{} {
 	urlStr := baseUrl(path)
 	req, err := http.NewRequest("POST", urlStr, strings.NewReader(body))
 	checkErr(err)
@@ -187,6 +191,9 @@ func (c *Client)resultFromRes(res map[string]interface{}) interface{} {
 func (c *Client) do(req *http.Request) (io.ReadCloser, error) {
 	res, err := c.HTTPClient.Do(req)
 	checkErr(err)
+
+	//	cookie, cookieErr := req.Cookie("crtoken")
+	//	checkErr(cookieErr)
 
 	if res.StatusCode < 400 {
 		return res.Body, err
