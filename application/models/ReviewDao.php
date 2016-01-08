@@ -80,7 +80,12 @@ class ReviewDao extends BaseDao
         return $reviews;
     }
 
-    function getList($displaying = 1, $skip, $limit)
+    function countReviews($displaying)
+    {
+        return $this->countRows(TABLE_REVIEWS, KEY_DISPLAYING, $displaying);
+    }
+
+    function getDisplayingReviews($displaying = 1, $skip, $limit)
     {
         return $this->getReviews(KEY_DISPLAYING, $displaying, $skip, $limit);
     }

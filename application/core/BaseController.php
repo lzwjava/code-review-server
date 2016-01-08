@@ -14,7 +14,7 @@ class BaseController extends REST_Controller
         \Pingpp\Pingpp::setApiKey('sk_test_9Giz1SPG8mD4OW94OSTmPGyL');
     }
 
-    protected function responseResult($code, $result = null, $error = null)
+    protected function responseResult($code, $result = null, $error = null, $total = null)
     {
         if ($result === null) {
             $result = new stdClass;
@@ -24,9 +24,12 @@ class BaseController extends REST_Controller
         }
         $arr = array(
             'code' => $code,
-            'result' => $result,
-            'error' => $error
+            'result' => $result
         );
+        if ($total !== null) {
+            $arr['total'] = $total;
+        }
+        $arr['error'] = $error;
         $this->response($arr, REST_Controller::HTTP_OK);
         //$this->responseJSON($arr);
     }
@@ -38,9 +41,9 @@ class BaseController extends REST_Controller
             ->set_output(json_encode($obj));
     }
 
-    protected function succeed($resultData = null)
+    protected function succeed($resultData = null, $total = null)
     {
-        $this->responseResult(REQ_OK, $resultData);
+        $this->responseResult(REQ_OK, $resultData, null, $total);
     }
 
     protected function failure($resultCode, $resultInfo)
@@ -48,7 +51,7 @@ class BaseController extends REST_Controller
         $this->responseResult($resultCode, null, $resultInfo);
     }
 
-    protected function checkIfParamsNotExist($request, $params,$checkEmpty = true)
+    protected function checkIfParamsNotExist($request, $params, $checkEmpty = true)
     {
         foreach ($params as $param) {
             if (isset($request[$param]) == false) {

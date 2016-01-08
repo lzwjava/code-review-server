@@ -85,6 +85,11 @@ func (c *Client) getData(path string, params url.Values) (map[string]interface{}
 	return c.resultFromRes(res).(map[string]interface{})
 }
 
+func (c *Client) getListData(path string, params url.Values) ([]interface{}, int) {
+	res := c.get(path, params)
+	return c.resultFromRes(res).([]interface{}), toInt(res["total"])
+}
+
 func (c *Client) getArrayData(path string, params url.Values) ([]interface{}) {
 	var res = c.get(path, params)
 	return c.resultFromRes(res).([]interface{})

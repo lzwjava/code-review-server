@@ -67,11 +67,13 @@ func TestReviews_all(t *testing.T) {
 	orderId := floatToStr(review["orderId"])
 	reward(c, orderId)
 
-	res := c.getArrayData("reviews", url.Values{})
+	res,total := c.getListData("reviews", url.Values{})
 	assert.Equal(t, 1, len(res));
 	theReview := res[0].(map[string]interface{})
 	assert.Equal(t, 1, toInt(theReview["rewardCount"]))
 	assert.Equal(t, 0, toInt(theReview["visitCount"]))
+
+	assert.Equal(t, 1, total);
 
 	res = c.getArrayData("reviews", url.Values{"skip": {"1"}})
 	assert.Equal(t, 0, len(res));

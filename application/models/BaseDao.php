@@ -55,5 +55,12 @@ class BaseDao extends CI_Model
         return $result;
     }
 
+    protected function countRows($table, $field, $value)
+    {
+        $sql = "SELECT count(*) AS cnt FROM $table WHERE $field=?";
+        $array[] = $value;
+        $result = $this->db->query($sql, $array)->row();
+        return $result->cnt;
+    }
 
 }
