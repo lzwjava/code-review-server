@@ -26,3 +26,12 @@ func TestVisits_count(t *testing.T) {
 	theReview := c.getData("reviews/" + reviewId, url.Values{})
 	assert.Equal(t, 3, toInt(theReview["visitCount"]))
 }
+
+func TestVisits_empty(t *testing.T) {
+	c := NewClient()
+	_, _, _, review := addOrderAndReview(c)
+
+	reviewId := floatToStr(review["reviewId"])
+	res := c.postData("reviews/" + reviewId + "/visits", url.Values{"referrer":{""}})
+	assert.NotNil(t, res)
+}

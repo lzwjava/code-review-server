@@ -48,17 +48,19 @@ class BaseController extends REST_Controller
         $this->responseResult($resultCode, null, $resultInfo);
     }
 
-    protected function checkIfParamsNotExist($request, $params)
+    protected function checkIfParamsNotExist($request, $params,$checkEmpty = true)
     {
         foreach ($params as $param) {
             if (isset($request[$param]) == false) {
                 $this->failureOfParam($param);
                 return true;
             }
-            $trim = trim($request[$param]);
-            if ($trim === '') {
-                $this->failureOfParam($param);
-                return true;
+            if ($checkEmpty) {
+                $trim = trim($request[$param]);
+                if ($trim === '') {
+                    $this->failureOfParam($param);
+                    return true;
+                }
             }
         }
         return false;

@@ -34,7 +34,7 @@ class Visits extends BaseController
 
     public function visitReview_post($reviewId)
     {
-        if ($this->checkIfParamsNotExist($this->post(), array(KEY_REFERRER))
+        if ($this->checkIfParamsNotExist($this->post(), array(KEY_REFERRER), false)
         ) {
             return;
         }
