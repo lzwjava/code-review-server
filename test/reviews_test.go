@@ -67,7 +67,7 @@ func TestReviews_all(t *testing.T) {
 	orderId := floatToStr(review["orderId"])
 	reward(c, orderId)
 
-	res,total := c.getListData("reviews", url.Values{})
+	res, total := c.getListData("reviews", url.Values{})
 	assert.Equal(t, 1, len(res));
 	theReview := res[0].(map[string]interface{})
 	assert.Equal(t, 1, toInt(theReview["rewardCount"]))
@@ -100,5 +100,14 @@ func TestReviews_ViewByOrderId(t *testing.T) {
 	_, _, order, review := addOrderAndReview(c)
 	orderId := floatToStr(order["orderId"])
 	res := c.getData("orders/" + orderId + "/review", url.Values{})
+	assert.Equal(t, review["reviewId"], res["reviewId"])
+}
+
+func TestReviews_OrderHaveReviewId(t *testing.T) {
+	c := NewClient()
+	_, _, order, review := addOrderAndReview(c)
+	orderId := floatToStr(order["orderId"])
+	res := c.getData("orders/" + orderId, url.Values{})
+	assert.NotNil(t, res["reviewId"])
 	assert.Equal(t, review["reviewId"], res["reviewId"])
 }

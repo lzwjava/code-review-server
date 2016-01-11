@@ -31,8 +31,8 @@ class OrderDao extends BaseDao
         } else {
             $statusSql = ' AND status = ? ';
         }
-        $sql = "SELECT $fields,charges.amount FROM orders LEFT JOIN rewards USING(orderId)
-                LEFT JOIN charges USING(chargeId) WHERE $field = ? $statusSql
+        $sql = "SELECT $fields,charges.amount,reviewId FROM orders LEFT JOIN rewards USING(orderId)
+                LEFT JOIN charges USING(chargeId) LEFT JOIN reviews USING(orderId) WHERE $field = ? $statusSql
                 ORDER BY updated DESC limit $limit  offset $skip";
         $array[] = $value;
         if ($status !== null) {
