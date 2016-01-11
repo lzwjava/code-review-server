@@ -32,6 +32,17 @@ func TestOrders_AddOrder(t *testing.T) {
 	assert.Equal(t, 3000, toInt(order["codeLines"]))
 }
 
+func TestOrders_NotReturnUnpaid(t *testing.T) {
+	c := NewClient()
+	reviewer, _, _ := addOrder(c)
+	c.sessionToken = reviewer["sessionToken"].(string)
+	orders := c.getArrayData("user/orders", url.Values{})
+	assert.Equal(t, 0, len(orders))
+
+	orders = c.getArrayData("user/orders", url.Values{"status": {"unpaid"}})
+	assert.Equal(t, 1, len(orders))
+}
+
 func TestOrders_All(t *testing.T) {
 	c := NewClient()
 	addOrder(c)

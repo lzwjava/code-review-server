@@ -23,7 +23,7 @@ class OrderDao extends BaseDao
             KEY_UPDATED), TABLE_ORDERS);
     }
 
-    private function getOrdersByField($field, $value, $status = null, $skip, $limit)
+    function getOrdersOfLearner($learnerId, $status = null, $skip = 0, $limit = 100)
     {
         $fields = $this->getPublicFields();
         if ($status === null) {
@@ -32,9 +32,9 @@ class OrderDao extends BaseDao
             $statusSql = ' AND status = ? ';
         }
         $sql = "SELECT $fields,charges.amount,reviewId FROM orders LEFT JOIN rewards USING(orderId)
-                LEFT JOIN charges USING(chargeId) LEFT JOIN reviews USING(orderId) WHERE $field = ? $statusSql
+                LEFT JOIN charges USING(chargeId) LEFT JOIN reviews USING(orderId) WHERE learnerId = ? $statusSql
                 ORDER BY updated DESC limit $limit  offset $skip";
-        $array[] = $value;
+        $array[] = $learnerId;
         if ($status !== null) {
             $array[] = $status;
         }
@@ -43,24 +43,21 @@ class OrderDao extends BaseDao
         return $orders;
     }
 
-    function getOrdersOfLearner($learnerId, $status = null, $skip = 0, $limit = 100)
-    {
-        $orders = $this->getOrdersByField(KEY_LEARNER_ID, $learnerId, $status, $skip, $limit);
-        return $orders;
-    }
-
     function getOrdersOfReviewer($reviewerId, $status = null, $skip = 0, $limit = 100)
     {
-        $orders = $this->getOrdersByField(KEY_REVIEWER_ID, $reviewerId, $status, $skip, $limit);
-        return $orders;
-    }
-
-    private function getOrdersOfReviewerWithLearner($reviewerId, $learnerId)
-    {
         $fields = $this->getPublicFields();
-        $sql = "select $fields from orders where reviewerId=? and learnerId = ? ORDER BY orders.updated DESC";
+        if ($status === null) {
+            $statusSql = " AND status != 'unpaid'";
+        } else {
+            $statusSql = ' AND status = ? ';
+        }
+        $sql = "SELECT $fields,charges.amount,reviewId FROM orders LEFT JOIN rewards USING(orderId)
+                LEFT JOIN charges USING(chargeId) LEFT JOIN reviews USING(orderId) WHERE reviewerId = ? $statusSql
+                ORDER BY updated DESC limit $limit  offset $skip";
         $array[] = $reviewerId;
-        $array[] = $learnerId;
+        if ($status !== null) {
+            $array[] = $status;
+        }
         $orders = $this->db->query($sql, $array)->result();
         $this->mergeChildrenOfOrders($orders);
         return $orders;
@@ -104,8 +101,16 @@ class OrderDao extends BaseDao
 
     function getOne($orderId)
     {
-        $orders = $this->getOrdersByField(KEY_ORDER_ID, $orderId, null, 0, 1);
-        return count($orders) ? $orders[0] : null;
+        $fields = $this->getPublicFields();
+        $sql = "SELECT $fields,charges.amount,reviewId FROM orders LEFT JOIN rewards USING(orderId)
+                LEFT JOIN charges USING(chargeId) LEFT JOIN reviews USING(orderId) WHERE orderId=?
+                limit 1";
+        $array[] = $orderId;
+        $order = $this->db->query($sql, $array)->row();
+        if ($order) {
+            $this->mergeChildrenOfOrders(array($order));
+        }
+        return $order;
     }
 
     function add($gitHubUrl, $remark, $reviewerId, $learnerId, $codeLines)
