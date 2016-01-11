@@ -18,7 +18,9 @@ class OrderDao extends BaseDao
             KEY_REVIEWER_ID,
             KEY_CODE_LINES,
             KEY_STATUS,
+            KEY_AMOUNT,
             KEY_REMARK,
+            KEY_FIRST_REWARD_ID,
             KEY_CREATED,
             KEY_UPDATED), TABLE_ORDERS);
     }
@@ -31,8 +33,9 @@ class OrderDao extends BaseDao
         } else {
             $statusSql = ' AND status = ? ';
         }
-        $sql = "SELECT $fields,charges.amount,reviewId FROM orders LEFT JOIN rewards USING(orderId)
-                LEFT JOIN charges USING(chargeId) LEFT JOIN reviews USING(orderId) WHERE learnerId = ? $statusSql
+        $sql = "SELECT $fields,reviewId FROM orders
+                LEFT JOIN reviews on reviews.orderId = orders.orderId
+                WHERE learnerId = ? $statusSql
                 ORDER BY created DESC limit $limit  offset $skip";
         $array[] = $learnerId;
         if ($status !== null) {
@@ -51,9 +54,10 @@ class OrderDao extends BaseDao
         } else {
             $statusSql = ' AND status = ? ';
         }
-        $sql = "SELECT $fields,charges.amount,reviewId FROM orders LEFT JOIN rewards USING(orderId)
-                LEFT JOIN charges USING(chargeId) LEFT JOIN reviews USING(orderId) WHERE reviewerId = ? $statusSql
-                ORDER BY created DESC limit $limit  offset $skip";
+        $sql = "SELECT $fields,reviewId FROM orders
+                LEFT JOIN reviews on orders.orderId=reviews.orderId
+                WHERE reviewerId = ? $statusSql
+                ORDER BY created DESC limit $limit offset $skip";
         $array[] = $reviewerId;
         if ($status !== null) {
             $array[] = $status;
@@ -102,9 +106,9 @@ class OrderDao extends BaseDao
     function getOne($orderId)
     {
         $fields = $this->getPublicFields();
-        $sql = "SELECT $fields,charges.amount,reviewId FROM orders LEFT JOIN rewards USING(orderId)
-                LEFT JOIN charges USING(chargeId) LEFT JOIN reviews USING(orderId) WHERE orderId=?
-                limit 1";
+        $sql = "SELECT $fields,reviewId FROM orders
+                LEFT JOIN reviews on reviews.orderId=orders.orderId
+                WHERE orders.orderId=? limit 1";
         $array[] = $orderId;
         $order = $this->db->query($sql, $array)->row();
         if ($order) {
@@ -113,14 +117,15 @@ class OrderDao extends BaseDao
         return $order;
     }
 
-    function add($gitHubUrl, $remark, $reviewerId, $learnerId, $codeLines)
+    function addOrder($gitHubUrl, $remark, $reviewerId, $learnerId, $codeLines, $amount)
     {
         $data = array(
             KEY_GITHUB_URL => $gitHubUrl,
             KEY_REMARK => $remark,
             KEY_REVIEWER_ID => $reviewerId,
             KEY_LEARNER_ID => $learnerId,
-            KEY_CODE_LINES => $codeLines
+            KEY_CODE_LINES => $codeLines,
+            KEY_AMOUNT => $amount
         );
         $this->db->trans_start();
         $this->db->insert(TABLE_ORDERS, $data);
@@ -142,8 +147,11 @@ class OrderDao extends BaseDao
         ));
     }
 
-    function updateOrderToPaid($orderId)
+    function updateOrderToPaid($orderId, $rewardId)
     {
-        return $this->updateStatus($orderId, ORDER_STATUS_PAID);
+        return $this->update($orderId, array(
+            KEY_STATUS => ORDER_STATUS_PAID,
+            KEY_FIRST_REWARD_ID => $rewardId
+        ));
     }
 }

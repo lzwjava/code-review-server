@@ -20,7 +20,7 @@ class RewardDao extends BaseDao
         ));
     }
 
-    function add($orderId, $creator, $chargeId)
+    function addReward($orderId, $creator, $chargeId)
     {
         $data = array(
             KEY_ORDER_ID => $orderId,

@@ -33,7 +33,7 @@ class Orders extends BaseController
     function add_post()
     {
         if ($this->checkIfParamsNotExist($_POST, array(KEY_GITHUB_URL, KEY_REMARK,
-            KEY_REVIEWER_ID, KEY_CODE_LINES))
+            KEY_REVIEWER_ID, KEY_CODE_LINES, KEY_AMOUNT))
         ) {
             return;
         }
@@ -41,6 +41,7 @@ class Orders extends BaseController
         $remark = $_POST[KEY_REMARK];
         $reviewerId = $_POST[KEY_REVIEWER_ID];
         $codeLines = $_POST[KEY_CODE_LINES];
+        $amount = $this->castToNumber($_POST[KEY_AMOUNT]);
 
         $user = $this->checkAndGetSessionUser();
         if (!$user) {
@@ -67,7 +68,14 @@ class Orders extends BaseController
             $this->failure(ERROR_CODE_LINES_INVALID, "codeLines 必须大于 0");
             return;
         }
-        $insertId = $this->orderDao->add($gitHubUrl, $remark, $reviewerId, $user->id, $codeLines);
+        if ($this->checkIfAmountWrong($amount)) {
+            return;
+        }
+        if ($amount < LEAST_FIRST_REWARD) {
+            $this->failure(ERROR_AMOUNT_UNIT, '申请者打赏金额至少为 5 元');
+            return;
+        }
+        $insertId = $this->orderDao->addOrder($gitHubUrl, $remark, $reviewerId, $user->id, $codeLines, $amount);
         $order = $this->orderDao->getOne($insertId);
         $this->succeed($order);
     }
@@ -83,14 +91,6 @@ class Orders extends BaseController
 
     public function reward_post($orderId)
     {
-        if ($this->checkIfParamsNotExist($_POST, array(KEY_AMOUNT))) {
-            return;
-        }
-        $amount = $this->castToNumber($_POST[KEY_AMOUNT]);
-        if (is_int($amount) == false) {
-            $this->failure(ERROR_AMOUNT_UNIT, 'amount 必须为整数, 单位为分钱. 例如 10 元, amount = 1000.');
-            return;
-        }
         $user = $this->checkAndGetSessionUser();
         if (!$user) {
             return;
@@ -102,20 +102,16 @@ class Orders extends BaseController
         }
         $firstReward = false;
         if ($user->id == $order->learnerId && $order->status == ORDER_STATUS_NOT_PAID) {
-            if ($amount < LEAST_FIRST_REWARD) {
-                $this->failure(ERROR_AMOUNT_UNIT, '申请者打赏金额至少为 5 元(amount=500)');
-                return;
-            }
+            $amount = $order->amount;
             $firstReward = true;
         } else {
-            if ($amount < LEAST_COMMON_REWARD) {
-                $this->failure(ERROR_AMOUNT_UNIT, '打赏金额至少为 1 元(amount=100)');
+            if ($this->checkIfParamsNotExist($_POST, array(KEY_AMOUNT))) {
                 return;
             }
-            if ($amount > MAX_COMMON_REWARD) {
-                $this->failure(ERROR_AMOUNT_UNIT, '打赏金额最多为 1000 元');
-                return;
-            }
+            $amount = $this->castToNumber($_POST[KEY_AMOUNT]);
+        }
+        if ($this->checkIfAmountWrong($amount)) {
+            return;
         }
         $reviewerName = $order->reviewer->username;
         $orderNo = $this->getOrderNo();

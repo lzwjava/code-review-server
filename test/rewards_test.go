@@ -18,13 +18,7 @@ func TestOrders_Reward(t *testing.T) {
 	c.sessionToken = learner["sessionToken"].(string)
 	orderId := floatToStr(order["orderId"])
 
-	rewardRes := c.post("orders/" + orderId + "/reward", url.Values{"amount": {"100"}})
-	assert.NotNil(t, rewardRes)
-	assert.Equal(t, 16, toInt(rewardRes["code"]));
-	assert.Equal(t, "申请者打赏金额至少为 5 元(amount=500)", rewardRes["error"].(string));
-
-	rewardRes = c.post("orders/" + orderId + "/reward", url.Values{"orderId": {orderId},
-		"amount": {"500"}})
+	rewardRes := c.post("orders/" + orderId + "/reward", url.Values{"orderId": {orderId}})
 
 	orderNo := rewardRes["order_no"].(string)
 	callbackRes := c.postWithStr("rewards/callback", testCallbackStr(orderNo, orderId, 5000))
@@ -32,6 +26,23 @@ func TestOrders_Reward(t *testing.T) {
 
 	theOrder := c.getData("orders/" + orderId, url.Values{})
 	assert.Equal(t, "paid", theOrder["status"])
+	assert.NotNil(t, theOrder["firstRewardId"])
+}
+
+func TestOrders_NormalReward(t *testing.T) {
+	c := NewClient()
+	reviewer, _, order, _ := addOrderAndReview(c)
+	orderId := floatToStr(order["orderId"])
+	c.sessionToken = reviewer["sessionToken"].(string)
+	rewardRes := c.post("orders/" + orderId + "/reward", url.Values{"amount": {floatToStr(300)}})
+
+	orderNo := rewardRes["order_no"].(string)
+	callbackRes := c.postWithStr("rewards/callback", testCallbackStr(orderNo, orderId, 300))
+	assert.Equal(t, toInt(callbackRes["code"]), 0);
+
+	rewardRes = c.post("orders/" + orderId + "/reward", url.Values{"amount": {floatToStr(50)}})
+	assert.NotEqual(t, 0, rewardRes["code"])
+	assert.Equal(t, "打赏金额至少为 1 元", rewardRes["error"])
 }
 
 func TestRewards_Count(t *testing.T) {
@@ -39,7 +50,7 @@ func TestRewards_Count(t *testing.T) {
 	reviewer, _, order := addOrder(c)
 	orderId := floatToStr(order["orderId"])
 	reward(c, orderId);
-	reward(c, orderId);
+	rewardAmount(c, orderId, 300);
 	afterReviewer := c.getData("reviewers/" + reviewer["id"].(string), url.Values{});
 	assert.Equal(t, toInt(afterReviewer["rewardCount"]), 2);
 }

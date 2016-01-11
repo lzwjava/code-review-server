@@ -60,7 +60,7 @@ class Rewards extends BaseController
             return;
         }
         $this->chargeDao->updateChargeToPaid($orderNo);
-        $this->rewardDao->add($order->orderId, $charge->creator, $charge->chargeId);
+        $rewardId = $this->rewardDao->addReward($order->orderId, $charge->creator, $charge->chargeId);
         $amount = $object->amount;
 
         if ($order->status == ORDER_STATUS_NOT_PAID) {
@@ -69,7 +69,7 @@ class Rewards extends BaseController
                 logInfo($info);
                 $this->failure(ERROR_PARAMETER_ILLEGAL, $info);
             } else {
-                $this->orderDao->updateOrderToPaid($order->orderId);
+                $this->orderDao->updateOrderToPaid($order->orderId, $rewardId);
                 $this->succeed();
             }
         } else {

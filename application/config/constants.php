@@ -148,13 +148,14 @@ define('KEY_REMARK', 'remark');
 define('KEY_STATUS', 'status');
 define('KEY_CREATED', 'created');
 define('KEY_UPDATED', 'updated');
-define('KEY_DISPLAYING', 'displaying');
-define('KEY_COVER_URL', 'coverUrl');
+define('KEY_FIRST_REWARD_ID', 'firstRewardId');
 
 // reviews table
 define('KEY_REVIEW_ID', 'reviewId');
 define('KEY_TITLE', 'title');
 define('KEY_CONTENT', 'content');
+define('KEY_DISPLAYING', 'displaying');
+define('KEY_COVER_URL', 'coverUrl');
 
 // rewards rable
 define('TABLE_REWARDS', 'rewards');

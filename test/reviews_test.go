@@ -64,9 +64,6 @@ func TestReviews_all(t *testing.T) {
 	reviewId := floatToStr(review["reviewId"])
 	setReviewAsDisplaying(reviewId)
 
-	orderId := floatToStr(review["orderId"])
-	reward(c, orderId)
-
 	res, total := c.getListData("reviews", url.Values{})
 	assert.Equal(t, 1, len(res));
 	theReview := res[0].(map[string]interface{})

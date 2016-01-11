@@ -99,6 +99,23 @@ class BaseController extends REST_Controller
         }
     }
 
+    protected function checkIfAmountWrong($amount)
+    {
+        if (is_int($amount) == false) {
+            $this->failure(ERROR_AMOUNT_UNIT, 'amount 必须为整数, 单位为分钱. 例如 10 元, amount = 1000.');
+            return true;
+        }
+        if ($amount < LEAST_COMMON_REWARD) {
+            $this->failure(ERROR_AMOUNT_UNIT, '打赏金额至少为 1 元');
+            return true;
+        }
+        if ($amount > MAX_COMMON_REWARD) {
+            $this->failure(ERROR_AMOUNT_UNIT, '打赏金额最多为 1000 元');
+            return true;
+        }
+        return false;
+    }
+
     protected function failureOfParam($param)
     {
         $this->failure(ERROR_MISS_PARAMETERS, "必须提供以下参数且不为空: " . $param);
