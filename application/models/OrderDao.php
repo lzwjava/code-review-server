@@ -33,7 +33,7 @@ class OrderDao extends BaseDao
         }
         $sql = "SELECT $fields,charges.amount,reviewId FROM orders LEFT JOIN rewards USING(orderId)
                 LEFT JOIN charges USING(chargeId) LEFT JOIN reviews USING(orderId) WHERE learnerId = ? $statusSql
-                ORDER BY updated DESC limit $limit  offset $skip";
+                ORDER BY created DESC limit $limit  offset $skip";
         $array[] = $learnerId;
         if ($status !== null) {
             $array[] = $status;
@@ -53,7 +53,7 @@ class OrderDao extends BaseDao
         }
         $sql = "SELECT $fields,charges.amount,reviewId FROM orders LEFT JOIN rewards USING(orderId)
                 LEFT JOIN charges USING(chargeId) LEFT JOIN reviews USING(orderId) WHERE reviewerId = ? $statusSql
-                ORDER BY updated DESC limit $limit  offset $skip";
+                ORDER BY created DESC limit $limit  offset $skip";
         $array[] = $reviewerId;
         if ($status !== null) {
             $array[] = $status;
