@@ -1,0 +1,4 @@
+ALTER TABLE `reviewers` MODIFY COLUMN `type` VARCHAR(31) NOT NULL DEFAULT 'reviewer' /
+
+ALTER TABLE `learners` MODIFY COLUMN `type` VARCHAR(31) NOT NULL DEFAULT 'learner' /
+

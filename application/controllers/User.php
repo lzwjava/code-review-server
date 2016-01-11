@@ -104,6 +104,8 @@ class User extends BaseController
             return;
         } else if ($this->checkIfWrongPasswordFormat($password)) {
             return;
+        } else if ($this->checkIfNotInArray($type, $this->getTypeArray())) {
+            return;
         } else {
             $defaultAvatarUrl = "http://7xotd0.com1.z0.glb.clouddn.com/android.png";
             $this->userDao->insertUser($type, $username, $mobilePhoneNumber, $defaultAvatarUrl,
@@ -136,6 +138,11 @@ class User extends BaseController
         } else {
             $this->loginOrRegisterSucceed($mobilePhoneNumber);
         }
+    }
+
+    private function getTypeArray()
+    {
+        return array(TYPE_REVIEWER, TYPE_LEARNER);
     }
 
     public function loginOrRegisterSucceed($mobilePhoneNumber)

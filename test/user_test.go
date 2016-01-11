@@ -16,12 +16,12 @@ func TestUser_RegisterAndLogin(t *testing.T) {
 	c := NewClient()
 	md5Str := md5password("123456")
 	res := c.postData("user/register", url.Values{"mobilePhoneNumber": {"1326163092"},
-		"username": {"lzwjavaTest"}, "smsCode": {"5555"}, "password":{md5Str}, "type": {"0"}})
+		"username": {"lzwjavaTest"}, "smsCode": {"5555"}, "password":{md5Str}, "type": {"learner"}})
 	assert.Equal(t, "lzwjavaTest", res["username"])
 	assert.NotNil(t, res["id"])
 	assert.NotNil(t, res["created"])
 	assert.NotNil(t, res["updated"]);
-	assert.Equal(t, toInt(res["type"]), 0)
+	assert.Equal(t, "learner", res["type"])
 	assert.NotNil(t, res["tags"]);
 
 	res = c.postData("user/login", url.Values{"mobilePhoneNumber": {"1326163092"},
@@ -69,7 +69,7 @@ func TestUser_ReviewerRegisterAndLogin(t *testing.T) {
 
 	c := NewClient()
 	res := c.postData("user/register", url.Values{"mobilePhoneNumber": {"13261630924"},
-		"username": {"lzwjavaReviewer"}, "smsCode": {"5555"}, "password":{md5password("123456")}, "type": {"1"}})
+		"username": {"lzwjavaReviewer"}, "smsCode": {"5555"}, "password":{md5password("123456")}, "type": {"reviewer"}})
 
 	res = c.patchData("user", url.Values{"introduction": {"I'm lzwjava"},
 		"experience": {"1"}})

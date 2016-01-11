@@ -32,7 +32,7 @@ func checkErr(err error) {
 
 func registerLearner(c *Client) map[string]interface{} {
 	res := c.post("user/register", url.Values{"mobilePhoneNumber": {"1326163092"},
-		"username": {"lzwjavaTest"}, "smsCode": {"5555"}, "password":{md5password("123456")}, "type": {"0"}})
+		"username": {"lzwjavaTest"}, "smsCode": {"5555"}, "password":{md5password("123456")}, "type": {"learner"}})
 	if (toInt(res["code"]) == 0) {
 		registerRes := res["result"].(map[string]interface{})
 		c.sessionToken = registerRes["sessionToken"].(string)
@@ -46,7 +46,7 @@ func registerLearner(c *Client) map[string]interface{} {
 
 func registerReviewer(c *Client) map[string]interface{} {
 	res := c.post("user/register", url.Values{"mobilePhoneNumber": {"13261630924"},
-		"username": {"lzwjavaReviewer"}, "smsCode": {"5555"}, "password":{md5password("123456")}, "type": {"1"}})
+		"username": {"lzwjavaReviewer"}, "smsCode": {"5555"}, "password":{md5password("123456")}, "type": {"reviewer"}})
 	if (toInt(res["code"]) == 0) {
 		registerRes := res["result"].(map[string]interface{})
 		c.sessionToken = registerRes["sessionToken"].(string)

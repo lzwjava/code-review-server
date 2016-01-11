@@ -59,7 +59,7 @@ class UserDao extends BaseDao
         } else if ($type == TYPE_REVIEWER) {
             $tableName = TABLE_REVIEWERS;
         } else {
-            error_log('unknown type');
+            logInfo('unknown type');
             $tableName = TABLE_LEARNERS;
         }
         return $tableName;

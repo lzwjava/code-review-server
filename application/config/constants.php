@@ -107,8 +107,8 @@ define('ERROR_PASSWORD_FORMAT', 19);
 define('ERROR_EXCEED_MAX_ORDERS', 20);
 define('ERROR_CODE_LINES_INVALID', 21);
 
-define('TYPE_REVIEWER', 1);
-define('TYPE_LEARNER', 0);
+define('TYPE_REVIEWER', 'reviewer');
+define('TYPE_LEARNER', 'learner');
 
 define('KEY_COOKIE_TOKEN', 'crtoken');
 define('COOKIE_VID', 'vid');
