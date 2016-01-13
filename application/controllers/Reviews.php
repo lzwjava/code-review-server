@@ -19,7 +19,7 @@ class Reviews extends BaseController
         $orderId = $_POST[KEY_ORDER_ID];
         $title = $_POST[KEY_TITLE];
         $content = $_POST[KEY_CONTENT];
-        $order = $this->orderDao->getOne($orderId);
+        $order = $this->orderDao->getOrder($orderId);
         if ($order == null) {
             $this->failure(ERROR_OBJECT_NOT_EXIST, "找不到相应的 review 订单");
             return;
@@ -64,7 +64,7 @@ class Reviews extends BaseController
             return;
         }
         $orderId = $review->orderId;
-        $order = $this->orderDao->getOne($orderId);
+        $order = $this->orderDao->getOrder($orderId);
         if ($order == null) {
             $this->failure(ERROR_OBJECT_NOT_EXIST, "找不到相应的 review 订单");
             return;

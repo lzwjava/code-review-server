@@ -54,7 +54,7 @@ class Rewards extends BaseController
             return;
         }
         $orderId = $metadata->orderId;
-        $order = $this->orderDao->getOne($orderId);
+        $order = $this->orderDao->getOrder($orderId);
         if ($order == null) {
             $this->failure(ERROR_OBJECT_NOT_EXIST, "order with that orderId not exists");
             return;
@@ -75,5 +75,19 @@ class Rewards extends BaseController
         } else {
             $this->succeed();
         }
+    }
+
+    public function refund($orderId)
+    {
+        $user = $this->getSessionUser();
+        if ($user != null) {
+            return;
+        }
+        $order = $this->orderDao->getOrder($orderId);
+        if ($user->id != $order->reviewerId) {
+            $this->failure(ERROR_NOT_ALLOW_DO_IT, '仅该订单指定的大神能够退款');
+            return;
+        }
+        // $ch = \Pingpp\Charge::retrieve()
     }
 }

@@ -76,13 +76,13 @@ class Orders extends BaseController
             return;
         }
         $insertId = $this->orderDao->addOrder($gitHubUrl, $remark, $reviewerId, $user->id, $codeLines, $amount);
-        $order = $this->orderDao->getOne($insertId);
+        $order = $this->orderDao->getOrder($insertId);
         $this->succeed($order);
     }
 
     function view_get($orderId)
     {
-        $order = $this->orderDao->getOne($orderId);
+        $order = $this->orderDao->getOrder($orderId);
         if ($this->checkIfObjectNotExists($order)) {
             return;
         }
@@ -95,7 +95,7 @@ class Orders extends BaseController
         if (!$user) {
             return;
         }
-        $order = $this->orderDao->getOne($orderId);
+        $order = $this->orderDao->getOrder($orderId);
         if ($order == null) {
             $this->failure(ERROR_OBJECT_NOT_EXIST, '没有找到相应的 review 订单');
             return;
@@ -181,7 +181,7 @@ class Orders extends BaseController
             return;
         }
 
-        $order = $this->orderDao->getOne($orderId);
+        $order = $this->orderDao->getOrder($orderId);
         if ($order == null) {
             $this->failure(ERROR_OBJECT_NOT_EXIST, "无法找到当前的订单");
             return;

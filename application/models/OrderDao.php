@@ -103,7 +103,7 @@ class OrderDao extends BaseDao
         return $this->countOrders($reviewerId, ORDER_STATUS_PAID);
     }
 
-    function getOne($orderId)
+    function getOrder($orderId)
     {
         $fields = $this->getPublicFields();
         $sql = "SELECT $fields,reviewId FROM orders
