@@ -13,6 +13,7 @@ class Visits extends BaseController
         parent::__construct();
         $this->load->helper('cookie');
         $this->load->model('reviewVisitDao');
+        $this->load->model('videoVisitDao');
     }
 
     private function generateVisitorId()
@@ -46,6 +47,22 @@ class Visits extends BaseController
         }
         $vid = $this->getVisistorId();
         $this->reviewVisitDao->addVisit($vid, $reviewId, $referrer, $userId);
+        $this->succeed();
+    }
+
+    public function visitVideo_post($videoId)
+    {
+        if ($this->checkIfParamsNotExist($this->post(), array(KEY_REFERRER), false)) {
+            return;
+        }
+        $referrer = $this->post(KEY_REFERRER);
+        $user = $this->getSessionUser();
+        $userId = null;
+        if ($user) {
+            $userId = $user->id;
+        }
+        $vid = $this->getVisistorId();
+        $this->videoVisitDao->addVideoVisit($vid, $videoId, $referrer, $userId);
         $this->succeed();
     }
 }

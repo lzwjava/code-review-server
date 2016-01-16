@@ -232,4 +232,16 @@ class User extends BaseController
         $this->succeed($this->tagDao->getUserTags($user->id));
     }
 
+    public function applyToBeReviewer()
+    {
+        $user = $this->checkAndGetSessionUser();
+        if (!$user) {
+            return;
+        }
+        if ($user->type != TYPE_LEARNER) {
+            $this->failure(ERROR_NOT_ALLOW_DO_IT, '您已经是大神了');
+            return;
+        }
+
+    }
 }

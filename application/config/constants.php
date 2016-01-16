@@ -211,3 +211,10 @@ define('TABLE_REVIEW_VISITS', 'review_visits');
 define('KEY_VISITOR_ID', 'visitorId');
 define('KEY_REFERRER', 'referrer');
 define('KEY_VISIT_ID', 'visitId');
+
+// video table
+define('TABLE_VIDEOS', 'videos');
+define('KEY_VIDEO_ID', 'videoId');
+define('KEY_SOURCE', 'source');
+
+define('TABLE_VIDEO_VISITS', 'video_visits');

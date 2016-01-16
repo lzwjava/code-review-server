@@ -35,3 +35,14 @@ func TestVisits_empty(t *testing.T) {
 	res := c.postData("reviews/" + reviewId + "/visits", url.Values{"referrer":{""}})
 	assert.NotNil(t, res)
 }
+
+func TestVisits_countVideo(t *testing.T) {
+	c := NewClient()
+	video := addVideo(c)
+	videoId := floatToStr(video["videoId"])
+	res := c.postData("videos/" + videoId + "/visits", url.Values{"referrer":{"https://google.com"}})
+	assert.NotNil(t, res)
+
+	theVideo := c.getData("videos/" + videoId, url.Values{})
+	assert.Equal(t, 1, toInt(theVideo["visitCount"]))
+}
