@@ -38,7 +38,8 @@ class VideoDao extends BaseDao
     function getVideoList()
     {
         $fields = $this->getPublicFields();
-        $sql = "select $fields,count(visitId) as visitCount from videos left join video_visits using(videoId) order by created desc";
+        $sql = "select $fields,count(visitId) as visitCount from videos
+                left join video_visits using(videoId) group by videoId order by created desc";
         return $this->db->query($sql, null)->result();
     }
 

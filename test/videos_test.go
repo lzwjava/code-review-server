@@ -29,6 +29,22 @@ func TestVideos_getOne(t *testing.T) {
 	assert.Equal(t, video["title"], theVideo["title"])
 }
 
+func TestVideos_multiple(t *testing.T) {
+	cleanTables()
+
+	c := NewClient()
+	c.postData("videos", url.Values{"title": {"＃05 Autolayout 和 "},
+		"source":{"http://player.youku.com/player.php/Type/Folder/Fid/26542890/Ob/1/sid/XMTQ0NjY0OTE0NA==/v.swf"},
+		"speaker":{"里脊串"}});
+
+	c.postData("videos", url.Values{"title": {"＃05 Mansonry"},
+		"source":{"http://player.youku.com/player.php/Type/Folder/Fid/26542890/Ob/1/sid/XMTQ0NjY0OTE0NA==/v.swf"},
+		"speaker":{"里脊串"}});
+
+	videos := c.getArrayData("videos", url.Values{})
+	assert.Equal(t, 2, len(videos))
+}
+
 func addVideo(c *Client) map[string]interface{} {
 	cleanTables()
 	video := c.postData("videos", url.Values{"title": {"＃05 Autolayout 和 Mansonry"},
