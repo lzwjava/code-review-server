@@ -1,0 +1,2 @@
+ALTER TABLE `videos` ADD COLUMN `speaker` VARCHAR(31) NOT NULL
+AFTER `title`

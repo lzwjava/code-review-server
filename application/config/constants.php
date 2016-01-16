@@ -216,5 +216,6 @@ define('KEY_VISIT_ID', 'visitId');
 define('TABLE_VIDEOS', 'videos');
 define('KEY_VIDEO_ID', 'videoId');
 define('KEY_SOURCE', 'source');
+define('KEY_SPEAKER', 'speaker');
 
 define('TABLE_VIDEO_VISITS', 'video_visits');

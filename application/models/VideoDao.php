@@ -8,10 +8,11 @@
  */
 class VideoDao extends BaseDao
 {
-    function addVideo($title, $source)
+    function addVideo($title, $speaker, $source)
     {
         $data = array(
             KEY_TITLE => $title,
+            KEY_SPEAKER => $speaker,
             KEY_SOURCE => $source
         );
         $result = $this->db->insert(TABLE_VIDEOS, $data);
@@ -27,6 +28,7 @@ class VideoDao extends BaseDao
         return $this->mergeFields(array(
             KEY_VIDEO_ID,
             KEY_TITLE,
+            KEY_SPEAKER,
             KEY_SOURCE,
             KEY_CREATED,
             KEY_UPDATED

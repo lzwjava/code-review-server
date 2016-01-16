@@ -16,12 +16,13 @@ class Videos extends BaseController
 
     public function createVideo_post()
     {
-        if ($this->checkIfParamsNotExist($this->post(), array(KEY_TITLE, KEY_SOURCE))) {
+        if ($this->checkIfParamsNotExist($this->post(), array(KEY_TITLE, KEY_SOURCE, KEY_SPEAKER))) {
             return;
         }
         $title = $this->post(KEY_TITLE);
         $source = $this->post(KEY_SOURCE);
-        $videoId = $this->videoDao->addVideo($title, $source);
+        $speaker = $this->post(KEY_SPEAKER);
+        $videoId = $this->videoDao->addVideo($title, $speaker, $source);
         $video = $this->videoDao->getVideo($videoId);
         $this->succeed($video);
     }
