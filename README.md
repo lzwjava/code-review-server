@@ -31,7 +31,6 @@ Install dependencies: composer install, composer update
 精选审核案例|GET|/reviews | displaying,skip,limit|
 一个大神的审核案例|GET|/reviewers/:reviewerId/reviews | skip,limit|
 记录案例页阅读数|POST|/reviews/:reviewId/visits|referrer|
-||||
 获取视频列表|GET|/videos||
 记录视频访问次数|POST|/videos/:videoId/visits|referrer|
 
