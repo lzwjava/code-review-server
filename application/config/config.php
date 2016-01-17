@@ -130,7 +130,8 @@ $config['subclass_prefix'] = 'Base';
 | Note: This will NOT disable or override the CodeIgniter-specific
 |	autoloading (application/config/autoload.php)
 */
-$config['composer_autoload'] = FALSE;
+
+$config['composer_autoload'] = FCPATH . 'vendor/autoload.php';
 
 /*
 |--------------------------------------------------------------------------
@@ -231,7 +232,7 @@ if (isLocalDebug()) {
 |
 */
 if (isLocalDebug()) {
-    $config['log_path'] = '/Users/lzw/code-review/logs/';
+    $config['log_path'] = APPPATH . 'logs/';
 } else {
     $config['log_path'] = '/home/code-review-logs/';
 }
