@@ -224,4 +224,21 @@ class BaseController extends REST_Controller
         }
         return $toArray;
     }
+
+    protected function checkIfNotAdmin()
+    {
+        if (!isset($_SERVER['PHP_AUTH_USER'])) {
+            $this->failure(ERROR_NOT_ALLOW_DO_IT, 'Not allow to do it');
+            return true;
+        } else {
+            $user = $_SERVER['PHP_AUTH_USER'];
+            $password = $_SERVER['PHP_AUTH_PW'];
+            if ($user != 'admin' && $password != 'Pwx9uVJM') {
+                $this->failure(ERROR_PARAMETER_ILLEGAL, '用户名或密码有误');
+                return true;
+            } else {
+                return false;
+            }
+        }
+    }
 }

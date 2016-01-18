@@ -106,6 +106,7 @@ define('ERROR_ALREADY_DO_IT', 18);
 define('ERROR_PASSWORD_FORMAT', 19);
 define('ERROR_EXCEED_MAX_ORDERS', 20);
 define('ERROR_CODE_LINES_INVALID', 21);
+define('ERROR_RUN_SQL_FAILED', 22);
 
 define('TYPE_REVIEWER', 'reviewer');
 define('TYPE_LEARNER', 'learner');
@@ -219,3 +220,6 @@ define('KEY_SOURCE', 'source');
 define('KEY_SPEAKER', 'speaker');
 
 define('TABLE_VIDEO_VISITS', 'video_visits');
+
+define('TABLE_APPLICATIONS', 'applications');
+define('KEY_APPLICATION_ID', 'applicationId');

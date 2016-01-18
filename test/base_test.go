@@ -16,7 +16,8 @@ func TestMain(m *testing.M) {
 }
 
 func cleanTables() {
-	tables := []string{"video_visits", "videos", "review_visits", "rewards", "reviews", "orders", "charges",
+	tables := []string{"applications", "video_visits", "videos", "review_visits", "rewards", "reviews", "orders",
+		"charges",
 		"reviews_tags", "users_tags", "reviewers", "learners"}
 	for _, table := range tables {
 		deleteTable(table)
@@ -53,10 +54,14 @@ func registerReviewer(c *Client) map[string]interface{} {
 		validReviewer(c, registerRes["id"].(string))
 		return registerRes
 	} else {
-		loginRes := c.postData("user/login", url.Values{"mobilePhoneNumber": {"13261630924"},
-			"password":{md5password("123456")}});
+		loginRes := login(c, "13261630924", "123456")
 		return loginRes
 	}
+}
+
+func login(c *Client, mobilePhoneNumber string, password string) map[string]interface{} {
+	return c.postData("user/login", url.Values{"mobilePhoneNumber": {mobilePhoneNumber},
+		"password":{md5password(password)}});
 }
 
 func registerUsers(c *Client) (map[string]interface{}, map[string]interface{}) {

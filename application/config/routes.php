@@ -85,3 +85,6 @@ $route['videos']['POST'] = 'videos/createVideo';
 $route['videos']['GET'] = 'videos/getVideoList';
 $route['videos/(\d+)']['GET'] = 'videos/one/$1';
 $route['videos/(\d+)/visits']['POST'] = 'visits/visitVideo/$1';
+
+$route['applications']['POST'] = 'applications/create';
+$route['applications/(\d+)/agree']['GET'] = 'applications/agree/$1';

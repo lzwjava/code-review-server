@@ -18,6 +18,7 @@ type Client struct {
 	HTTPClient   *http.Client
 	sessionToken string
 	cookieJar    *cookiejar.Jar
+	admin bool
 }
 
 func NewClient() *Client {
@@ -25,6 +26,7 @@ func NewClient() *Client {
 	return &Client{
 		HTTPClient: &http.Client{Jar:cookieJar},
 		cookieJar: cookieJar,
+		admin: false,
 	}
 }
 
@@ -127,6 +129,9 @@ func (c *Client) request(method string, path string, params url.Values) (map[str
 	checkErr(err)
 	if len(c.sessionToken) > 0 {
 		req.Header.Set("X-CR-Session", c.sessionToken)
+	}
+	if (c.admin) {
+		req.SetBasicAuth("admin", "Pwx9uVJM");
 	}
 
 	fmt.Println("curl -X", method, urlStr, params)
