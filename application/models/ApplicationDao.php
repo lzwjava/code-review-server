@@ -28,6 +28,11 @@ class ApplicationDao extends BaseDao
         return $this->getOneFromTable(TABLE_APPLICATIONS, KEY_APPLICATION_ID, $applicationId, $fields);
     }
 
+    function getOneByLearnerId($learnerId) {
+        $fields = $this->publicFields();
+        return $this->getOneFromTable(TABLE_APPLICATIONS, KEY_LEARNER_ID, $learnerId, $fields);
+    }
+
     function agreeApplication($applicationId)
     {
         $application = $this->viewApplication($applicationId);

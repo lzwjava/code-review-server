@@ -25,6 +25,11 @@ class Applications extends BaseController
             return;
         }
         $learnerId = $user->id;
+        $application = $this->applicationDao->getOneByLearnerId($learnerId);
+        if ($application) {
+            $this->failure(ERROR_ALREADY_DO_IT, "您已经申请过了,请等候我们的处理");
+            return;
+        }
         $aid = $this->applicationDao->addApplication($learnerId);
         $this->succeed($this->applicationDao->viewApplication($aid));
     }

@@ -16,7 +16,17 @@ func TestApplications_create(t *testing.T) {
 	assert.Equal(t, learnerId, res["learnerId"]);
 }
 
+func TestApplications_multiple(t *testing.T) {
+	deleteTable("applications")
+	c := NewClient()
+	registerLearner(c)
+	res := c.postData("applications", url.Values{});
+	res = c.post("applications", url.Values{});
+	assert.Equal(t, 18 ,toInt(res["code"]))
+}
+
 func TestApplications_agree(t *testing.T) {
+	deleteTable("applications")
 	c := NewClient()
 	learner := registerLearner(c)
 	learnerId := learner["id"].(string)
