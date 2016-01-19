@@ -72,7 +72,8 @@ class Orders extends BaseController
             return;
         }
         if ($amount < LEAST_FIRST_REWARD) {
-            $this->failure(ERROR_AMOUNT_UNIT, '申请者打赏金额至少为 5 元');
+            $yuan = LEAST_FIRST_REWARD / 100;
+            $this->failure(ERROR_AMOUNT_UNIT, "申请者打赏金额至少为 $yuan 元");
             return;
         }
         $insertId = $this->orderDao->addOrder($gitHubUrl, $remark, $reviewerId, $user->id, $codeLines, $amount);

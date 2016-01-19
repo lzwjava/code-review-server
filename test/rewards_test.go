@@ -11,7 +11,7 @@ import (
 	"fmt"
 )
 
-func TestOrders_Reward(t *testing.T) {
+func TestRewards_first(t *testing.T) {
 	c := NewClient()
 	_, learner, order := addOrder(c)
 
@@ -29,7 +29,7 @@ func TestOrders_Reward(t *testing.T) {
 	assert.NotNil(t, theOrder["firstRewardId"])
 }
 
-func TestOrders_NormalReward(t *testing.T) {
+func TestRewards_normal(t *testing.T) {
 	c := NewClient()
 	reviewer, _, order, _ := addOrderAndReview(c)
 	orderId := floatToStr(order["orderId"])

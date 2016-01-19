@@ -133,7 +133,7 @@ func addOrder(c *Client) (map[string]interface{}, map[string]interface{}, map[st
 	reviewerId := reviewer["id"].(string)
 
 	order := c.postData("orders/add", url.Values{"gitHubUrl": {"https://github.com/lzwjava/Reveal-In-GitHub"},
-		"remark": {"麻烦大神了"}, "reviewerId":{reviewerId}, "codeLines":{"3000"}, "amount":{"1000"}})
+		"remark": {"麻烦大神了"}, "reviewerId":{reviewerId}, "codeLines":{"3000"}, "amount":{"5000"}})
 	return reviewer, learner, order
 }
 
@@ -146,7 +146,7 @@ func addOrderAndReward(c *Client) (map[string]interface{}, map[string]interface{
 func reward(c *Client, orderId string) {
 	rewardRes := c.post("orders/" + orderId + "/reward", url.Values{})
 	orderNo := rewardRes["order_no"].(string)
-	c.postWithStr("rewards/callback", testCallbackStr(orderNo, orderId, 500))
+	c.postWithStr("rewards/callback", testCallbackStr(orderNo, orderId, 5000))
 }
 
 func rewardAmount(c *Client, orderId string, amount int) map[string]interface{} {

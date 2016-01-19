@@ -19,7 +19,7 @@ func TestOrders_AddOrder(t *testing.T) {
 	learnerId := learner["id"].(string)
 
 	order := c.postData("orders/add", url.Values{"gitHubUrl": {"https://github.com/lzwjava/Reveal-In-GitHub"},
-		"remark": {"麻烦大神了"}, "reviewerId":{reviewerId}, "codeLines":{"3000"}, "amount": {"500"}})
+		"remark": {"麻烦大神了"}, "reviewerId":{reviewerId}, "codeLines":{"3000"}, "amount": {"5000"}})
 	assert.Equal(t, "https://github.com/lzwjava/Reveal-In-GitHub", order["gitHubUrl"])
 	assert.Equal(t, "麻烦大神了", order["remark"].(string))
 	assert.Equal(t, reviewerId, order["reviewerId"])
@@ -42,7 +42,7 @@ func TestOrders_Amount(t *testing.T) {
 
 	orderRes := c.post("orders/add", url.Values{"gitHubUrl": {"https://github.com/lzwjava/Reveal-In-GitHub"},
 		"remark": {"麻烦大神了"}, "reviewerId":{reviewerId}, "codeLines":{"3000"}, "amount": {"300"}})
-	assert.Equal(t, "申请者打赏金额至少为 5 元", orderRes["error"].(string));
+	assert.Equal(t, "申请者打赏金额至少为 50 元", orderRes["error"].(string));
 	assert.Equal(t, 16, toInt(orderRes["code"]));
 }
 

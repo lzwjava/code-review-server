@@ -189,7 +189,7 @@ define('CHARGE_PAID', 1);
 define('TABLE_CHARGES', 'charges');
 define('KEY_CHARGE_ID', 'chargeId');
 
-define('LEAST_FIRST_REWARD', 500);
+define('LEAST_FIRST_REWARD', 100 * 50);
 define('LEAST_COMMON_REWARD', 100);
 define('MAX_COMMON_REWARD', 100 * 1000);
 
