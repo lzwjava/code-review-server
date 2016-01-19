@@ -23,6 +23,9 @@ def prepare_remote_dirs():
 		sudo('chmod -R 755 %s' % server_dir)
 		sudo('chown %s %s' % ('root', server_dir))
 
+def _clean_local_dir():
+    local('rm -rf %s' % tmp_dir)
+
 def host_type():
     run('uname -s')
 
@@ -30,3 +33,4 @@ def deploy(install='false'):
 	_prepare_local_website(install)
 	prepare_remote_dirs()
 	rsync_project(local_dir=tmp_dir,remote_dir=server_dir,delete=True)
+	_clean_local_dir()

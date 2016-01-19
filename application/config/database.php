@@ -81,7 +81,7 @@ $query_builder = TRUE;
 
 $db['default'] = array(
 	'dsn'	=> '',
-	'hostname' => 'code.pickme.cn',
+	'hostname' => 'reviewcode.cn',
 	'username' => 'root',
 	'password' => 'CodeReview2015',
 	'database' => 'codereview',

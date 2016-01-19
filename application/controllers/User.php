@@ -38,18 +38,20 @@ class User extends BaseController
             "X-LC-Key: hVj4ar7LOc6iauH0bNAJJQKN",
             "Content-Type: application/json"
         ));
-        if ($data != null) {
-            $encoded = json_encode($data);
-            logInfo($encoded);
-            curl_setopt($ch, CURLOPT_POSTFIELDS, $encoded);
+        if ($data == null) {
+            $data = new stdClass();
         }
+        $encoded = json_encode($data);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, $encoded);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
         $result = curl_exec($ch);
         $status = curl_getinfo($ch, CURLINFO_HTTP_CODE);
         curl_close($ch);
-        if ($status != 200) {
+        if ($status < 200 || $status >= 300) {
             $resultJson = json_decode($result);
-            $result = $resultJson->error;
+            if ($resultJson && isset($resultJson->error)) {
+                $result = $resultJson->error;
+            }
         }
         return array(
             "status" => $status,
