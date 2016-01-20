@@ -223,3 +223,10 @@ define('TABLE_VIDEO_VISITS', 'video_visits');
 
 define('TABLE_APPLICATIONS', 'applications');
 define('KEY_APPLICATION_ID', 'applicationId');
+
+// sms
+define('SMS_TEMPLATE', 'template');
+define('SMS_REVIEWER', 'reviewer');
+define('SMS_LEARNER', 'learner');
+define('SMS_CODE_URL', 'codeUrl');
+define('SMS_REVIEW_URL', 'reviewUrl');

@@ -32,21 +32,21 @@ func checkErr(err error) {
 }
 
 func registerLearner(c *Client) map[string]interface{} {
-	res := c.post("user/register", url.Values{"mobilePhoneNumber": {"1326163092"},
+	res := c.post("user/register", url.Values{"mobilePhoneNumber": {"18928980893"},
 		"username": {"lzwjavaTest"}, "smsCode": {"5555"}, "password":{md5password("123456")}, "type": {"learner"}})
 	if (toInt(res["code"]) == 0) {
 		registerRes := res["result"].(map[string]interface{})
 		c.sessionToken = registerRes["sessionToken"].(string)
 		return registerRes
 	} else {
-		loginRes := c.postData("user/login", url.Values{"mobilePhoneNumber": {"1326163092"},
+		loginRes := c.postData("user/login", url.Values{"mobilePhoneNumber": {"18928980893"},
 			"password":{md5password("123456")}});
 		return loginRes
 	}
 }
 
 func registerReviewer(c *Client) map[string]interface{} {
-	res := c.post("user/register", url.Values{"mobilePhoneNumber": {"13261630924"},
+	res := c.post("user/register", url.Values{"mobilePhoneNumber": {"13261630925"},
 		"username": {"lzwjavaReviewer"}, "smsCode": {"5555"}, "password":{md5password("123456")}, "type": {"reviewer"}})
 	if (toInt(res["code"]) == 0) {
 		registerRes := res["result"].(map[string]interface{})
@@ -54,7 +54,7 @@ func registerReviewer(c *Client) map[string]interface{} {
 		validReviewer(c, registerRes["id"].(string))
 		return registerRes
 	} else {
-		loginRes := login(c, "13261630924", "123456")
+		loginRes := login(c, "13261630925", "123456")
 		return loginRes
 	}
 }

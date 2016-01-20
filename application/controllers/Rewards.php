@@ -70,10 +70,36 @@ class Rewards extends BaseController
                 $this->failure(ERROR_PARAMETER_ILLEGAL, $info);
             } else {
                 $this->orderDao->updateOrderToPaid($order->orderId, $rewardId);
+                $this->notifyNewOrder($order);
                 $this->succeed();
             }
         } else {
             $this->succeed();
+        }
+    }
+
+    private function notifyNewOrder($order)
+    {
+        $reviewer = $this->userDao->findUserById($order->reviewer->id);
+        $phone = $reviewer->mobilePhoneNumber;
+        $data = array(
+            SMS_REVIEWER => $reviewer->username,
+            SMS_LEARNER => $order->learner->username,
+            KEY_AMOUNT => amountToYuan($order->amount),
+            SMS_CODE_URL => $order->gitHubUrl,
+            KEY_MOBILE_PHONE_NUMBER => $phone,
+            SMS_TEMPLATE => 'order'
+        );
+        if (ENVIRONMENT != 'development') {
+            $result = $this->curlLeanCloud("requestSmsCode", $data);
+            if ($result["status"] != 200) {
+                $string = json_encode($result["result"]);
+                logInfo("requestSmsCode error when notify newOrder. result: $string");
+            } else {
+                logInfo("send sms code succeed. data: ". json_encode($data));
+            }
+        } else {
+            logInfo("requestSmsCode data: ".json_encode($data));
         }
     }
 

@@ -76,3 +76,9 @@ if (!function_exists('logInfo')) {
         }
     }
 }
+
+if (!function_exists('amountToYuan')) {
+    function amountToYuan($amount) {
+        return $amount / 100;
+    }
+}

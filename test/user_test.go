@@ -15,7 +15,7 @@ func TestUser_RegisterAndLogin(t *testing.T) {
 
 	c := NewClient()
 	md5Str := md5password("123456")
-	res := c.postData("user/register", url.Values{"mobilePhoneNumber": {"1326163092"},
+	res := c.postData("user/register", url.Values{"mobilePhoneNumber": {"18928980893"},
 		"username": {"lzwjavaTest"}, "smsCode": {"5555"}, "password":{md5Str}, "type": {"learner"}})
 	assert.Equal(t, "lzwjavaTest", res["username"])
 	assert.NotNil(t, res["id"])
@@ -24,10 +24,10 @@ func TestUser_RegisterAndLogin(t *testing.T) {
 	assert.Equal(t, "learner", res["type"])
 	assert.NotNil(t, res["tags"]);
 
-	res = c.postData("user/login", url.Values{"mobilePhoneNumber": {"1326163092"},
+	res = c.postData("user/login", url.Values{"mobilePhoneNumber": {"18928980893"},
 		"password": {md5password("123456")}});
 	assert.Equal(t, "lzwjavaTest", res["username"])
-	assert.Equal(t, "1326163092", res["mobilePhoneNumber"])
+	assert.Equal(t, "18928980893", res["mobilePhoneNumber"])
 }
 
 func TestUser_Update(t *testing.T) {
@@ -68,7 +68,8 @@ func TestUser_ReviewerRegisterAndLogin(t *testing.T) {
 	cleanTables()
 
 	c := NewClient()
-	res := c.postData("user/register", url.Values{"mobilePhoneNumber": {"13261630924"},
+
+	res := c.postData("user/register", url.Values{"mobilePhoneNumber": {"13261630925"},
 		"username": {"lzwjavaReviewer"}, "smsCode": {"5555"}, "password":{md5password("123456")}, "type": {"reviewer"}})
 
 	res = c.patchData("user", url.Values{"introduction": {"I'm lzwjava"},

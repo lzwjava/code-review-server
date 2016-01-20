@@ -149,6 +149,10 @@ class UserDao extends BaseDao
         return $this->findUser(KEY_SESSION_TOKEN, $sessionToken);
     }
 
+    function findUserById($id) {
+        return $this->findUser(KEY_ID, $id);
+    }
+
     private function updateSessionToken($user)
     {
         $token = $this->genSessionToken();
