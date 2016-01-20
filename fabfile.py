@@ -32,5 +32,5 @@ def host_type():
 def deploy(install='false'):
 	_prepare_local_website(install)
 	prepare_remote_dirs()
-	rsync_project(local_dir=tmp_dir,remote_dir=server_dir,delete=True)
+	rsync_project(local_dir=tmp_dir,remote_dir=server_dir,delete=False)
 	_clean_local_dir()

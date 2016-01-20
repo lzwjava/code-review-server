@@ -212,7 +212,7 @@ $config['directory_trigger'] = 'd';
 if (!function_exists('isLocalDebug')) {
     function isLocalDebug()
     {
-        return getenv("CRDEBUG");
+        return ENVIRONMENT == 'development';
     }
 }
 

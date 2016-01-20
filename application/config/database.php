@@ -71,41 +71,13 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 | the query builder class.
 */
 
-if (isLocalDebug()) {
-	$active_group = 'lzwjava';
-} else {
-	$active_group = 'default';
-}
-
 $query_builder = TRUE;
 
-$db['default'] = array(
-	'dsn'	=> '',
-	'hostname' => 'reviewcode.cn',
-	'username' => 'root',
-	'password' => 'CodeReview2015',
-	'database' => 'codereview',
-	'dbdriver' => 'mysqli',
-	'dbprefix' => '',
-	'pconnect' => FALSE,
-	'db_debug' => TRUE,
-	'cache_on' => FALSE,
-	'cachedir' => '',
-	'char_set' => 'utf8',
-	'dbcollat' => 'utf8_general_ci',
-	'swap_pre' => '',
-	'encrypt' => FALSE,
-	'compress' => FALSE,
-	'stricton' => FALSE,
-	'failover' => array(),
-	'save_queries' => TRUE
-);
-
-$db['lzwjava'] = array(
-    'dsn'	=> '',
+$dbBasicSetting = array(
+    'dsn' => '',
     'hostname' => 'localhost',
-    'username' => 'lzw',
-    'password' => '',
+    'username' => 'root',
+    'password' => 'CodeReview2015',
     'database' => 'codereview',
     'dbdriver' => 'mysqli',
     'dbprefix' => '',
@@ -122,3 +94,24 @@ $db['lzwjava'] = array(
     'failover' => array(),
     'save_queries' => TRUE
 );
+
+$db['default'] = $dbBasicSetting;
+
+$db['lzwjava'] = $dbBasicSetting;
+$db['lzwjava']['hostname'] = 'localhost';
+$db['lzwjava']['username'] = 'lzw';
+$db['lzwjava']['password'] = '';
+
+$db['testing'] = $dbBasicSetting;
+
+switch (ENVIRONMENT) {
+    case'development':
+        $active_group = 'lzwjava';
+        break;
+    case 'testing':
+        $active_group = 'testing';
+        break;
+    case 'production':
+        $active_group = 'default';
+        break;
+}
