@@ -18,7 +18,7 @@ type Client struct {
 	HTTPClient   *http.Client
 	sessionToken string
 	cookieJar    *cookiejar.Jar
-	admin bool
+	admin        bool
 }
 
 func NewClient() *Client {
@@ -140,12 +140,9 @@ func (c *Client) request(method string, path string, params url.Values) (map[str
 	checkErr(doErr)
 	defer body.Close()
 
-	buf := new(bytes.Buffer)
-	buf.ReadFrom(body)
-	bodyStr := buf.String()
-	ioutil.WriteFile("error.html", []byte(bodyStr), 0644);
-	fmt.Println("response:", bodyStr)
+	bodyStr := writeHtml(body)
 
+	fmt.Println("response:", bodyStr)
 	fmt.Println()
 
 	var dat map[string]interface{}
@@ -154,6 +151,14 @@ func (c *Client) request(method string, path string, params url.Values) (map[str
 	checkErr(jsonErr)
 
 	return dat
+}
+
+func writeHtml(body io.ReadCloser) string {
+	buf := new(bytes.Buffer)
+	buf.ReadFrom(body)
+	bodyStr := buf.String()
+	ioutil.WriteFile("error.html", []byte(bodyStr), 0644);
+	return bodyStr;
 }
 
 func (c *Client) postWithStr(path string, body string) map[string]interface{} {
@@ -167,10 +172,11 @@ func (c *Client) postWithStr(path string, body string) map[string]interface{} {
 	checkErr(doErr)
 	defer doBody.Close()
 
+	bodyStr := writeHtml(doBody)
+
 	var dat map[string]interface{}
 
-	decoder := json.NewDecoder(doBody)
-	jsonErr := decoder.Decode(&dat);
+	jsonErr := json.Unmarshal([]byte(bodyStr), &dat);
 	checkErr(jsonErr)
 
 	fmt.Println("response:", dat)

@@ -12,6 +12,13 @@ if (!defined('BASEPATH'))
 
 class User extends BaseController
 {
+    public $leancloud;
+
+    function __construct()
+    {
+        parent::__construct();
+        $this->load->library('LeanCloud');
+    }
 
     private function checkSmsCodeWrong($mobilePhoneNumber, $smsCode)
     {
@@ -19,7 +26,9 @@ class User extends BaseController
             // for test
             return false;
         }
-        $return = $this->curlLeanCloud("verifySmsCode/" . $smsCode . "?mobilePhoneNumber=" . $mobilePhoneNumber, null);
+        $return = $this->leancloud->curlLeanCloud("verifySmsCode/" . $smsCode . "?mobilePhoneNumber=" .
+            $mobilePhoneNumber,
+            null);
         if ($return['status'] == 200) {
             return false;
         } else {
@@ -38,7 +47,7 @@ class User extends BaseController
         $data = array(
             KEY_MOBILE_PHONE_NUMBER => $mobilePhoneNumber
         );
-        $return = $this->curlLeanCloud('requestSmsCode', $data);
+        $return = $this->leancloud->curlLeanCloud('requestSmsCode', $data);
         if ($return['status'] == 200) {
             $this->succeed($return['result']);
         } else {

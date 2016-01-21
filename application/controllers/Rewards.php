@@ -8,6 +8,15 @@
  */
 class Rewards extends BaseController
 {
+    public $leancloud;
+
+    function __construct()
+    {
+        parent::__construct();
+        $this->load->library('LeanCloud');
+        $this->leancloud = new LeanCloud();
+    }
+
     public function callback_post()
     {
 
@@ -80,27 +89,16 @@ class Rewards extends BaseController
 
     private function notifyNewOrder($order)
     {
-        $reviewer = $this->userDao->findUserById($order->reviewer->id);
-        $phone = $reviewer->mobilePhoneNumber;
+
         $data = array(
-            SMS_REVIEWER => $reviewer->username,
+            SMS_REVIEWER => $order->reviewer->username,
             SMS_LEARNER => $order->learner->username,
             KEY_AMOUNT => amountToYuan($order->amount),
             SMS_CODE_URL => $order->gitHubUrl,
-            KEY_MOBILE_PHONE_NUMBER => $phone,
-            SMS_TEMPLATE => 'order'
         );
-        if (ENVIRONMENT != 'development') {
-            $result = $this->curlLeanCloud("requestSmsCode", $data);
-            if ($result["status"] != 200) {
-                $string = json_encode($result["result"]);
-                logInfo("requestSmsCode error when notify newOrder. result: $string");
-            } else {
-                logInfo("send sms code succeed. data: ". json_encode($data));
-            }
-        } else {
-            logInfo("requestSmsCode data: ".json_encode($data));
-        }
+        $user = $this->userDao->findUserById($order->reviewer->id);
+        $phone = $user->mobilePhoneNumber;
+        $this->leancloud->sendTemplateSms($phone, 'order', $data);
     }
 
     public function refund($orderId)

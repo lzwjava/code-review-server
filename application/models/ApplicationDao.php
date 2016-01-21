@@ -6,8 +6,18 @@
  * Date: 16/1/18
  * Time: 下午1:23
  */
+
 class ApplicationDao extends BaseDao
 {
+    public $leancloud;
+
+    function __construct()
+    {
+        parent::__construct();
+        $this->load->library(LeanCloud::class);
+        $this->leancloud = new LeanCloud();
+    }
+
     function addApplication($learnerId)
     {
         $data = array(
@@ -28,7 +38,8 @@ class ApplicationDao extends BaseDao
         return $this->getOneFromTable(TABLE_APPLICATIONS, KEY_APPLICATION_ID, $applicationId, $fields);
     }
 
-    function getOneByLearnerId($learnerId) {
+    function getOneByLearnerId($learnerId)
+    {
         $fields = $this->publicFields();
         return $this->getOneFromTable(TABLE_APPLICATIONS, KEY_LEARNER_ID, $learnerId, $fields);
     }
@@ -52,6 +63,15 @@ class ApplicationDao extends BaseDao
             $this->db->delete(TABLE_APPLICATIONS, array(KEY_APPLICATION_ID => $applicationId));
         }
         $this->db->trans_complete();
-        return $this->db->trans_status();
+        $this->notifyApplySucceed($learner[KEY_MOBILE_PHONE_NUMBER], $learner[KEY_USERNAME]);
+        $status = $this->db->trans_status();
+        return $status;
+    }
+
+    function notifyApplySucceed($phone, $username) {
+        $data = array(
+            SMS_REVIEWER=> $username
+        );
+        $this->leancloud->sendTemplateSms($phone, 'ApplySucceed', $data);;
     }
 }
