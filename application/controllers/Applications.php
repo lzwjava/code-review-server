@@ -8,10 +8,14 @@
  */
 class Applications extends BaseController
 {
+    public $leancloud;
+
     function __construct()
     {
         parent::__construct();
         $this->load->model('applicationDao');
+        $this->load->library(LeanCloud::class);
+        $this->leancloud = new LeanCloud();
     }
 
     function create_post()
@@ -39,11 +43,22 @@ class Applications extends BaseController
         if ($this->checkIfNotAdmin()) {
             return;
         }
-        $ok = $this->applicationDao->agreeApplication($applicationId);
-        if (!$ok) {
+        $userId = $this->applicationDao->agreeApplication($applicationId);
+        if (!$userId) {
             $this->failure(ERROR_RUN_SQL_FAILED, '无法转换为大神,内部错误');
         } else {
+            $this->notifyApplySucceed($userId);
             $this->succeed();
         }
+    }
+
+    function notifyApplySucceed($userId)
+    {
+        $user = $this->userDao->findUserById($userId);
+        $phone = $user->mobilePhoneNumber;
+        $data = array(
+            SMS_REVIEWER => $user->username
+        );
+        $this->leancloud->sendTemplateSms($phone, 'ApplySucceed', $data);
     }
 }
