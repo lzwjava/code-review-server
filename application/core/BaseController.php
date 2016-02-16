@@ -11,7 +11,9 @@ class BaseController extends REST_Controller
     function __construct()
     {
         parent::__construct();
-        \Pingpp\Pingpp::setApiKey('sk_test_9Giz1SPG8mD4OW94OSTmPGyL');
+
+        //\Pingpp\Pingpp::setApiKey('sk_test_9Giz1SPG8mD4OW94OSTmPGyL');
+        \Pingpp\Pingpp::setApiKey('sk_live_SSijL0KO8eHK5qzfPG0mjDW9');
     }
 
     protected function responseResult($code, $result = null, $error = null, $total = null)

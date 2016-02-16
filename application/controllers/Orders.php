@@ -127,22 +127,27 @@ class Orders extends BaseController
         }
         if (isLocalDebug()) {
             // CodeReviewTest
-            $appId = 'app_erTGG4vrzrP008ij';
+            // $appId = 'app_erTGG4vrzrP008ij';
+
+            $appId = 'app_jTSKu5CmXbHC0q5q';
         } else {
             // CodeReviewProd
-            $appId = 'app_XzDynH4qX5u510mz';
+            // $appId = 'app_XzDynH4qX5u510mz';
+
+            $appId = 'app_jTSKu5CmXbHC0q5q';
         }
         $ch = \Pingpp\Charge::create(
             array(
                 'order_no' => $orderNo,
                 'app' => array('id' => $appId),
-                'channel' => 'alipay_qr',
+                'channel' => 'alipay_pc_direct',
                 'amount' => $amount,
                 'client_ip' => $ipAddress,
                 'currency' => 'cny',
                 'subject' => '打赏',
                 'body' => "打赏给 $reviewerName 大神",
-                'metadata' => array(KEY_ORDER_ID => $order->orderId)
+                'metadata' => array(KEY_ORDER_ID => $order->orderId),
+                'extra' => array('success_url' => 'http://api.reviewcode.cn/rewards/success')
             )
         );
         if ($ch == null || $ch->failure_code != null) {

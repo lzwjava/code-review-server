@@ -114,4 +114,11 @@ class Rewards extends BaseController
         }
         // $ch = \Pingpp\Charge::retrieve()
     }
+
+    public function success_get()
+    {
+        $params = $this->get();
+        logInfo(json_encode($params));
+        header("Location: http://reviewcode.cn/paid.html");
+    }
 }
