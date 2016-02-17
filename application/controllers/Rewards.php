@@ -118,7 +118,8 @@ class Rewards extends BaseController
     public function success_get()
     {
         $params = $this->get();
-        logInfo(json_encode($params));
+        $paramsStr = json_encode($params);
+        logInfo("reward success $paramsStr");
         header("Location: http://reviewcode.cn/paid.html");
     }
 }

@@ -125,10 +125,13 @@ class BaseController extends REST_Controller
 
     protected function requestToken()
     {
-        $token = $this->input->get_request_header(KEY_SESSION_HEADER, TRUE);
+        $token = $this->get(KEY_SESSION_TOKEN);
         if (!$token) {
-            if (isset($_COOKIE[KEY_COOKIE_TOKEN])) {
-                $token = $_COOKIE[KEY_COOKIE_TOKEN];
+            $token = $this->input->get_request_header(KEY_SESSION_HEADER, TRUE);
+            if (!$token) {
+                if (isset($_COOKIE[KEY_COOKIE_TOKEN])) {
+                    $token = $_COOKIE[KEY_COOKIE_TOKEN];
+                }
             }
         }
         return $token;

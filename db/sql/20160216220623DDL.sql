@@ -6,4 +6,5 @@ CREATE TABLE `alipay_callbacks` (
   PRIMARY KEY (`callbackId`)
 )
   ENGINE = InnoDB
-  DEFAULT CHARSET = utf8mb4
+  DEFAULT CHARSET = utf8mb4 /
+

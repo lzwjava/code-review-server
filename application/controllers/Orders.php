@@ -159,6 +159,7 @@ class Orders extends BaseController
         }
 
         $chargeId = $this->chargeDao->add($orderNo, $amount, $user->id, $ipAddress);
+
         //$this->rewardDao->add($order->orderId, $user->id, $chargeId);
 
         $this->output->set_status_header(200);

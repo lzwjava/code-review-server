@@ -89,6 +89,15 @@ func TestUser_Self(t *testing.T) {
 	assert.Equal(t, self["username"].(string), learner["username"].(string))
 }
 
+func TestUser_SelfWithSessionToken(t *testing.T) {
+	c := NewClient()
+	reviewer, _ := registerUsers(c)
+
+	newC := NewClient()
+	self := newC.getData("user/self", url.Values{"sessionToken": {reviewer["sessionToken"].(string)}})
+	assert.Equal(t, self["id"], reviewer["id"])
+}
+
 func TestUser_requestSmsCode(t *testing.T) {
 	c := NewClient()
 	res := c.post("user/requestSmsCode", url.Values{"mobilePhoneNumber": {"xx"}})
