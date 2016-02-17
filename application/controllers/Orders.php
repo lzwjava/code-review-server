@@ -115,6 +115,7 @@ class Orders extends BaseController
             return;
         }
         $reviewerName = $order->reviewer->username;
+        $currentUsername = $user->username;
         $orderNo = $this->getOrderNo();
         $ipAddress = $this->input->ip_address();
         if (!filter_var($ipAddress, FILTER_VALIDATE_IP)) {
@@ -128,12 +129,10 @@ class Orders extends BaseController
         if (isLocalDebug()) {
             // CodeReviewTest
             // $appId = 'app_erTGG4vrzrP008ij';
-
             $appId = 'app_jTSKu5CmXbHC0q5q';
         } else {
             // CodeReviewProd
             // $appId = 'app_XzDynH4qX5u510mz';
-
             $appId = 'app_jTSKu5CmXbHC0q5q';
         }
         $ch = \Pingpp\Charge::create(
@@ -144,7 +143,7 @@ class Orders extends BaseController
                 'amount' => $amount,
                 'client_ip' => $ipAddress,
                 'currency' => 'cny',
-                'subject' => '打赏',
+                'subject' => "$currentUsername 打赏给 $reviewerName 大神",
                 'body' => "打赏给 $reviewerName 大神",
                 'metadata' => array(KEY_ORDER_ID => $order->orderId),
                 'extra' => array('success_url' => 'http://api.reviewcode.cn/rewards/success')
