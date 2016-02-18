@@ -230,3 +230,6 @@ define('SMS_REVIEWER', 'reviewer');
 define('SMS_LEARNER', 'learner');
 define('SMS_CODE_URL', 'codeUrl');
 define('SMS_REVIEW_URL', 'reviewUrl');
+
+
+define('KEY_PAGE', 'page');

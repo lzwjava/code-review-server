@@ -8,6 +8,14 @@
  */
 class Reviewers extends BaseController
 {
+    public $reviewerDao;
+
+    function  __construct()
+    {
+        parent::__construct();
+        $this->reviewerDao = new ReviewerDao();
+    }
+
     public function valid_get($id)
     {
         $result = $this->reviewerDao->setReviewerValid($id);
@@ -22,7 +30,12 @@ class Reviewers extends BaseController
     {
         $skip = $this->getSkip();
         $limit = $this->getLimit();
-        $list = $this->reviewerDao->getList($skip, $limit);
+        $page = $this->get(KEY_PAGE);
+        if ($page == 'home') {
+            $list = $this->reviewerDao->getHomeList();
+        } else {
+            $list = $this->reviewerDao->getList($skip, $limit);
+        }
         $this->succeed($list);
     }
 

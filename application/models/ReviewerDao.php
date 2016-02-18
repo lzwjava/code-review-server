@@ -22,6 +22,27 @@ class ReviewerDao extends BaseDao
             KEY_MAX_ORDERS, KEY_GITHUB_USERNAME));
     }
 
+    function getHomeList()
+    {
+        $sql = "SELECT id FROM reviewers WHERE valid = 1";
+        $reviewers = $this->db->query($sql)->result();
+        $limit = 3;
+        if (count($reviewers) > $limit) {
+            $keys = array_rand($reviewers, $limit);
+            $someReviewers = array();
+            foreach ($keys as $key) {
+                array_push($someReviewers, $reviewers[$key]);
+            }
+        } else {
+            $someReviewers = $reviewers;
+        }
+        $resultReviewers = array();
+        foreach ($someReviewers as $reviewer) {
+            array_push($resultReviewers, $this->getOne($reviewer->id));
+        }
+        return $resultReviewers;
+    }
+
     public function getList($skip = 0, $limit = 100)
     {
         $fields = $this->publicFields();
@@ -59,7 +80,8 @@ $skip";
 
     }
 
-    function isReviewerBusy($reviewer) {
+    function isReviewerBusy($reviewer)
+    {
         $todo = $this->orderDao->countPaidOrders($reviewer->id);
         return $todo >= $reviewer->maxOrders;
     }

@@ -69,7 +69,15 @@ func TestUser_ReviewerRegisterAndLogin(t *testing.T) {
 
 	c := NewClient()
 
-	res := c.postData("user/register", url.Values{"mobilePhoneNumber": {"13261630925"},
+	res := c.postData("user/register", url.Values{"mobilePhoneNumber": {"13261630924"},
+		"username": {"lzwjavaReviewer2"}, "smsCode": {"5555"}, "password":{md5password("123456")}, "type":
+		{"reviewer"}})
+
+	res = c.postData("user/register", url.Values{"mobilePhoneNumber": {"13261630926"},
+		"username": {"lzwjavaReviewer1"}, "smsCode": {"5555"}, "password":{md5password("123456")}, "type":
+		{"reviewer"}})
+
+	res = c.postData("user/register", url.Values{"mobilePhoneNumber": {"13261630925"},
 		"username": {"lzwjavaReviewer"}, "smsCode": {"5555"}, "password":{md5password("123456")}, "type": {"reviewer"}})
 
 	res = c.patchData("user", url.Values{"introduction": {"I'm lzwjava"},
