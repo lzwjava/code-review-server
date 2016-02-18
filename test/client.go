@@ -146,8 +146,6 @@ func (c *Client) request(method string, path string, params url.Values) (map[str
 	checkErr(doErr)
 	defer body.Close()
 
-
-
 	fmt.Println("response:", bodyStr)
 	fmt.Println()
 

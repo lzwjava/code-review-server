@@ -12,8 +12,11 @@ class BaseController extends REST_Controller
     {
         parent::__construct();
 
-        //\Pingpp\Pingpp::setApiKey('sk_test_9Giz1SPG8mD4OW94OSTmPGyL');
-        \Pingpp\Pingpp::setApiKey('sk_live_SSijL0KO8eHK5qzfPG0mjDW9');
+        if (isLocalDebug()) {
+            \Pingpp\Pingpp::setApiKey('sk_test_nz9af5CKmb5CnXn10Ou1eHq5');
+        } else {
+            \Pingpp\Pingpp::setApiKey('sk_live_SSijL0KO8eHK5qzfPG0mjDW9');
+        }
     }
 
     protected function responseResult($code, $result = null, $error = null, $total = null)

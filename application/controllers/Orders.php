@@ -90,6 +90,19 @@ class Orders extends BaseController
         $this->succeed($order);
     }
 
+    private function truncateName($username)
+    {
+        if ($username == null) {
+            return $username;
+        }
+        $maxLength = 12;
+        if (strlen($username) > $maxLength) {
+            return substr($username, 0, $maxLength);
+        } else {
+            return $username;
+        }
+    }
+
     public function reward_post($orderId)
     {
         $user = $this->checkAndGetSessionUser();
@@ -128,13 +141,15 @@ class Orders extends BaseController
         }
         if (isLocalDebug()) {
             // CodeReviewTest
-            // $appId = 'app_erTGG4vrzrP008ij';
-            $appId = 'app_jTSKu5CmXbHC0q5q';
+            $appId = 'app_nn9qHKPafHCSDKq5';
+            // $appId = 'app_jTSKu5CmXbHC0q5q';
         } else {
             // CodeReviewProd
             // $appId = 'app_XzDynH4qX5u510mz';
             $appId = 'app_jTSKu5CmXbHC0q5q';
         }
+        $subject = $this->truncateName($currentUsername) . " 打赏给 " .
+            $this->truncateName($reviewerName) . "大神";
         $ch = \Pingpp\Charge::create(
             array(
                 'order_no' => $orderNo,
@@ -143,16 +158,17 @@ class Orders extends BaseController
                 'amount' => $amount,
                 'client_ip' => $ipAddress,
                 'currency' => 'cny',
-                'subject' => "$currentUsername 打赏给 $reviewerName 大神",
-                'body' => "打赏给 $reviewerName 大神",
+                'subject' => $subject,
+                'body' => "$currentUsername 打赏给 $reviewerName 大神",
                 'metadata' => array(KEY_ORDER_ID => $order->orderId),
                 'extra' => array('success_url' => 'http://api.reviewcode.cn/rewards/success')
             )
         );
+        logInfo("created");
         if ($ch == null || $ch->failure_code != null) {
-            error_log("charge create failed\n");
+            logInfo("charge create failed\n");
             if ($ch != null) {
-                error_log("reason $ch->failure_message");
+                logInfo("reason $ch->failure_message");
             }
             $this->failure(ERROR_PINGPP_CHARGE, "创建打赏失败");
             return;

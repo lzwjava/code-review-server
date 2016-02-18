@@ -61,6 +61,7 @@ class Reviews extends BaseController
     function email_get()
     {
         $this->mailgunService->sendMessage('Subject', 'text');
+        $this->succeed();
     }
 
     public function update_patch($reviewId)
