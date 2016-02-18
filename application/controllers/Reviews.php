@@ -9,6 +9,16 @@
 class Reviews extends BaseController
 {
 
+    public $mailgunService;
+
+    function __construct()
+    {
+        parent::__construct();
+
+        $this->load->library('MailgunService');
+        $this->mailgunService = new MailgunService();
+    }
+
     public function add_post()
     {
         if ($this->checkIfParamsNotExist($_POST, array(KEY_ORDER_ID,
@@ -44,7 +54,13 @@ class Reviews extends BaseController
         $insertId = $this->reviewDao->add($orderId, $title, $content);
         $this->orderDao->updateStatus($orderId, ORDER_STATUS_FINISHED);
         $this->db->trans_complete();
-        $this->succeed($this->reviewDao->getOne($insertId));
+        $review = $this->reviewDao->getOne($insertId);
+        $this->succeed($review);
+    }
+
+    function email_get()
+    {
+        $this->mailgunService->sendMessage('Subject', 'text');
     }
 
     public function update_patch($reviewId)

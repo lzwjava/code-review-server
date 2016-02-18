@@ -211,4 +211,12 @@ class User extends BaseController
         }
         $this->succeed($this->tagDao->getUserTags($user->id));
     }
+
+    function resetPassword()
+    {
+        if ($this->checkIfNotAdmin()) {
+
+        }
+    }
+
 }

@@ -137,10 +137,16 @@ func (c *Client) request(method string, path string, params url.Values) (map[str
 	fmt.Println("curl -X", method, urlStr, params)
 
 	body, doErr := c.do(req)
+
+	bodyStr := ""
+	if body != nil {
+		bodyStr = writeHtml(body)
+	}
+
 	checkErr(doErr)
 	defer body.Close()
 
-	bodyStr := writeHtml(body)
+
 
 	fmt.Println("response:", bodyStr)
 	fmt.Println()
@@ -239,7 +245,7 @@ func (c *Client) do(req *http.Request) (io.ReadCloser, error) {
 	}
 
 	if err := json.NewDecoder(res.Body).Decode(e); err != nil {
-		return nil, err
+		return res.Body, err
 	}
 
 	res.Body.Close()

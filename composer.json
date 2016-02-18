@@ -1,8 +1,9 @@
 {
-    "require": {
-        "qiniu/php-sdk": "^7.0",
-        "pingplusplus/pingpp-php": "dev-master",
-        "predis/predis": "1.0.3",
-        "mistic100/randomcolor":"1.0.3"
-    }
+  "require": {
+    "qiniu/php-sdk": "^7.0",
+    "pingplusplus/pingpp-php": "dev-master",
+    "predis/predis": "1.0.3",
+    "mistic100/randomcolor": "1.0.3",
+    "mailgun/mailgun-php": "1.8"
+  }
 }
