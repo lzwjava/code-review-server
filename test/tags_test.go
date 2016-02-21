@@ -113,7 +113,7 @@ func TestTags_Get(t *testing.T) {
 	assert.True(t, tag.TagId > 0)
 	assert.NotNil(t, tag.TagName)
 	assert.NotNil(t, tag.Color)
-	//StructTest()
+	assert.Equal(t, len(tag.Color), 6)
 }
 
 func TestTags_AddUserTag(t *testing.T) {
