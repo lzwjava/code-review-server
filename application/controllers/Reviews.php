@@ -142,5 +142,4 @@ class Reviews extends BaseController
         $this->succeed($this->tagDao->getReviewTags($reviewId));
     }
 
-
 }

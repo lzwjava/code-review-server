@@ -29,12 +29,20 @@ class TagDao extends BaseDao
         return $tags;
     }
 
+    private function randomColor()
+    {
+        $colors = array("#00BCEE", "#EF706B", "#33C96F", "#AC72D9", "#F01490", "#FAAB34");
+        $index = rand(0, count($colors) - 1);
+        return $colors[$index];
+    }
+
     function mergeTagsColor($tags)
     {
         $convert = new ColorConvert();
         foreach ($tags as $tag) {
-            $color = RandomColor::one();
-            $tag->color = substr($color, 1);
+            $tag->color = $this->randomColor();
+//            $color = RandomColor::one();
+//            $tag->color = substr($color, 1);
             // $tag->color = $convert->stringToColorCode($tag->tagName);
         }
     }
