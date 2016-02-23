@@ -8,6 +8,14 @@
  */
 class ReviewDao extends BaseDao
 {
+    public $tagDao;
+
+    function __construct()
+    {
+        parent::__construct();
+        $this->load->model('TagDao');
+        $this->tagDao = new TagDao();
+    }
 
     private function getPublicFields()
     {

@@ -9,6 +9,21 @@
 class Orders extends BaseController
 {
 
+    public $orderDao;
+    public $reviewerDao;
+    public $chargeDao;
+
+    function __construct()
+    {
+        parent::__construct();
+        $this->load->model('OrderDao');
+        $this->orderDao = new OrderDao();
+        $this->load->model('ReviewerDao');
+        $this->reviewerDao = new ReviewerDao();
+        $this->load->model('ChargeDao');
+        $this->chargeDao = new ChargeDao();
+    }
+
     function myOrders_get()
     {
         $user = $this->checkAndGetSessionUser();

@@ -8,6 +8,21 @@
  */
 class ReviewerDao extends BaseDao
 {
+    public $orderDao;
+    public $rewardDao;
+    public $userDao;
+
+    function __construct()
+    {
+        parent::__construct();
+        $this->load->model('OrderDao');
+        $this->orderDao = new OrderDao();
+        $this->load->model('RewardDao');
+        $this->rewardDao = new RewardDao();
+        $this->load->model('UserDao');
+        $this->userDao = new UserDao();
+    }
+
     public function setReviewerValid($id)
     {
         $sql = "UPDATE reviewers SET valid=1 WHERE id=?";

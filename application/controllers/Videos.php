@@ -8,10 +8,14 @@
  */
 class Videos extends BaseController
 {
+
+    public $videoDao;
+
     function __construct()
     {
         parent::__construct();
         $this->load->model('videoDao');
+        $this->videoDao = new VideoDao();
     }
 
     public function createVideo_post()

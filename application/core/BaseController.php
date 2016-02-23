@@ -7,6 +7,7 @@ require_once APPPATH . '/libraries/REST_Controller.php';
 
 class BaseController extends REST_Controller
 {
+    public $userDao;
 
     function __construct()
     {
@@ -17,6 +18,8 @@ class BaseController extends REST_Controller
         } else {
             \Pingpp\Pingpp::setApiKey('sk_live_SSijL0KO8eHK5qzfPG0mjDW9');
         }
+        $this->load->model('UserDao');
+        $this->userDao = new UserDao();
     }
 
     protected function responseResult($code, $result = null, $error = null, $total = null)

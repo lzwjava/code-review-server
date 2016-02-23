@@ -9,11 +9,14 @@
 class Applications extends BaseController
 {
     public $leancloud;
+    public $applicationDao;
 
     function __construct()
     {
         parent::__construct();
         $this->load->model('applicationDao');
+        $this->applicationDao = new ApplicationDao();
+
         $this->load->library(LeanCloud::class);
         $this->leancloud = new LeanCloud();
     }

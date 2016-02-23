@@ -8,12 +8,17 @@
  */
 class Visits extends BaseController
 {
+    public $reviewVisitDao;
+    public $videoVisitDao;
+
     function __construct()
     {
         parent::__construct();
         $this->load->helper('cookie');
         $this->load->model('reviewVisitDao');
+        $this->reviewVisitDao = new ReviewVisitDao();
         $this->load->model('videoVisitDao');
+        $this->videoVisitDao = new VideoVisitDao();
     }
 
     private function generateVisitorId()

@@ -42,7 +42,7 @@ func TestOrders_Amount(t *testing.T) {
 
 	orderRes := c.post("orders/add", url.Values{"gitHubUrl": {"https://github.com/lzwjava/Reveal-In-GitHub"},
 		"remark": {"麻烦大神了"}, "reviewerId":{reviewerId}, "codeLines":{"3000"}, "amount": {"300"}})
-	assert.Equal(t, "申请者打赏金额至少为 50 元", orderRes["error"].(string));
+	assert.Equal(t, "申请者打赏金额至少为 20 元", orderRes["error"].(string));
 	assert.Equal(t, 16, toInt(orderRes["code"]));
 }
 

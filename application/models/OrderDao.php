@@ -9,6 +9,15 @@
 class OrderDao extends BaseDao
 {
 
+    public $userDao;
+
+    function __construct()
+    {
+        parent::__construct();
+        $this->load->model('UserDao');
+        $this->userDao = new UserDao();
+    }
+
     private function getPublicFields()
     {
         return $this->mergeFields(array(

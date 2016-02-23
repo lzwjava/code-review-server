@@ -9,12 +9,21 @@
 class Rewards extends BaseController
 {
     public $leancloud;
+    public $chargeDao;
+    public $orderDao;
+    public $rewardDao;
 
     function __construct()
     {
         parent::__construct();
         $this->load->library('LeanCloud');
         $this->leancloud = new LeanCloud();
+        $this->load->model('chargeDao');
+        $this->chargeDao = new ChargeDao();
+        $this->load->model('orderDao');
+        $this->orderDao = new OrderDao();
+        $this->load->model('RewardDao');
+        $this->rewardDao = new RewardDao();
     }
 
     public function callback_post()

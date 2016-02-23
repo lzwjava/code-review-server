@@ -11,12 +11,23 @@ class Reviews extends BaseController
 
     public $mailgunService;
 
+    public $tagDao;
+    public $reviewDao;
+    public $orderDao;
+
     function __construct()
     {
         parent::__construct();
 
         $this->load->library('MailgunService');
         $this->mailgunService = new MailgunService();
+
+        $this->load->model('tagDao');
+        $this->tagDao = new TagDao();
+        $this->load->model('reviewDao');
+        $this->reviewDao = new ReviewDao();
+        $this->load->model('orderDao');
+        $this->orderDao = new OrderDao();
     }
 
     public function add_post()
@@ -128,10 +139,10 @@ class Reviews extends BaseController
 
     public function addTag_post($reviewId)
     {
-        if ($this->checkIfParamsNotExist($_POST, array(KEY_TAG_ID))) {
+        if ($this->checkIfParamsNotExist($this->post(), array(KEY_TAG_ID))) {
             return;
         }
-        $tagId = $_POST[KEY_TAG_ID];
+        $tagId = $this->post(KEY_TAG_ID);
         $this->tagDao->addReviewTag($reviewId, $tagId);
         $this->succeed($this->tagDao->getReviewTags($reviewId));
     }

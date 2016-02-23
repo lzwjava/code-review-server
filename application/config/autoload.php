@@ -126,5 +126,4 @@ $autoload['language'] = array();
 |
 |	$autoload['model'] = array('first_model' => 'first');
 */
-$autoload['model'] = array('BaseDao', 'userDao', 'reviewerDao', 'orderDao',
-    'reviewDao', 'rewardDao', 'chargeDao', 'tagDao');
+$autoload['model'] = array('BaseDao');

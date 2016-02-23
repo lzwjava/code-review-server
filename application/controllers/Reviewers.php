@@ -13,6 +13,7 @@ class Reviewers extends BaseController
     function  __construct()
     {
         parent::__construct();
+        $this->load->model('ReviewerDao');
         $this->reviewerDao = new ReviewerDao();
     }
 

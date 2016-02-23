@@ -13,11 +13,14 @@ if (!defined('BASEPATH'))
 class User extends BaseController
 {
     public $leancloud;
+    public $tagDao;
 
     function __construct()
     {
         parent::__construct();
         $this->load->library('LeanCloud');
+        $this->load->model('tagDao');
+        $this->tagDao = new TagDao();
     }
 
     private function checkSmsCodeWrong($mobilePhoneNumber, $smsCode)
