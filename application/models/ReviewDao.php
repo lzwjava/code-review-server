@@ -68,7 +68,7 @@ class ReviewDao extends BaseDao
     function update($reviewId, $data)
     {
         $this->db->where(KEY_REVIEW_ID, $reviewId);
-        $this->db->update(TABLE_REVIEWS, $data);
+        return $this->db->update(TABLE_REVIEWS, $data);
     }
 
     private function getReviews($field, $value, $skip, $limit)

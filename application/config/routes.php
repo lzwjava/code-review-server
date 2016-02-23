@@ -88,3 +88,5 @@ $route['videos/(\d+)/visits']['POST'] = 'visits/visitVideo/$1';
 
 $route['applications']['POST'] = 'applications/create';
 $route['applications/(\d+)/agree']['GET'] = 'applications/agree/$1';
+
+$route['admin/reviews/(\d+)']['PATCH'] = 'reviews/adminUpdate/$1';

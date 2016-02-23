@@ -55,7 +55,7 @@ class Applications extends BaseController
         }
     }
 
-    function notifyApplySucceed($userId)
+    private function notifyApplySucceed($userId)
     {
         $user = $this->userDao->findUserById($userId);
         $phone = $user->mobilePhoneNumber;

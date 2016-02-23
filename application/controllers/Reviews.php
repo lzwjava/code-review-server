@@ -14,6 +14,7 @@ class Reviews extends BaseController
     public $tagDao;
     public $reviewDao;
     public $orderDao;
+    public $leanCloud;
 
     function __construct()
     {
@@ -21,6 +22,9 @@ class Reviews extends BaseController
 
         $this->load->library('MailgunService');
         $this->mailgunService = new MailgunService();
+
+        $this->load->library('LeanCloud');
+        $this->leanCloud = new LeanCloud();
 
         $this->load->model('tagDao');
         $this->tagDao = new TagDao();
@@ -66,7 +70,20 @@ class Reviews extends BaseController
         $this->orderDao->updateStatus($orderId, ORDER_STATUS_FINISHED);
         $this->db->trans_complete();
         $review = $this->reviewDao->getOne($insertId);
+        $this->notifyReviewFinish($order->learner, $order->reviewer, $review->reviewId);
         $this->succeed($review);
+    }
+
+    private function notifyReviewFinish($learner, $reviewer, $reviewId)
+    {
+        $reviewUrl = 'http://reviewcode.cn/article.html?reviewId=' . $reviewId;
+        $data = array(
+            SMS_LEARNER => $learner->username,
+            SMS_REVIEWER => $reviewer->username,
+            SMS_REVIEW_URL => $reviewUrl
+        );
+        $user = $this->userDao->findUserById($learner->id);
+        $this->leanCloud->sendTemplateSms($user->mobilePhoneNumber, 'ReviewFinish', $data);
     }
 
     function email_get()
@@ -151,6 +168,31 @@ class Reviews extends BaseController
     {
         $this->tagDao->removeReviewTag($reviewId, $tagId);
         $this->succeed($this->tagDao->getReviewTags($reviewId));
+    }
+
+    public function adminUpdate_patch($reviewId)
+    {
+        if ($this->checkIfNotAdmin()) {
+            return;
+        }
+        $keys = array(KEY_DISPLAYING, KEY_COVER_URL);
+        if ($this->checkIfParamsNotExist($this->patch(),
+            $keys)
+        ) {
+            return;
+        }
+        $data = $this->patchParams($keys);
+        $displaying = intval($data[KEY_DISPLAYING]);
+        if ($displaying !== 0 && $displaying !== 1) {
+            $this->failure(ERROR_PARAMETER_ILLEGAL, 'displaying 值非法');
+            return;
+        }
+        $ok = $this->reviewDao->update($reviewId, $data);
+        if ($ok) {
+            $this->succeed();
+        } else {
+            $this->failure(ERROR_RUN_SQL_FAILED, 'run sql failed');
+        }
     }
 
 }

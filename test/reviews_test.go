@@ -108,3 +108,16 @@ func TestReviews_OrderHaveReviewId(t *testing.T) {
 	assert.NotNil(t, res["reviewId"])
 	assert.Equal(t, review["reviewId"], res["reviewId"])
 }
+
+func TestReviews_adminUpdate(t *testing.T) {
+	c := NewClient()
+	_, _, _, review := addOrderAndReview(c)
+	reviewId := floatToStr(review["reviewId"])
+	c.admin = true
+	res := c.patchData("admin/reviews/" + reviewId, url.Values{"displaying": {"1"}, "coverUrl":
+	{"http://7xotd0.com1.z0.gl.clouddn.com/photo-1448814100339-234df1d4005d.jpeg"}})
+	assert.NotNil(t, res)
+
+	theReview := c.getData("reviews/" + reviewId, url.Values{})
+	assert.Equal(t, floatToStr(theReview["displaying"]), "1")
+}
