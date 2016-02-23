@@ -90,7 +90,7 @@ class User extends BaseController
         } else if ($this->checkIfNotInArray($type, $this->getTypeArray())) {
             return;
         } else {
-            $defaultAvatarUrl = "http://7xotd0.com1.z0.glb.clouddn.com/default_avatar.png";
+            $defaultAvatarUrl = "http://7xotd0.com1.z0.glb.clouddn.com/defaultAvatar.png";
             $this->userDao->insertUser($type, $username, $mobilePhoneNumber, $defaultAvatarUrl,
                 $password);
             $this->loginOrRegisterSucceed($mobilePhoneNumber);
