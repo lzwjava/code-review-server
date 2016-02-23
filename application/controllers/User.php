@@ -79,7 +79,7 @@ class User extends BaseController
         $password = $_POST[KEY_PASSWORD];
         $type = $_POST[KEY_TYPE];
         $smsCode = $_POST[KEY_SMS_CODE];
-        if ($this->checkIfUsernameUsedAndReponse($username)) {
+        if ($this->checkIfUsernameUsedAndResponse($username)) {
             return;
         } elseif ($this->userDao->checkIfMobilePhoneNumberUsed($mobilePhoneNumber)) {
             $this->failure(ERROR_MOBILE_PHONE_NUMBER_TAKEN, "手机号已被占用");
@@ -97,7 +97,7 @@ class User extends BaseController
         }
     }
 
-    private function checkIfUsernameUsedAndReponse($username)
+    private function checkIfUsernameUsedAndResponse($username)
     {
         if ($this->userDao->checkIfUsernameUsed($username)) {
             $this->failure(ERROR_USERNAME_TAKEN, "用户名已存在");
@@ -171,7 +171,7 @@ class User extends BaseController
         if (isset($data[KEY_USERNAME])) {
             $username = $data[KEY_USERNAME];
             if ($username != $user->username) {
-                if ($this->checkIfUsernameUsedAndReponse($username)) {
+                if ($this->checkIfUsernameUsedAndResponse($username)) {
                     return;
                 }
             }
