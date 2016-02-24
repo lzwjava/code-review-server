@@ -14,7 +14,7 @@ class Reviews extends BaseController
     public $tagDao;
     public $reviewDao;
     public $orderDao;
-    public $sms;
+    public $notify;
 
     function __construct()
     {
@@ -23,8 +23,8 @@ class Reviews extends BaseController
         $this->load->library('MailgunService');
         $this->mailgunService = new MailgunService();
 
-        $this->load->library(Sms::class);
-        $this->sms = new Sms();
+        $this->load->library(Notify::class);
+        $this->notify = new Notify();
 
         $this->load->model('tagDao');
         $this->tagDao = new TagDao();
@@ -70,7 +70,7 @@ class Reviews extends BaseController
         $this->orderDao->updateStatus($orderId, ORDER_STATUS_FINISHED);
         $this->db->trans_complete();
         $review = $this->reviewDao->getOne($insertId);
-        $this->sms->notifyReviewFinish($order->learner, $order->reviewer, $review->reviewId);
+        $this->notify->notifyReviewFinish($order, $review);
         $this->succeed($review);
     }
 

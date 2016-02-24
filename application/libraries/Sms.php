@@ -6,7 +6,7 @@
  * Date: 16/2/25
  * Time: 上午3:49
  */
-class Sms extends CI_Model
+class Sms extends BaseDao
 {
     public $leanCloud;
     public $userDao;

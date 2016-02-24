@@ -9,15 +9,15 @@
 class Applications extends BaseController
 {
     public $applicationDao;
-    public $sms;
+    public $notify;
 
     function __construct()
     {
         parent::__construct();
         $this->load->model('applicationDao');
         $this->applicationDao = new ApplicationDao();
-        $this->load->library(Sms::class);
-        $this->sms = new Sms();
+        $this->load->library(Notify::class);
+        $this->notify= new Notify();
     }
 
     function create_post()
@@ -49,7 +49,7 @@ class Applications extends BaseController
         if (!$userId) {
             $this->failure(ERROR_RUN_SQL_FAILED, '无法转换为大神,内部错误');
         } else {
-            $this->sms->notifyApplySucceed($userId);
+            $this->notify->notifyApplySucceed($userId);
             $this->succeed();
         }
     }

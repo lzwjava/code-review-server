@@ -11,8 +11,7 @@ class Rewards extends BaseController
     public $chargeDao;
     public $orderDao;
     public $rewardDao;
-    public $notificationDao;
-    public $sms;
+    public $notify;
 
     function __construct()
     {
@@ -23,10 +22,8 @@ class Rewards extends BaseController
         $this->orderDao = new OrderDao();
         $this->load->model('RewardDao');
         $this->rewardDao = new RewardDao();
-        $this->load->model('NotificationDao');
-        $this->notificationDao = new NotificationDao();
-        $this->load->library('sms');
-        $this->sms = new Sms();
+        $this->load->library(Notify::class);
+        $this->notify = new Notify();
     }
 
     public function callback_post()
@@ -91,18 +88,12 @@ class Rewards extends BaseController
                 $this->failure(ERROR_PARAMETER_ILLEGAL, $info);
             } else {
                 $this->orderDao->updateOrderToPaid($order->orderId, $rewardId);
-                $this->notifyNewOrder($order);
+                $this->notify->notifyNewOrder($order);
                 $this->succeed();
             }
         } else {
             $this->succeed();
         }
-    }
-
-    private function notifyNewOrder($order)
-    {
-        $this->notificationDao->notifyNewOrder($order);
-        $this->sms->notifyNewOrderBySms($order);
     }
 
     public function refund($orderId)
