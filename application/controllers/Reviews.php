@@ -14,7 +14,7 @@ class Reviews extends BaseController
     public $tagDao;
     public $reviewDao;
     public $orderDao;
-    public $leanCloud;
+    public $sms;
 
     function __construct()
     {
@@ -23,8 +23,8 @@ class Reviews extends BaseController
         $this->load->library('MailgunService');
         $this->mailgunService = new MailgunService();
 
-        $this->load->library('LeanCloud');
-        $this->leanCloud = new LeanCloud();
+        $this->load->library(Sms::class);
+        $this->sms = new Sms();
 
         $this->load->model('tagDao');
         $this->tagDao = new TagDao();
@@ -70,20 +70,8 @@ class Reviews extends BaseController
         $this->orderDao->updateStatus($orderId, ORDER_STATUS_FINISHED);
         $this->db->trans_complete();
         $review = $this->reviewDao->getOne($insertId);
-        $this->notifyReviewFinish($order->learner, $order->reviewer, $review->reviewId);
+        $this->sms->notifyReviewFinish($order->learner, $order->reviewer, $review->reviewId);
         $this->succeed($review);
-    }
-
-    private function notifyReviewFinish($learner, $reviewer, $reviewId)
-    {
-        $reviewUrl = 'http://reviewcode.cn/article.html?reviewId=' . $reviewId;
-        $data = array(
-            SMS_LEARNER => $learner->username,
-            SMS_REVIEWER => $reviewer->username,
-            SMS_REVIEW_URL => $reviewUrl
-        );
-        $user = $this->userDao->findUserById($learner->id);
-        $this->leanCloud->sendTemplateSms($user->mobilePhoneNumber, 'ReviewFinish', $data);
     }
 
     function email_get()

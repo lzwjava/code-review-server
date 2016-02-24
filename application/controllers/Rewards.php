@@ -8,22 +8,25 @@
  */
 class Rewards extends BaseController
 {
-    public $leancloud;
     public $chargeDao;
     public $orderDao;
     public $rewardDao;
+    public $notificationDao;
+    public $sms;
 
     function __construct()
     {
         parent::__construct();
-        $this->load->library('LeanCloud');
-        $this->leancloud = new LeanCloud();
         $this->load->model('chargeDao');
         $this->chargeDao = new ChargeDao();
         $this->load->model('orderDao');
         $this->orderDao = new OrderDao();
         $this->load->model('RewardDao');
         $this->rewardDao = new RewardDao();
+        $this->load->model('NotificationDao');
+        $this->notificationDao = new NotificationDao();
+        $this->load->library('sms');
+        $this->sms = new Sms();
     }
 
     public function callback_post()
@@ -98,16 +101,8 @@ class Rewards extends BaseController
 
     private function notifyNewOrder($order)
     {
-
-        $data = array(
-            SMS_REVIEWER => $order->reviewer->username,
-            SMS_LEARNER => $order->learner->username,
-            KEY_AMOUNT => amountToYuan($order->amount),
-            SMS_CODE_URL => $order->gitHubUrl,
-        );
-        $user = $this->userDao->findUserById($order->reviewer->id);
-        $phone = $user->mobilePhoneNumber;
-        $this->leancloud->sendTemplateSms($phone, 'order', $data);
+        $this->notificationDao->notifyNewOrder($order);
+        $this->sms->notifyNewOrderBySms($order);
     }
 
     public function refund($orderId)

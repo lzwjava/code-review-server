@@ -9,15 +9,18 @@
 class NotificationDao extends BaseDao
 {
     public $commentDao;
+    public $orderDao;
 
     function __construct()
     {
         parent::__construct();
         $this->load->model('commentDao');
+        $this->load->model('OrderDao');
         $this->commentDao = new CommentDao();
+        $this->orderDao = new OrderDao();
     }
 
-    function addNotification($userId, $type, $commentId)
+    private function addNotification($userId, $type, $commentId = null, $orderId = null)
     {
         $data = array(
             KEY_USER_ID => $userId,
@@ -25,7 +28,11 @@ class NotificationDao extends BaseDao
         if ($commentId) {
             $data[KEY_COMMENT_ID] = $commentId;
         }
+        if ($orderId) {
+            $data[KEY_ORDER_ID] = $orderId;
+        }
         $this->db->insert(TABLE_NOTIFICATIONS, $data);
+        return $this->db->insert_id();
     }
 
     private function publicFields($prefixTableName = TABLE_NOTIFICATIONS)
@@ -47,6 +54,7 @@ class NotificationDao extends BaseDao
                 u.id,u.username,u.avatarUrl
                 from notifications as n
                 left join comments as c USING(commentId)
+                left join orders as o USING(orderId)
                 left join users as u on c.authorId = u.id
                 where userId=? $unreadSql
                 LIMIT $limit offset $skip";
@@ -87,5 +95,29 @@ class NotificationDao extends BaseDao
             $this->db->where(KEY_UNREAD, 1);
             return $this->db->update(TABLE_NOTIFICATIONS, $data);
         }
+    }
+
+    function notifyNewComment($commentId, $reviewId, $author)
+    {
+        $order = $this->orderDao->getOrderByReviewId($reviewId);
+        if ($author->id != $order->learnerId) {
+            $this->addNotification($order->learnerId,
+                TYPE_COMMENT, $commentId);
+        }
+        if ($author->id != $order->reviewerId) {
+            $this->addNotification($order->reviewerId,
+                TYPE_COMMENT, $commentId);
+        }
+    }
+
+    function notifyNewOrder($order)
+    {
+        $this->addNotification($order->reviewerId,
+            TYPE_NEW_ORDER, null, $order->orderId);
+    }
+
+    function notifyOrderFinish($order)
+    {
+        $this->addNotification($order->learnerId, TYPE_FINISH_ORDER, null, $order->orderId);
     }
 }

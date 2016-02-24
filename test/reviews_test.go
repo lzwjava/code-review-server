@@ -4,7 +4,6 @@ import (
 	"testing"
 	_ "github.com/stretchr/testify/assert"
 	_ "fmt"
-	_ "net/url"
 	"github.com/stretchr/testify/assert"
 	"net/url"
 )

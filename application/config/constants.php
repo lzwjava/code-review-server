@@ -246,3 +246,5 @@ define('TABLE_NOTIFICATIONS', 'notifications');
 define('KEY_NOTIFICATION_ID', 'notificationId');
 define('KEY_UNREAD', 'unread');
 define('TYPE_COMMENT', 'comment');
+define('TYPE_FINISH_ORDER', 'finish_order');
+define('TYPE_NEW_ORDER', 'new_order');

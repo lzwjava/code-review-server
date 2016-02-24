@@ -29,8 +29,10 @@ CREATE TABLE `notifications` (
   `userId`         VARCHAR(31) NOT NULL,
   `unread`         TINYINT     NOT NULL DEFAULT 1,
   `type`           VARCHAR(31) NOT NULL,
+  `orderId`        INT(11),
   `commentId`      INT(11),
   `created`        TIMESTAMP   NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`notificationId`),
+  FOREIGN KEY (`orderId`) REFERENCES `orders` (`orderId`),
   FOREIGN KEY (`commentId`) REFERENCES `comments` (`commentId`)
 )

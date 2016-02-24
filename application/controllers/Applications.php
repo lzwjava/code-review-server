@@ -8,17 +8,16 @@
  */
 class Applications extends BaseController
 {
-    public $leancloud;
     public $applicationDao;
+    public $sms;
 
     function __construct()
     {
         parent::__construct();
         $this->load->model('applicationDao');
         $this->applicationDao = new ApplicationDao();
-
-        $this->load->library(LeanCloud::class);
-        $this->leancloud = new LeanCloud();
+        $this->load->library(Sms::class);
+        $this->sms = new Sms();
     }
 
     function create_post()
@@ -50,18 +49,8 @@ class Applications extends BaseController
         if (!$userId) {
             $this->failure(ERROR_RUN_SQL_FAILED, '无法转换为大神,内部错误');
         } else {
-            $this->notifyApplySucceed($userId);
+            $this->sms->notifyApplySucceed($userId);
             $this->succeed();
         }
-    }
-
-    private function notifyApplySucceed($userId)
-    {
-        $user = $this->userDao->findUserById($userId);
-        $phone = $user->mobilePhoneNumber;
-        $data = array(
-            SMS_REVIEWER => $user->username
-        );
-        $this->leancloud->sendTemplateSms($phone, 'ApplySucceed', $data);
     }
 }
