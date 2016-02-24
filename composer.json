@@ -4,6 +4,8 @@
     "pingplusplus/pingpp-php": "dev-master",
     "predis/predis": "1.0.3",
     "mistic100/randomcolor": "1.0.3",
-    "mailgun/mailgun-php": "1.8"
+    "mailgun/mailgun-php": "1.8",
+    "cocur/slugify": "1.4.1",
+    "overtrue/pinyin": "2.6.7"
   }
 }
