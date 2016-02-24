@@ -11,8 +11,8 @@ import (
 )
 
 func TestOrders_AddOrder(t *testing.T) {
+	setUp()
 	c := NewClient()
-	cleanTables()
 	reviewer, learner := registerUsers(c)
 
 	reviewerId := reviewer["id"].(string)
@@ -33,7 +33,7 @@ func TestOrders_AddOrder(t *testing.T) {
 }
 
 func TestOrders_Amount(t *testing.T) {
-	cleanTables()
+	setUp()
 
 	c := NewClient()
 	reviewer, _ := registerUsers(c)
@@ -47,6 +47,8 @@ func TestOrders_Amount(t *testing.T) {
 }
 
 func TestOrders_NotReturnUnpaid(t *testing.T) {
+	setUp()
+
 	c := NewClient()
 	reviewer, _, _ := addOrder(c)
 	c.sessionToken = reviewer["sessionToken"].(string)
@@ -58,6 +60,7 @@ func TestOrders_NotReturnUnpaid(t *testing.T) {
 }
 
 func TestOrders_All(t *testing.T) {
+	setUp()
 	c := NewClient()
 	addOrder(c)
 	res := c.getArrayData("user/orders", url.Values{"status":{"unpaid"}});
@@ -68,8 +71,7 @@ func TestOrders_All(t *testing.T) {
 }
 
 func TestOrders_View(t *testing.T) {
-	cleanTables()
-
+	setUp()
 	c := NewClient()
 	reviewer, _, order := addOrder(c)
 
@@ -83,7 +85,7 @@ func TestOrders_View(t *testing.T) {
 }
 
 func TestOrders_maxOrder(t *testing.T) {
-	cleanTables()
+	setUp()
 	c := NewClient()
 	reviewer := registerReviewer(c)
 	res := c.patchData("user", url.Values{"maxOrders":{"0"}})
@@ -99,6 +101,7 @@ func TestOrders_maxOrder(t *testing.T) {
 }
 
 func TestOrders_consent(t *testing.T) {
+	setUp()
 	c := NewClient()
 	reviewer, _, order := addOrderAndReward(c)
 	c.sessionToken = reviewer["sessionToken"].(string)
@@ -111,6 +114,7 @@ func TestOrders_consent(t *testing.T) {
 }
 
 func TestOrders_reject(t *testing.T) {
+	setUp()
 	c := NewClient()
 	reviewer, _, order := addOrderAndReward(c)
 	c.sessionToken = reviewer["sessionToken"].(string)
@@ -123,6 +127,7 @@ func TestOrders_reject(t *testing.T) {
 }
 
 func TestOrders_amount(t *testing.T) {
+	setUp()
 	c := NewClient()
 	_, _, order := addOrderAndReward(c)
 	orderId := floatToStr(order["orderId"])
@@ -131,6 +136,7 @@ func TestOrders_amount(t *testing.T) {
 }
 
 func TestOrders_delete(t *testing.T) {
+	setUp()
 	c := NewClient()
 	_, _, order := addOrder(c)
 	orderId := floatToStr(order["orderId"])
@@ -139,6 +145,7 @@ func TestOrders_delete(t *testing.T) {
 }
 
 func TestOrders_deleteFail(t *testing.T) {
+	setUp()
 	c := NewClient()
 	reviewer, _, order := addOrder(c)
 	c.sessionToken = reviewer["sessionToken"].(string)
@@ -149,6 +156,7 @@ func TestOrders_deleteFail(t *testing.T) {
 }
 
 func TestOrders_deletePaid(t *testing.T) {
+	setUp()
 	c := NewClient()
 	_, learner, order, _ := addOrderAndReview(c)
 	orderId := floatToStr(order["orderId"])

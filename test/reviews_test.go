@@ -10,6 +10,7 @@ import (
 )
 
 func TestReviews_AddReview(t *testing.T) {
+	setUp()
 	c := NewClient()
 	reviewer, _, order := addOrder(c)
 
@@ -26,6 +27,7 @@ func TestReviews_AddReview(t *testing.T) {
 }
 
 func TestReviews_Duplicate(t *testing.T) {
+	setUp()
 	c := NewClient()
 	reviewer, _, order := addOrder(c)
 
@@ -41,6 +43,7 @@ func TestReviews_Duplicate(t *testing.T) {
 }
 
 func TestReviews_EditReview(t *testing.T) {
+	setUp()
 	c := NewClient()
 	reviewer, _, order := addOrder(c)
 
@@ -59,6 +62,7 @@ func TestReviews_EditReview(t *testing.T) {
 }
 
 func TestReviews_all(t *testing.T) {
+	setUp()
 	c := NewClient();
 	_, _, _, review := addOrderAndReview(c)
 	reviewId := floatToStr(review["reviewId"])
@@ -77,6 +81,7 @@ func TestReviews_all(t *testing.T) {
 }
 
 func TestReviews_userReviews(t *testing.T) {
+	setUp()
 	c := NewClient();
 	reviewer, _, _, review := addOrderAndReview(c)
 	reviewId := floatToStr(review["reviewId"])
@@ -93,6 +98,7 @@ func TestReviews_userReviews(t *testing.T) {
 }
 
 func TestReviews_ViewByOrderId(t *testing.T) {
+	setUp()
 	c := NewClient()
 	_, _, order, review := addOrderAndReview(c)
 	orderId := floatToStr(order["orderId"])
@@ -101,6 +107,7 @@ func TestReviews_ViewByOrderId(t *testing.T) {
 }
 
 func TestReviews_OrderHaveReviewId(t *testing.T) {
+	setUp()
 	c := NewClient()
 	_, _, order, review := addOrderAndReview(c)
 	orderId := floatToStr(order["orderId"])
@@ -110,6 +117,7 @@ func TestReviews_OrderHaveReviewId(t *testing.T) {
 }
 
 func TestReviews_adminUpdate(t *testing.T) {
+	setUp()
 	c := NewClient()
 	_, _, _, review := addOrderAndReview(c)
 	reviewId := floatToStr(review["reviewId"])

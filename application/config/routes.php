@@ -91,3 +91,6 @@ $route['applications']['POST'] = 'applications/create';
 $route['applications/(\d+)/agree']['GET'] = 'applications/agree/$1';
 
 $route['admin/reviews/(\d+)']['PATCH'] = 'reviews/adminUpdate/$1';
+
+$route['reviews/(\d+)/comments']['POST'] = 'comments/create/$1';
+$route['reviews/(\d+)/comments']['GET'] = 'comments/list/$1';

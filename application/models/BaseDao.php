@@ -63,4 +63,14 @@ class BaseDao extends CI_Model
         return $result->cnt;
     }
 
+    protected function extractFields($object, $fields)
+    {
+        $newObj = new StdClass();
+        foreach ($fields as $field) {
+            $newObj->$field = $object->$field;
+            unset($object->$field);
+        }
+        return $newObj;
+    }
+
 }

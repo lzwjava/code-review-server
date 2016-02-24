@@ -6,6 +6,7 @@ import (
 )
 
 func TestToken(t *testing.T) {
+	setUp()
 	c := NewClient()
 	res := c.getData("qiniu/token", url.Values{})
 	assert.NotNil(t, res["uptoken"]);

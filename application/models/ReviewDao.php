@@ -76,8 +76,11 @@ class ReviewDao extends BaseDao
         $fields = $this->getPublicFields();
         $sql = "SELECT $fields,
                  count(distinct(rewards.orderId)) as rewardCount,
-                 count(distinct(review_visits.visitId)) as visitCount FROM reviews
+                 count(distinct(review_visits.visitId)) as visitCount,
+                 count(distinct(commentId)) as commentCount
+                 FROM reviews
                  left JOIN rewards USING(orderId)
+                 left join comments USING(reviewId)
                  left join review_visits USING(reviewId)
                  left join orders using (orderId)
                  WHERE $field=? group by reviewId ORDER BY reviews.created

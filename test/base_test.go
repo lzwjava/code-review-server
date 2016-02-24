@@ -11,16 +11,20 @@ import (
 )
 
 func TestMain(m *testing.M) {
-	cleanTables()
 	os.Exit(m.Run())
 }
 
+func setUp() {
+	cleanTables()
+}
+
 func cleanTables() {
-	tables := []string{"applications", "video_visits", "videos", "review_visits", "rewards", "reviews", "orders",
-		"charges",
+	deleteTable("comments", true)
+	tables := []string{"applications", "video_visits", "videos",
+		"review_visits", "rewards", "reviews", "orders", "charges",
 		"reviews_tags", "users_tags", "reviewers", "learners"}
 	for _, table := range tables {
-		deleteTable(table)
+		deleteTable(table, false)
 	}
 	fmt.Println()
 }
@@ -79,21 +83,38 @@ func validReviewer(c *Client, reviewerId string) {
 	c.getData("reviewers/" + reviewerId + "/valid", url.Values{})
 }
 
-func deleteTable(table string) {
-	deleteRecord(table, "1", "1");
+func setReviewAsDisplaying(reviewId string) {
+	statement := fmt.Sprintf("update reviews set displaying=1 where reviewId=%s", reviewId);
+	runSql(statement, false)
 }
 
-func runSql(sentence string) {
+func deleteTable(table string, noCheck bool) {
+	deleteRecord(table, "1", "1", noCheck);
+}
+
+func runSql(sentence string, noCheck bool) {
 	db, err := sql.Open("mysql", "lzw:@/codereview")
 	checkErr(err)
 
 	err = db.Ping()
 	checkErr(err)
 
-	stmt, err := db.Prepare(sentence)
+	var stmt *sql.Stmt
+	var res sql.Result
+
+	if noCheck {
+		stmt, err = db.Prepare("SET FOREIGN_KEY_CHECKS=0")
+		checkErr(err)
+
+		res, err = stmt.Exec()
+		checkErr(err)
+	}
+
+
+	stmt, err = db.Prepare(sentence)
 	checkErr(err)
 
-	res, err := stmt.Exec()
+	res, err = stmt.Exec()
 	checkErr(err)
 
 	affect, err := res.RowsAffected()
@@ -101,18 +122,22 @@ func runSql(sentence string) {
 
 	fmt.Println(sentence, "affected", affect)
 
+	if noCheck {
+		stmt, err = db.Prepare("SET FOREIGN_KEY_CHECKS=1")
+		checkErr(err)
+
+		res, err = stmt.Exec()
+		checkErr(err)
+	}
+
 	db.Close()
 }
 
-func setReviewAsDisplaying(reviewId string) {
-	statement := fmt.Sprintf("update reviews set displaying=1 where reviewId=%s", reviewId);
-	runSql(statement)
+func deleteRecord(table string, column string, id string, noCheck bool) {
+	sqlStr := fmt.Sprintf("delete from %s where %s=%s", table, column, id)
+	runSql(sqlStr, noCheck)
 }
 
-func deleteRecord(table string, column string, id string) {
-	sqlStr := fmt.Sprintf("delete from %s where %s=%s", table, column, id)
-	runSql(sqlStr)
-}
 
 func toInt(obj interface{}) (int) {
 	if _, isFloat := obj.(float64); isFloat {
@@ -127,7 +152,6 @@ func floatToStr(flt interface{}) string {
 }
 
 func addOrder(c *Client) (map[string]interface{}, map[string]interface{}, map[string]interface{}) {
-	cleanTables()
 	reviewer, learner := registerUsers(c)
 
 	reviewerId := reviewer["id"].(string)

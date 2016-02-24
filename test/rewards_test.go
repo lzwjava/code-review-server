@@ -12,6 +12,7 @@ import (
 )
 
 func TestRewards_first(t *testing.T) {
+	setUp()
 	c := NewClient()
 	_, learner, order := addOrder(c)
 
@@ -30,6 +31,7 @@ func TestRewards_first(t *testing.T) {
 }
 
 func TestRewards_normal(t *testing.T) {
+	setUp()
 	c := NewClient()
 	reviewer, _, order, _ := addOrderAndReview(c)
 	orderId := floatToStr(order["orderId"])
@@ -46,6 +48,7 @@ func TestRewards_normal(t *testing.T) {
 }
 
 func TestRewards_Count(t *testing.T) {
+	setUp()
 	c := NewClient()
 	reviewer, _, order := addOrder(c)
 	orderId := floatToStr(order["orderId"])

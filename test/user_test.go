@@ -11,7 +11,7 @@ import (
 )
 
 func TestUser_RegisterAndLogin(t *testing.T) {
-	cleanTables()
+	setUp()
 
 	c := NewClient()
 	md5Str := md5password("123456")
@@ -65,7 +65,7 @@ func TestUser_ReviewerUpdate(t *testing.T) {
 }
 
 func TestUser_ReviewerRegisterAndLogin(t *testing.T) {
-	cleanTables()
+	setUp()
 
 	c := NewClient()
 

@@ -7,3 +7,18 @@ CREATE TABLE `alipay_callbacks` (
   ENGINE = InnoDB
   DEFAULT CHARSET = utf8mb4 /
 
+DROP TABLE IF EXISTS `comments` /
+CREATE TABLE `comments` (
+  `commentId` INT(11)      NOT NULL AUTO_INCREMENT,
+  `reviewId`  INT(11)      NOT NULL,
+  `parentId`  INT(11)               DEFAULT NULL,
+  `content`   VARCHAR(511) NOT NULL,
+  `authorId`  VARCHAR(31)  NOT NULL,
+  `created`   TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`commentId`),
+  FOREIGN KEY (`reviewId`) REFERENCES `reviews` (`reviewId`),
+  FOREIGN KEY (`parentId`) REFERENCES `comments` (`commentId`)
+)
+  ENGINE = InnoDB
+  AUTO_INCREMENT = 70
+  DEFAULT CHARSET = utf8mb4

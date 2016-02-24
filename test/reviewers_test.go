@@ -6,6 +6,7 @@ import (
 )
 
 func TestReviewers_Get(t *testing.T) {
+	setUp()
 	c := NewClient()
 	registerReviewer(c)
 	res := c.getArrayData("reviewers", url.Values{})

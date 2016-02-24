@@ -17,7 +17,7 @@ func TestApplications_create(t *testing.T) {
 }
 
 func TestApplications_multiple(t *testing.T) {
-	deleteTable("applications")
+	deleteTable("applications", false)
 	c := NewClient()
 	registerLearner(c)
 	res := c.postData("applications", url.Values{});
@@ -26,7 +26,7 @@ func TestApplications_multiple(t *testing.T) {
 }
 
 func TestApplications_agree(t *testing.T) {
-	deleteTable("applications")
+	deleteTable("applications", false)
 	c := NewClient()
 	learner := registerLearner(c)
 	learnerId := learner["id"].(string)

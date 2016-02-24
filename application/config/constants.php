@@ -234,3 +234,9 @@ define('SMS_REVIEW_URL', 'reviewUrl');
 
 
 define('KEY_PAGE', 'page');
+
+// comments
+define('TABLE_COMMENTS', 'comments');
+define('KEY_COMMENT_ID', 'commentId');
+define('KEY_PARENT_ID', 'parentId');
+define('KEY_AUTHOR_ID', 'authorId');

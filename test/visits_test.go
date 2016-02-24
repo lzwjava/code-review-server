@@ -7,6 +7,7 @@ import (
 )
 
 func TestVisits_count(t *testing.T) {
+	setUp()
 	c := NewClient()
 	_, _, _, review := addOrderAndReview(c)
 
@@ -28,6 +29,7 @@ func TestVisits_count(t *testing.T) {
 }
 
 func TestVisits_empty(t *testing.T) {
+	setUp()
 	c := NewClient()
 	_, _, _, review := addOrderAndReview(c)
 
@@ -37,6 +39,7 @@ func TestVisits_empty(t *testing.T) {
 }
 
 func TestVisits_countVideo(t *testing.T) {
+	setUp()
 	c := NewClient()
 	video := addVideo(c)
 	videoId := floatToStr(video["videoId"])

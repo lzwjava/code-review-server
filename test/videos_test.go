@@ -7,6 +7,7 @@ import (
 )
 
 func TestVideos_add(t *testing.T) {
+	setUp()
 	c := NewClient()
 	video := c.postData("videos", url.Values{"title": {"＃05 Autolayout 和 Mansonry"},
 		"source":{"http://player.youku.com/player.php/Type/Folder/Fid/26542890/Ob/1/sid/XMTQ0NjY0OTE0NA==/v.swf"},
@@ -21,7 +22,7 @@ func TestVideos_add(t *testing.T) {
 }
 
 func TestVideos_getOne(t *testing.T) {
-
+	setUp()
 	c := NewClient()
 	video := addVideo(c)
 	videoId := floatToStr(video["videoId"])
@@ -30,7 +31,7 @@ func TestVideos_getOne(t *testing.T) {
 }
 
 func TestVideos_multiple(t *testing.T) {
-	cleanTables()
+	setUp()
 
 	c := NewClient()
 	c.postData("videos", url.Values{"title": {"＃05 Autolayout 和 "},
@@ -46,7 +47,6 @@ func TestVideos_multiple(t *testing.T) {
 }
 
 func addVideo(c *Client) map[string]interface{} {
-	cleanTables()
 	video := c.postData("videos", url.Values{"title": {"＃05 Autolayout 和 Mansonry"},
 		"source":{"http://player.youku.com/player.php/Type/Folder/Fid/26542890/Ob/1/sid/XMTQ0NjY0OTE0NA==/v.swf"},
 		"speaker":{"里脊串"}});
@@ -54,9 +54,9 @@ func addVideo(c *Client) map[string]interface{} {
 }
 
 func TestVideos_list(t *testing.T) {
+	setUp()
 	c := NewClient()
 	addVideo(c)
-
 	videos := c.getArrayData("videos", url.Values{})
 	assert.Equal(t, 1, len(videos))
 }
