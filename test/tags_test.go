@@ -108,6 +108,7 @@ func StructTest() {
 }
 
 func TestTags_Get(t *testing.T) {
+	setUp()
 	tag := getTag()
 	assert.NotNil(t, tag)
 	assert.True(t, tag.TagId > 0)
@@ -117,6 +118,7 @@ func TestTags_Get(t *testing.T) {
 }
 
 func TestTags_AddUserTag(t *testing.T) {
+	setUp()
 	c := NewClient()
 	registerLearner(c)
 	tag := getTag()
@@ -143,6 +145,7 @@ type Review struct {
 }
 
 func TestTags_AddReviewTag(t *testing.T) {
+	setUp()
 	c := NewClient()
 	tag := getTag()
 	_, _, _, review := addOrderAndReview(c)
