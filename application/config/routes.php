@@ -94,3 +94,7 @@ $route['admin/reviews/(\d+)']['PATCH'] = 'reviews/adminUpdate/$1';
 
 $route['reviews/(\d+)/comments']['POST'] = 'comments/create/$1';
 $route['reviews/(\d+)/comments']['GET'] = 'comments/list/$1';
+
+$route['notifications']['GET'] = 'notifications/list';
+$route['notifications']['PATCH'] = 'notifications/markAsRead';
+$route['notifications/(\d+)']['PATCH'] = 'notifications/markAsRead/$1';

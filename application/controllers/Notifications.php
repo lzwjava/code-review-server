@@ -21,6 +21,27 @@ class Notifications extends BaseController
     {
         $skip = $this->getSkip();
         $limit = $this->getLimit();
-        $this->notificationDao->
+        $user = $this->checkAndGetSessionUser();
+        if (!$user) {
+            return;
+        }
+        $unread = $this->get(KEY_UNREAD);
+        $res = $this->notificationDao->getMyNotifications($user->id, $unread, $skip, $limit);
+        $this->succeed($res);
     }
+
+    function markAsRead_patch($notificationId = null)
+    {
+        $user = $this->checkAndGetSessionUser();
+        if (!$user) {
+            return;
+        }
+        if ($notificationId) {
+            $ok = $this->notificationDao->markOneAsRead($notificationId);
+        } else {
+            $ok = $this->notificationDao->markAsAllRead($user->id);
+        }
+        $this->responseBySQLRes($ok);
+    }
+
 }

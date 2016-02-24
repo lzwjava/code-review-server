@@ -22,12 +22,16 @@ class CommentDao extends BaseDao
         return $this->db->insert_id();
     }
 
+    function fields()
+    {
+        return array(KEY_COMMENT_ID, KEY_REVIEW_ID, KEY_PARENT_ID,
+            KEY_CONTENT, KEY_AUTHOR_ID, KEY_CREATED
+        );
+    }
+
     function publicFields($prefix = TABLE_COMMENTS)
     {
-        return $this->mergeFields(array(
-            KEY_COMMENT_ID, KEY_REVIEW_ID, KEY_PARENT_ID,
-            KEY_CONTENT, KEY_AUTHOR_ID, KEY_CREATED
-        ), $prefix);
+        return $this->mergeFields($this->fields(), $prefix);
     }
 
     function getComments($reviewId, $skip, $limit)

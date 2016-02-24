@@ -9,12 +9,21 @@
 class Comments extends BaseController
 {
     public $commentDao;
+    public $reviewDao;
+    public $orderDao;
+    public $notificationDao;
 
     function __construct()
     {
         parent::__construct();
-        $this->load->model('commentDao');
+        $this->load->model('CommentDao');
+        $this->load->model('OrderDao');
+        $this->load->model('ReviewDao');
+        $this->load->model('NotificationDao');
         $this->commentDao = new CommentDao();
+        $this->reviewDao = new ReviewDao();
+        $this->orderDao = new OrderDao();
+        $this->notificationDao = new NotificationDao();
     }
 
     function create_post($reviewId)
@@ -29,7 +38,21 @@ class Comments extends BaseController
             return;
         }
         $commentId = $this->commentDao->addComment($reviewId, $parentId, $content, $user->id);
+        $this->addNotifications($commentId, $reviewId, $user);
         $this->succeed(array(KEY_COMMENT_ID => $commentId));
+    }
+
+    private function addNotifications($commentId, $reviewId, $author)
+    {
+        $order = $this->orderDao->getOrderByReviewId($reviewId);
+        if ($author->id != $order->learnerId) {
+            $this->notificationDao->addNotification($order->learnerId,
+                TYPE_COMMENT, $commentId);
+        }
+        if ($author->id != $order->reviewerId) {
+            $this->notificationDao->addNotification($order->reviewerId,
+                TYPE_COMMENT, $commentId);
+        }
     }
 
     function list_get($reviewId)

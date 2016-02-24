@@ -34,7 +34,7 @@ class NotificationDao extends BaseDao
             KEY_TYPE, KEY_COMMENT_ID), $prefixTableName);
     }
 
-    public function getMyNotifications($userId, $unread = null, $skip = 0, $limit = 100)
+    function getMyNotifications($userId, $unread = null, $skip = 0, $limit = 100)
     {
         $fields = $this->publicFields('n');
         if ($unread) {
@@ -43,9 +43,9 @@ class NotificationDao extends BaseDao
             $unreadSql = '';
         }
         $sql = "select $fields,
-                c.commentId, c.content,c.reviewId,c.authorId,c.created,c.parentId
+                c.commentId, c.content,c.reviewId,c.authorId,c.created,c.parentId,
                 u.id,u.username,u.avatarUrl
-                from notifications as n,
+                from notifications as n
                 left join comments as c USING(commentId)
                 left join users as u on c.authorId = u.id
                 where userId=? $unreadSql
@@ -60,7 +60,7 @@ class NotificationDao extends BaseDao
     {
         foreach ($notifications as $notification) {
             $notification->comment = extractFields($notification,
-                $this->commentDao->publicFields(null));
+                $this->commentDao->fields());
             $notification->comment->author = extractFields($notification,
                 array(KEY_ID, KEY_USERNAME, KEY_AVATAR_URL));
         }
@@ -78,7 +78,7 @@ class NotificationDao extends BaseDao
 
     private function markAsRead($userId, $notificationId)
     {
-        $data = array(KEY_UNREAD, 0);
+        $data = array(KEY_UNREAD => 0);
         if ($notificationId) {
             $this->db->where(KEY_NOTIFICATION_ID, $notificationId);
             return $this->db->update(TABLE_NOTIFICATIONS, $data);

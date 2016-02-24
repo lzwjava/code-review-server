@@ -245,4 +245,4 @@ define('KEY_AUTHOR_ID', 'authorId');
 define('TABLE_NOTIFICATIONS', 'notifications');
 define('KEY_NOTIFICATION_ID', 'notificationId');
 define('KEY_UNREAD', 'unread');
-define('NOTIFICATION_TYPE_COMMENT', 'comment');
+define('TYPE_COMMENT', 'comment');

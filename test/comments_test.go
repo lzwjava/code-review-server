@@ -32,23 +32,26 @@ func addComment(c *Client, reviewId string) string {
 func TestComments_count(t *testing.T) {
 	setUp()
 	c := NewClient()
-	reviewId, _ := addReviewAndComment(c)
+	_, _, _, review, _ := addReviewAndComment(c)
+	reviewId := floatToStr(review["reviewId"])
 	post := c.getData("reviews/" + reviewId, url.Values{})
 	assert.Equal(t, toInt(post["commentCount"]), 1)
 }
 
-func addReviewAndComment(c *Client) (string, string) {
-	_, _, _, review := addOrderAndReview(c)
+func addReviewAndComment(c *Client) (map[string]interface{}, map[string]interface{},
+map[string]interface{}, map[string]interface{}, string) {
+	reviewer, learner, order, review := addOrderAndReview(c)
 	reviewId := floatToStr(review["reviewId"])
 	commentId := addComment(c, reviewId)
-	return reviewId, commentId
+	return reviewer, learner, order, review, commentId
 }
 
 func TestComments_list(t *testing.T) {
 	setUp()
 
 	c := NewClient()
-	reviewId, _ := addReviewAndComment(c)
+	_, _, _, review, _ := addReviewAndComment(c)
+	reviewId := floatToStr(review["reviewId"])
 	res := c.getArrayData("reviews/" + reviewId + "/comments", url.Values{})
 	assert.NotNil(t, res)
 	assert.Equal(t, len(res), 1)

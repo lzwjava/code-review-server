@@ -18,7 +18,7 @@ class OrderDao extends BaseDao
         $this->userDao = new UserDao();
     }
 
-    private function getPublicFields()
+    private function getPublicFields($prefix = TABLE_ORDERS)
     {
         return $this->mergeFields(array(
             KEY_ORDER_ID,
@@ -31,7 +31,7 @@ class OrderDao extends BaseDao
             KEY_REMARK,
             KEY_FIRST_REWARD_ID,
             KEY_CREATED,
-            KEY_UPDATED), TABLE_ORDERS);
+            KEY_UPDATED), $prefix);
     }
 
     function getOrdersOfLearner($learnerId, $status = null, $skip = 0, $limit = 100)
@@ -123,6 +123,17 @@ class OrderDao extends BaseDao
         if ($order) {
             $this->mergeChildrenOfOrders(array($order));
         }
+        return $order;
+    }
+
+    function getOrderByReviewId($reviewId)
+    {
+        $fields = $this->getPublicFields('o');
+        $sql = "select $fields from orders as o
+                LEFT JOIN reviews USING(orderId)
+                where reviewId=?";
+        $binds[] = $reviewId;
+        $order = $this->db->query($sql, $binds)->row();
         return $order;
     }
 
