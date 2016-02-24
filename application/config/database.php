@@ -104,6 +104,8 @@ $db['lzwjava']['password'] = '';
 
 $db['testing'] = $dbBasicSetting;
 
+// $db['default']['password'] = 'xar9iTqr';
+
 switch (ENVIRONMENT) {
     case'development':
         $active_group = 'lzwjava';

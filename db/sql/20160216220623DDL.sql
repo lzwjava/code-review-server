@@ -20,7 +20,7 @@ CREATE TABLE `comments` (
   FOREIGN KEY (`parentId`) REFERENCES `comments` (`commentId`)
 )
   ENGINE = InnoDB
-  DEFAULT CHARSET = utf8mb4
+  DEFAULT CHARSET = utf8mb4 /
 
 DROP TABLE IF EXISTS `notifications` /
 CREATE TABLE `notifications` (

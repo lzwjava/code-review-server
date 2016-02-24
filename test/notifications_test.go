@@ -39,7 +39,7 @@ func TestNotifications_markOne(t *testing.T) {
 	c.sessionToken = learner["sessionToken"].(string)
 
 	res := c.getArrayData("notifications", url.Values{})
-	assert.True(t, len(res) > 0)
+	assert.Equal(t, len(res), 2)
 
 	notification := res[0].(map[string]interface{})
 	notificationId := floatToStr(notification["notificationId"])
@@ -47,5 +47,5 @@ func TestNotifications_markOne(t *testing.T) {
 	assert.NotNil(t, patchRes)
 
 	array := c.getArrayData("notifications", url.Values{"unread": {"1"}})
-	assert.Equal(t, len(array), 0)
+	assert.Equal(t, len(array), 1)
 }
