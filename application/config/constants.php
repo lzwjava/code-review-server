@@ -107,6 +107,7 @@ define('ERROR_PASSWORD_FORMAT', 19);
 define('ERROR_EXCEED_MAX_ORDERS', 20);
 define('ERROR_CODE_LINES_INVALID', 21);
 define('ERROR_RUN_SQL_FAILED', 22);
+define('ERROR_DELETE_ILLEGAL', 23);
 
 define('TYPE_REVIEWER', 'reviewer');
 define('TYPE_LEARNER', 'learner');

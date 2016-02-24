@@ -163,4 +163,9 @@ class OrderDao extends BaseDao
             KEY_FIRST_REWARD_ID => $rewardId
         ));
     }
+
+    function deleteOrder($orderId)
+    {
+        return $this->db->delete(TABLE_ORDERS, array(KEY_ORDER_ID => $orderId));
+    }
 }

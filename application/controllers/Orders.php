@@ -237,4 +237,30 @@ class Orders extends BaseController
         $this->succeed();
     }
 
+    function order_delete($orderId)
+    {
+        $order = $this->orderDao->getOrder($orderId);
+        if ($this->checkIfObjectNotExists($order)) {
+            return;
+        }
+        $user = $this->checkAndGetSessionUser();
+        if (!$user) {
+            return;
+        }
+        if ($order->learnerId != $user->id) {
+            $this->failure(ERROR_NOT_ALLOW_DO_IT, '只有申请者可以删除');
+            return;
+        }
+        if ($order->status != ORDER_STATUS_NOT_PAID) {
+            $this->failure(ERROR_DELETE_ILLEGAL, '只有状态是未打赏才可以删除');
+            return;
+        }
+        $ok = $this->orderDao->deleteOrder($orderId);
+        if ($ok) {
+            $this->succeed();
+        } else {
+            $this->failure(ERROR_RUN_SQL_FAILED, '删除失败');
+        }
+    }
+
 }

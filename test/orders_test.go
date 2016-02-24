@@ -129,3 +129,31 @@ func TestOrders_amount(t *testing.T) {
 	theOrder := c.getData("orders/" + orderId, url.Values{})
 	assert.NotNil(t, theOrder["amount"])
 }
+
+func TestOrders_delete(t *testing.T) {
+	c := NewClient()
+	_, _, order := addOrder(c)
+	orderId := floatToStr(order["orderId"])
+	res := c.deleteData("orders/" + orderId)
+	assert.NotNil(t, res)
+}
+
+func TestOrders_deleteFail(t *testing.T) {
+	c := NewClient()
+	reviewer, _, order := addOrder(c)
+	c.sessionToken = reviewer["sessionToken"].(string)
+	orderId := floatToStr(order["orderId"])
+	res := c.delete("orders/" + orderId)
+	assert.NotNil(t, res)
+	assert.Equal(t, toInt(res["code"]), 13)
+}
+
+func TestOrders_deletePaid(t *testing.T) {
+	c := NewClient()
+	_, learner, order, _ := addOrderAndReview(c)
+	orderId := floatToStr(order["orderId"])
+	c.sessionToken = learner["sessionToken"].(string)
+	res := c.delete("orders/" + orderId)
+	assert.NotNil(t, res)
+	assert.Equal(t, toInt(res["code"]), 23)
+}
