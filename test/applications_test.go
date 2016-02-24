@@ -8,6 +8,7 @@ import (
 )
 
 func TestApplications_create(t *testing.T) {
+	setUp()
 	c := NewClient()
 	learner := registerLearner(c)
 	learnerId := learner["id"].(string)
@@ -17,7 +18,7 @@ func TestApplications_create(t *testing.T) {
 }
 
 func TestApplications_multiple(t *testing.T) {
-	deleteTable("applications", false)
+	setUp()
 	c := NewClient()
 	registerLearner(c)
 	res := c.postData("applications", url.Values{});
@@ -26,7 +27,7 @@ func TestApplications_multiple(t *testing.T) {
 }
 
 func TestApplications_agree(t *testing.T) {
-	deleteTable("applications", false)
+	setUp()
 	c := NewClient()
 	learner := registerLearner(c)
 	learnerId := learner["id"].(string)

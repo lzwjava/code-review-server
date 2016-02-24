@@ -29,6 +29,7 @@ class Notify extends CI_Model
     function notifyApplySucceed($userId)
     {
         $this->sms->notifyApplySucceed($userId);
+        $this->notificationDao->notifyAgree($userId);
     }
 
     function notifyReviewFinish($order, $review)

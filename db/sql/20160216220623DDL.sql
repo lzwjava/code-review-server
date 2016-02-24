@@ -20,7 +20,6 @@ CREATE TABLE `comments` (
   FOREIGN KEY (`parentId`) REFERENCES `comments` (`commentId`)
 )
   ENGINE = InnoDB
-  AUTO_INCREMENT = 70
   DEFAULT CHARSET = utf8mb4
 
 DROP TABLE IF EXISTS `notifications` /
@@ -31,8 +30,11 @@ CREATE TABLE `notifications` (
   `type`           VARCHAR(31) NOT NULL,
   `orderId`        INT(11),
   `commentId`      INT(11),
+  `text`           VARCHAR(127),
   `created`        TIMESTAMP   NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`notificationId`),
   FOREIGN KEY (`orderId`) REFERENCES `orders` (`orderId`),
   FOREIGN KEY (`commentId`) REFERENCES `comments` (`commentId`)
 )
+  ENGINE = InnoDB
+  DEFAULT CHARSET = utf8mb4

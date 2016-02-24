@@ -20,7 +20,8 @@ class NotificationDao extends BaseDao
         $this->orderDao = new OrderDao();
     }
 
-    private function addNotification($userId, $type, $commentId = null, $orderId = null)
+    private function addNotification($userId, $type, $commentId = null,
+                                     $orderId = null, $text = null)
     {
         $data = array(
             KEY_USER_ID => $userId,
@@ -31,14 +32,18 @@ class NotificationDao extends BaseDao
         if ($orderId) {
             $data[KEY_ORDER_ID] = $orderId;
         }
+        if ($text) {
+            $data[KEY_TEXT] = $text;
+        }
         $this->db->insert(TABLE_NOTIFICATIONS, $data);
         return $this->db->insert_id();
     }
 
     private function publicFields($prefixTableName = TABLE_NOTIFICATIONS)
     {
-        return $this->mergeFields(array(KEY_NOTIFICATION_ID, KEY_USER_ID, KEY_UNREAD,
-            KEY_TYPE, KEY_COMMENT_ID), $prefixTableName);
+        return $this->mergeFields(array(
+            KEY_NOTIFICATION_ID, KEY_USER_ID, KEY_UNREAD,
+            KEY_TYPE, KEY_COMMENT_ID, KEY_ORDER_ID, KEY_TYPE), $prefixTableName);
     }
 
     function getMyNotifications($userId, $unread = null, $skip = 0, $limit = 100)
@@ -119,5 +124,10 @@ class NotificationDao extends BaseDao
     function notifyOrderFinish($order)
     {
         $this->addNotification($order->learnerId, TYPE_FINISH_ORDER, null, $order->orderId);
+    }
+
+    function notifyAgree($userId)
+    {
+        $this->addNotification($userId, TYPE_AGREE, null, null, '您已通过审核, 欢迎成为审阅者的一员.');
     }
 }
