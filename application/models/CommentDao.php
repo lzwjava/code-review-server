@@ -22,12 +22,12 @@ class CommentDao extends BaseDao
         return $this->db->insert_id();
     }
 
-    private function publicFields()
+    function publicFields($prefix = TABLE_COMMENTS)
     {
         return $this->mergeFields(array(
             KEY_COMMENT_ID, KEY_REVIEW_ID, KEY_PARENT_ID,
             KEY_CONTENT, KEY_AUTHOR_ID, KEY_CREATED
-        ), TABLE_COMMENTS);
+        ), $prefix);
     }
 
     function getComments($reviewId, $skip, $limit)
@@ -50,7 +50,7 @@ class CommentDao extends BaseDao
     private function assembleComments($comments)
     {
         foreach ($comments as $comment) {
-            $comment->author = $this->extractFields($comment,
+            $comment->author = extractFields($comment,
                 array(KEY_ID, KEY_USERNAME));
             unset($comment->authorId);
         }

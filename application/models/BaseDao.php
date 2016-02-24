@@ -17,21 +17,12 @@ class BaseDao extends CI_Model
 
     protected function mergeFields($fields, $prefixTableName = null)
     {
-        $filedStr = '';
-        $first = true;
-        foreach ($fields as $field) {
-            if ($first) {
-                $first = false;
-            } else {
-                $filedStr .= ',';
-            }
-            if ($prefixTableName) {
-                $filedStr .= $prefixTableName . '.' . $field;
-            } else {
-                $filedStr .= $field;
+        if ($prefixTableName) {
+            foreach ($fields as $index => $field) {
+                $fields[$index] = $prefixTableName . '.' . $field;
             }
         }
-        return $filedStr;
+        return implode($fields, ',');
     }
 
     protected function getOneFromTable($table, $field, $value, $fields = "*")
@@ -63,14 +54,5 @@ class BaseDao extends CI_Model
         return $result->cnt;
     }
 
-    protected function extractFields($object, $fields)
-    {
-        $newObj = new StdClass();
-        foreach ($fields as $field) {
-            $newObj->$field = $object->$field;
-            unset($object->$field);
-        }
-        return $newObj;
-    }
 
 }

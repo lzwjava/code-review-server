@@ -78,7 +78,22 @@ if (!function_exists('logInfo')) {
 }
 
 if (!function_exists('amountToYuan')) {
-    function amountToYuan($amount) {
+    function amountToYuan($amount)
+    {
         return $amount / 100;
+    }
+}
+
+if (!function_exists('extractFields')) {
+    function extractFields($object, $fields)
+    {
+        $newObj = new StdClass();
+        foreach ($fields as $field) {
+            if (isset($object, $field)) {
+                $newObj->$field = $object->$field;
+                unset($object->$field);
+            }
+        }
+        return $newObj;
     }
 }

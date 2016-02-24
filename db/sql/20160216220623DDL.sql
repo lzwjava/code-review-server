@@ -22,3 +22,15 @@ CREATE TABLE `comments` (
   ENGINE = InnoDB
   AUTO_INCREMENT = 70
   DEFAULT CHARSET = utf8mb4
+
+DROP TABLE IF EXISTS `notifications` /
+CREATE TABLE `notifications` (
+  `notificationId` INT(11)     NOT NULL AUTO_INCREMENT,
+  `userId`         VARCHAR(31) NOT NULL,
+  `unread`         TINYINT     NOT NULL DEFAULT 1,
+  `type`           VARCHAR(31) NOT NULL,
+  `commentId`      INT(11),
+  `created`        TIMESTAMP   NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`notificationId`),
+  FOREIGN KEY (`commentId`) REFERENCES `comments` (`commentId`)
+)

@@ -240,3 +240,9 @@ define('TABLE_COMMENTS', 'comments');
 define('KEY_COMMENT_ID', 'commentId');
 define('KEY_PARENT_ID', 'parentId');
 define('KEY_AUTHOR_ID', 'authorId');
+
+// notifications
+define('TABLE_NOTIFICATIONS', 'notifications');
+define('KEY_NOTIFICATION_ID', 'notificationId');
+define('KEY_UNREAD', 'unread');
+define('NOTIFICATION_TYPE_COMMENT', 'comment');
