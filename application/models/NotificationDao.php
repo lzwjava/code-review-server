@@ -54,7 +54,7 @@ class NotificationDao extends BaseDao
     function getMyNotifications($userId, $unread = null, $skip = 0, $limit = 100)
     {
         $fields = $this->publicFields('n');
-        if ($unread) {
+        if ($unread !== null) {
             $unreadSql = 'and unread=' . $unread;
         } else {
             $unreadSql = '';
