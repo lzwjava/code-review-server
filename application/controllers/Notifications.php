@@ -26,6 +26,9 @@ class Notifications extends BaseController
             return;
         }
         $unread = $this->get(KEY_UNREAD);
+        if ($unread !== null) {
+            $unread = $this->castToNumber($unread);
+        }
         $res = $this->notificationDao->getMyNotifications($user->id, $unread, $skip, $limit);
         $this->succeed($res);
     }
