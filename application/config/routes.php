@@ -98,3 +98,4 @@ $route['reviews/(\d+)/comments']['GET'] = 'comments/list/$1';
 $route['notifications']['GET'] = 'notifications/list';
 $route['notifications']['PATCH'] = 'notifications/markAsRead';
 $route['notifications/(\d+)']['PATCH'] = 'notifications/markAsRead/$1';
+$route['notifications/count']['GET'] = 'notifications/count';

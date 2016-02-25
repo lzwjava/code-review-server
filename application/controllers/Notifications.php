@@ -30,6 +30,16 @@ class Notifications extends BaseController
         $this->succeed($res);
     }
 
+    function count_get()
+    {
+        $user = $this->checkAndGetSessionUser();
+        if (!$user) {
+            return;
+        }
+        $unread = $this->notificationDao->countUnread($user->id);
+        $this->succeed(array(KEY_COUNT => $unread));
+    }
+
     function markAsRead_patch($notificationId = null)
     {
         $user = $this->checkAndGetSessionUser();

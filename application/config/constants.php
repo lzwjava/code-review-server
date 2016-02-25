@@ -252,3 +252,6 @@ define('TYPE_FINISH_ORDER', 'finish_order');
 define('TYPE_NEW_ORDER', 'new_order');
 define('TYPE_AGREE', 'agree');
 define('TYPE_SYSTEM', 'system');
+
+// count
+define('KEY_COUNT', 'count');

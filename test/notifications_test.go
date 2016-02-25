@@ -53,3 +53,12 @@ func TestNotifications_markOne(t *testing.T) {
 	array := c.getArrayData("notifications", url.Values{"unread": {"1"}})
 	assert.Equal(t, len(array), 1)
 }
+
+func TestNotifications_count(t *testing.T) {
+	setUp()
+	c := NewClient()
+	_, learner, _, _, _ := addReviewAndComment(c)
+	c.sessionToken = learner["sessionToken"].(string)
+	res := c.getData("notifications/count", url.Values{})
+	assert.Equal(t, toInt(res["count"]), 2)
+}

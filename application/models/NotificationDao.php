@@ -76,6 +76,14 @@ class NotificationDao extends BaseDao
         return $result;
     }
 
+    function countUnread($userId)
+    {
+        $sql = "SELECT count(*) AS cnt FROM notifications WHERE userId=? AND unread=1";
+        $binds = array($userId);
+        $res = $this->db->query($sql, $binds)->row();
+        return $res->cnt;
+    }
+
     private function handleList($notifications)
     {
         foreach ($notifications as $notification) {
