@@ -8,7 +8,7 @@ import (
 func TestNotifications_list(t *testing.T) {
 	setUp()
 	c := NewClient()
-	_, learner, _, _, _ := addReviewAndComment(c)
+	reviewer, learner, _, _, _ := addReviewAndComment(c)
 	c.sessionToken = learner["sessionToken"].(string)
 	res := c.getArrayData("notifications", url.Values{})
 	assert.True(t, len(res) > 0)
@@ -16,8 +16,12 @@ func TestNotifications_list(t *testing.T) {
 	assert.NotNil(t, notification["notificationId"])
 	assert.Equal(t, "comment", notification["type"])
 	assert.NotNil(t, notification["comment"])
-	assert.NotNil(t, notification["userId"])
 	assert.NotNil(t, notification["unread"])
+	assert.NotNil(t, notification["sender"])
+	assert.NotNil(t, notification["created"])
+	assert.Nil(t, notification["order"])
+	sender := notification["sender"].(map[string]interface{})
+	assert.Equal(t, sender["id"], reviewer["id"])
 }
 
 func TestNotifications_mark(t *testing.T) {

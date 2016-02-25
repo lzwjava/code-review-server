@@ -23,7 +23,7 @@ func TestApplications_multiple(t *testing.T) {
 	registerLearner(c)
 	res := c.postData("applications", url.Values{});
 	res = c.post("applications", url.Values{});
-	assert.Equal(t, 18 ,toInt(res["code"]))
+	assert.Equal(t, 18, toInt(res["code"]))
 }
 
 func TestApplications_agree(t *testing.T) {

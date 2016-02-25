@@ -36,9 +36,9 @@ class UserDao extends BaseDao
 
     function insertUser($type, $username, $mobilePhoneNumber, $avatarUrl, $password)
     {
-
+        $id = $this->genId();
         $data = array(
-            KEY_ID => $this->genId(),
+            KEY_ID => $id,
             KEY_USERNAME => $username,
             KEY_PASSWORD => sha1($password),
             KEY_MOBILE_PHONE_NUMBER => $mobilePhoneNumber,
@@ -217,6 +217,20 @@ class UserDao extends BaseDao
             unset($user->created);
             unset($user->type);
         }
+    }
+
+    function adminUser()
+    {
+        $systemName = '系统管理员';
+        $user = $this->findUser(KEY_USERNAME, $systemName);
+        if ($user) {
+            return $user;
+        } else {
+            $this->insertUser(TYPE_LEARNER, $systemName, '13800000000',
+                'http://7xotd0.com1.z0.glb.clouddn.com/Icon-76%402x.png', md5('c8dYR8o='));
+            $user = $this->findUser(KEY_USERNAME, $systemName);
+        }
+        return $user;
     }
 
 }

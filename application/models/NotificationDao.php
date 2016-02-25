@@ -10,22 +10,26 @@ class NotificationDao extends BaseDao
 {
     public $commentDao;
     public $orderDao;
+    public $userDao;
 
     function __construct()
     {
         parent::__construct();
         $this->load->model('commentDao');
         $this->load->model('OrderDao');
+        $this->load->model('UserDao');
         $this->commentDao = new CommentDao();
         $this->orderDao = new OrderDao();
+        $this->userDao = new UserDao();
     }
 
-    private function addNotification($userId, $type, $commentId = null,
+    private function addNotification($userId, $type, $senderId, $commentId = null,
                                      $orderId = null, $text = null)
     {
         $data = array(
             KEY_USER_ID => $userId,
-            KEY_TYPE => $type);
+            KEY_TYPE => $type,
+            KEY_SENDER_ID => $senderId);
         if ($commentId) {
             $data[KEY_COMMENT_ID] = $commentId;
         }
@@ -43,7 +47,8 @@ class NotificationDao extends BaseDao
     {
         return $this->mergeFields(array(
             KEY_NOTIFICATION_ID, KEY_USER_ID, KEY_UNREAD,
-            KEY_TYPE, KEY_COMMENT_ID, KEY_ORDER_ID, KEY_TYPE), $prefixTableName);
+            KEY_TYPE, KEY_SENDER_ID, KEY_COMMENT_ID,
+            KEY_ORDER_ID, KEY_TYPE, KEY_CREATED), $prefixTableName);
     }
 
     function getMyNotifications($userId, $unread = null, $skip = 0, $limit = 100)
@@ -55,13 +60,15 @@ class NotificationDao extends BaseDao
             $unreadSql = '';
         }
         $sql = "select $fields,
-                c.commentId, c.content,c.reviewId,c.authorId,c.created,c.parentId,
+                c.commentId, c.content,c.reviewId,c.authorId,c.parentId,
+                o.orderId,o.gitHubUrl,o.amount,o.remark,
                 u.id,u.username,u.avatarUrl
                 from notifications as n
                 left join comments as c USING(commentId)
                 left join orders as o USING(orderId)
-                left join users as u on c.authorId = u.id
+                left join users as u on u.id=n.senderId
                 where userId=? $unreadSql
+                order by n.created desc
                 LIMIT $limit offset $skip";
         $binds = array($userId);
         $result = $this->db->query($sql, $binds)->result();
@@ -72,10 +79,17 @@ class NotificationDao extends BaseDao
     private function handleList($notifications)
     {
         foreach ($notifications as $notification) {
-            $notification->comment = extractFields($notification,
-                $this->commentDao->fields());
-            $notification->comment->author = extractFields($notification,
+            $notification->sender = extractFields($notification,
                 array(KEY_ID, KEY_USERNAME, KEY_AVATAR_URL));
+            $commentFields = array(KEY_COMMENT_ID, KEY_CONTENT, KEY_REVIEW_ID, KEY_AUTHOR_ID, KEY_PARENT_ID);
+            $notification->comment = extractFields($notification,
+                $commentFields);
+            $orderFields = array(KEY_ORDER_ID, KEY_AMOUNT, KEY_REMARK, KEY_GITHUB_URL);
+            $notification->order = extractFields($notification, $orderFields);
+            unset($notification->senderId);
+            unset($notification->orderId);
+            unset($notification->commentId);
+            unset($notification->userId);
         }
     }
 
@@ -107,27 +121,31 @@ class NotificationDao extends BaseDao
         $order = $this->orderDao->getOrderByReviewId($reviewId);
         if ($author->id != $order->learnerId) {
             $this->addNotification($order->learnerId,
-                TYPE_COMMENT, $commentId);
+                TYPE_COMMENT, $author->id, $commentId);
         }
         if ($author->id != $order->reviewerId) {
             $this->addNotification($order->reviewerId,
-                TYPE_COMMENT, $commentId);
+                TYPE_COMMENT, $author->id, $commentId);
         }
     }
 
     function notifyNewOrder($order)
     {
         $this->addNotification($order->reviewerId,
-            TYPE_NEW_ORDER, null, $order->orderId);
+            TYPE_NEW_ORDER, $order->learnerId, null, $order->orderId);
     }
 
     function notifyOrderFinish($order)
     {
-        $this->addNotification($order->learnerId, TYPE_FINISH_ORDER, null, $order->orderId);
+        $senderId = $order->reviewerId;
+        $this->addNotification($order->learnerId, TYPE_FINISH_ORDER,
+            $senderId, null, $order->orderId);
     }
 
     function notifyAgree($userId)
     {
-        $this->addNotification($userId, TYPE_AGREE, null, null, '您已通过审核, 欢迎成为审阅者的一员.');
+        $admin = $this->userDao->adminUser();
+        $this->addNotification($userId, TYPE_AGREE,
+            $admin->id, null, null, '您已通过审核, 欢迎成为审阅者的一员.');
     }
 }

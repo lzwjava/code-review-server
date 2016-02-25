@@ -88,12 +88,31 @@ if (!function_exists('extractFields')) {
     function extractFields($object, $fields)
     {
         $newObj = new StdClass();
+        $hasSet = false;
         foreach ($fields as $field) {
             if (isset($object, $field)) {
-                $newObj->$field = $object->$field;
+                if ($object->$field !== null) {
+                    $hasSet = true;
+                    $newObj->$field = $object->$field;
+                }
                 unset($object->$field);
             }
         }
-        return $newObj;
+        if ($hasSet) {
+            return $newObj;
+        } else {
+            return null;
+        }
+    }
+}
+
+if (!function_exists('cleanFields')) {
+    function cleanFields($object, $fields)
+    {
+        foreach ($fields as $field) {
+            if (isset($object, $field)) {
+                unset($object->$field);
+            }
+        }
     }
 }
