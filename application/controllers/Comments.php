@@ -36,7 +36,6 @@ class Comments extends BaseController
         $this->succeed(array(KEY_COMMENT_ID => $commentId));
     }
 
-
     function list_get($reviewId)
     {
         $skip = $this->getSkip();

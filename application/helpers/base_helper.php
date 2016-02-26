@@ -85,7 +85,7 @@ if (!function_exists('amountToYuan')) {
 }
 
 if (!function_exists('extractFields')) {
-    function extractFields($object, $fields)
+    function extractFields($object, $fields, $prefix = null)
     {
         $newObj = new StdClass();
         $hasSet = false;
@@ -93,7 +93,13 @@ if (!function_exists('extractFields')) {
             if (isset($object, $field)) {
                 if ($object->$field !== null) {
                     $hasSet = true;
-                    $newObj->$field = $object->$field;
+                    $newField = $field;
+                    if ($prefix) {
+                        if (substr($field, 0, strlen($prefix)) == $prefix) {
+                            $newField = substr($field, strlen($prefix));
+                        }
+                    }
+                    $newObj->$newField = $object->$field;
                 }
                 unset($object->$field);
             }

@@ -15,11 +15,30 @@ class BaseDao extends CI_Model
         $this->db->query("SET NAMES UTF8");
     }
 
-    protected function mergeFields($fields, $prefixTableName = null)
+    protected function prefixFields($fields, $prefix)
     {
-        if ($prefixTableName) {
-            foreach ($fields as $index => $field) {
-                $fields[$index] = $prefixTableName . '.' . $field;
+        foreach ($fields as &$field) {
+            $field = $prefix . $field;
+        }
+        return $fields;
+    }
+
+    protected function unsets(&$object, $fields)
+    {
+        foreach ($fields as $field) {
+            unset($object->$field);
+        }
+    }
+
+    protected function mergeFields($fields, $tableName = null, $alias = false)
+    {
+        if ($tableName) {
+            foreach ($fields as &$field) {
+                $aliasPart = $tableName . $field;
+                $field = $tableName . '.' . $field;
+                if ($alias) {
+                    $field .= ' as ' . $aliasPart;
+                }
             }
         }
         return implode($fields, ',');

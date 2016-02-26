@@ -94,9 +94,14 @@ class UserDao extends BaseDao
         return $user;
     }
 
-    private function getPublicFields()
+    function publicRawFields()
     {
-        return $this->mergeFields(array(KEY_ID, KEY_AVATAR_URL, KEY_USERNAME, KEY_TYPE));
+        return array(KEY_ID, KEY_AVATAR_URL, KEY_USERNAME, KEY_TYPE);
+    }
+
+    function publicFields($prefix = TABLE_USERS, $alias= false)
+    {
+        return $this->mergeFields($this->publicRawFields(), $prefix, $alias);
     }
 
     private function getSessionUserFields()
@@ -119,7 +124,7 @@ class UserDao extends BaseDao
 
     function findPublicUser($field, $value)
     {
-        $fields = $this->getPublicFields();
+        $fields = $this->publicFields();
         return $this->getOneFromTable(TABLE_USERS, $field, $value, $fields);
     }
 

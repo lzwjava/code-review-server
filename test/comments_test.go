@@ -50,11 +50,15 @@ func TestComments_list(t *testing.T) {
 	setUp()
 
 	c := NewClient()
-	_, _, _, review, _ := addReviewAndComment(c)
+	_, _, _, review, commentId := addReviewAndComment(c)
 	reviewId := floatToStr(review["reviewId"])
+	commentRes := c.postData("reviews/" + reviewId + "/comments",
+		url.Values{"content": {"呵呵"}, "parentId":{commentId}})
+	assert.NotNil(t, commentRes)
+
 	res := c.getArrayData("reviews/" + reviewId + "/comments", url.Values{})
 	assert.NotNil(t, res)
-	assert.Equal(t, len(res), 1)
+	assert.Equal(t, len(res), 2)
 	comment := res[0].(map[string]interface{})
 	assert.NotNil(t, comment["author"])
 	author := comment["author"].(map[string]interface{})
@@ -64,6 +68,17 @@ func TestComments_list(t *testing.T) {
 	assert.NotNil(t, comment["commentId"])
 	assert.NotNil(t, comment["reviewId"])
 	assert.NotNil(t, comment["created"])
+	assert.NotNil(t, comment["parent"])
+	parent := comment["parent"].(map[string]interface{})
+
+	assert.NotNil(t, parent["author"])
+	pAuthor := parent["author"].(map[string]interface{})
+	assert.NotNil(t, pAuthor["id"])
+	assert.NotNil(t, pAuthor["username"])
+	assert.NotNil(t, pAuthor["avatarUrl"])
+	assert.NotNil(t, parent["commentId"])
+	assert.NotNil(t, parent["reviewId"])
+	assert.NotNil(t, parent["created"])
 }
 
 func getCommentId(comment interface{}) string {
