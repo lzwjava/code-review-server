@@ -60,6 +60,7 @@ func TestComments_list(t *testing.T) {
 	author := comment["author"].(map[string]interface{})
 	assert.NotNil(t, author["id"])
 	assert.NotNil(t, author["username"])
+	assert.NotNil(t, author["avatarUrl"])
 	assert.NotNil(t, comment["commentId"])
 	assert.NotNil(t, comment["reviewId"])
 	assert.NotNil(t, comment["created"])

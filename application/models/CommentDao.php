@@ -38,7 +38,7 @@ class CommentDao extends BaseDao
     {
         $fields = $this->publicFields();
         $sql = "SELECT $fields,
-                u.id,u.username
+                u.id,u.username,u.avatarUrl
                 FROM comments
                 left join users as u on u.id=comments.authorId
                 WHERE reviewId=?
@@ -55,7 +55,7 @@ class CommentDao extends BaseDao
     {
         foreach ($comments as $comment) {
             $comment->author = extractFields($comment,
-                array(KEY_ID, KEY_USERNAME));
+                array(KEY_ID, KEY_USERNAME, KEY_AVATAR_URL));
             unset($comment->authorId);
         }
     }
