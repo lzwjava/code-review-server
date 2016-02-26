@@ -61,7 +61,7 @@ class ReviewerDao extends BaseDao
     public function getList($skip = 0, $limit = 100)
     {
         $fields = $this->publicFields();
-        $sql = "SELECT $fields FROM reviewers where valid=1 ORDER BY created limit $limit OFFSET
+        $sql = "SELECT $fields FROM reviewers where valid=1 ORDER BY created DESC limit $limit OFFSET
 $skip";
         $result = $this->db->query($sql)->result();
         foreach ($result as $reviewer) {
