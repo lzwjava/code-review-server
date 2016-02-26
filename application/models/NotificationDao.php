@@ -124,16 +124,19 @@ class NotificationDao extends BaseDao
         }
     }
 
-    function notifyNewComment($commentId, $reviewId, $author)
+    function notifyNewComment($commentId, $reviewId, $author, $parent)
     {
         $order = $this->orderDao->getOrderByReviewId($reviewId);
-        if ($author->id != $order->learnerId) {
-            $this->addNotification($order->learnerId,
-                TYPE_COMMENT, $author->id, $commentId);
+        $relatedIds = array($order->learnerId, $order->reviewerId, $author->id);
+        if ($parent != null) {
+            array_push($relatedIds, $parent->authorId);
         }
-        if ($author->id != $order->reviewerId) {
-            $this->addNotification($order->reviewerId,
-                TYPE_COMMENT, $author->id, $commentId);
+        $uniqueIds = array_unique($relatedIds);
+        foreach ($uniqueIds as $id) {
+            if ($id != $author->id) {
+                $this->addNotification($id,
+                    TYPE_COMMENT, $author->id, $commentId);
+            }
         }
     }
 

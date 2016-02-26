@@ -29,6 +29,13 @@ func addComment(c *Client, reviewId string) string {
 	return commentId
 }
 
+func addCommentToParent(c *Client, reviewId string, parentId string) string {
+	res := c.postData("reviews/" + reviewId + "/comments",
+		url.Values{"content": {"大惊小怪"}, "parentId":{parentId}})
+	commentId := floatToStr(res["commentId"])
+	return commentId
+}
+
 func TestComments_count(t *testing.T) {
 	setUp()
 	c := NewClient()

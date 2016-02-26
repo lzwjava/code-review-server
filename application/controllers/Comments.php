@@ -31,8 +31,15 @@ class Comments extends BaseController
         if (!$user) {
             return;
         }
+        $parent = null;
+        if ($parentId) {
+            $parent = $this->commentDao->getComment($parentId);
+            if ($this->checkIfObjectNotExists($parent)) {
+                return;
+            }
+        }
         $commentId = $this->commentDao->addComment($reviewId, $parentId, $content, $user->id);
-        $this->notificationDao->notifyNewComment($commentId, $reviewId, $user);
+        $this->notificationDao->notifyNewComment($commentId, $reviewId, $user, $parent);
         $this->succeed(array(KEY_COMMENT_ID => $commentId));
     }
 

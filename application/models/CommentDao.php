@@ -43,6 +43,12 @@ class CommentDao extends BaseDao
         return $this->mergeFields($this->fields(), $prefix, $alias);
     }
 
+    function getComment($commentId)
+    {
+        return $this->getOneFromTable(TABLE_COMMENTS,
+            KEY_COMMENT_ID, $commentId, $this->publicFields());
+    }
+
     function getComments($reviewId, $skip, $limit)
     {
         $fields = $this->publicFields('c');

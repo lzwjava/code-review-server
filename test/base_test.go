@@ -35,32 +35,37 @@ func checkErr(err error) {
 	}
 }
 
-func registerLearner(c *Client) map[string]interface{} {
-	res := c.post("user/register", url.Values{"mobilePhoneNumber": {"18928980893"},
-		"username": {"lzwjavaTest"}, "smsCode": {"5555"}, "password":{md5password("123456")}, "type": {"learner"}})
+func registerUser(c *Client, phone string, userType string, name string) map[string]interface{} {
+	res := c.post("user/register", url.Values{"mobilePhoneNumber": {phone},
+		"username": {name}, "smsCode": {"5555"}, "password":{md5password("123456")}, "type": {userType}})
 	if (toInt(res["code"]) == 0) {
 		registerRes := res["result"].(map[string]interface{})
 		c.sessionToken = registerRes["sessionToken"].(string)
+		if (userType == "reviewer") {
+			validReviewer(c, registerRes["id"].(string))
+		}
 		return registerRes
 	} else {
-		loginRes := c.postData("user/login", url.Values{"mobilePhoneNumber": {"18928980893"},
+		loginRes := c.postData("user/login", url.Values{"mobilePhoneNumber": {phone},
 			"password":{md5password("123456")}});
 		return loginRes
 	}
 }
 
+func registerLearner2(c *Client) map[string]interface{} {
+	return registerUser(c, "18813106251", "learner", "满天星");
+}
+
+func registerLearner3(c *Client) map[string]interface{} {
+	return registerUser(c, "13611456899", "learner", "月生日月");
+}
+
+func registerLearner(c *Client) map[string]interface{} {
+	return registerUser(c, "18928980893", "learner", "lzwjavaTest")
+}
+
 func registerReviewer(c *Client) map[string]interface{} {
-	res := c.post("user/register", url.Values{"mobilePhoneNumber": {"13261630925"},
-		"username": {"lzwjavaReviewer"}, "smsCode": {"5555"}, "password":{md5password("123456")}, "type": {"reviewer"}})
-	if (toInt(res["code"]) == 0) {
-		registerRes := res["result"].(map[string]interface{})
-		c.sessionToken = registerRes["sessionToken"].(string)
-		validReviewer(c, registerRes["id"].(string))
-		return registerRes
-	} else {
-		loginRes := login(c, "13261630925", "123456")
-		return loginRes
-	}
+	return registerUser(c, "13261630925", "reviewer", "lzwjavaReviewer")
 }
 
 func login(c *Client, mobilePhoneNumber string, password string) map[string]interface{} {

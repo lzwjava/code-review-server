@@ -62,3 +62,17 @@ func TestNotifications_count(t *testing.T) {
 	res := c.getData("notifications/count", url.Values{})
 	assert.Equal(t, toInt(res["count"]), 2)
 }
+
+func TestNotifications_commentOther(t *testing.T) {
+	setUp()
+	c := NewClient()
+	_, _, _, review := addOrderAndReview(c)
+	reviewId := floatToStr(review["reviewId"])
+	learner2 := registerLearner2(c)
+	commentId := addComment(c, reviewId)
+	registerLearner3(c)
+	addCommentToParent(c, reviewId, commentId)
+	c.sessionToken = learner2["sessionToken"].(string)
+	res := c.getData("notifications/count", url.Values{})
+	assert.Equal(t, toInt(res["count"]), 1)
+}
