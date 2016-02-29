@@ -97,7 +97,6 @@ class NotificationDao extends BaseDao
             unset($notification->senderId);
             unset($notification->orderId);
             unset($notification->commentId);
-            unset($notification->userId);
         }
     }
 
