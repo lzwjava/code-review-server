@@ -55,6 +55,8 @@ $route['translate_uri_dashes'] = FALSE;
 
 $route['user/tags']['POST'] = 'user/addTag';
 $route['user/tags/(\d+)']['DELETE'] = 'user/removeTag/$1';
+$route['user/requestResetPassword']['POST'] = 'user/requestResetPassword';
+$route['user/resetPassword']['POST'] = 'user/resetPassword';
 
 $route['orders']['POST'] = 'orders/add';
 $route['orders/(\d+)']['POST'] = 'orders/update/$1';

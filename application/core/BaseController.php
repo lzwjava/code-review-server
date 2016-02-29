@@ -59,13 +59,22 @@ class BaseController extends REST_Controller
         $this->responseResult($resultCode, null, $resultInfo);
     }
 
+    protected function checkIfSQLResWrong($sqlRes)
+    {
+        if (!$sqlRes) {
+            $this->failure(ERROR_RUN_SQL_FAILED, '内部数据库错误');
+            return true;
+        } else {
+            return false;
+        }
+    }
+
     protected function responseBySQLRes($ok)
     {
-        if ($ok) {
-            $this->succeed();
-        } else {
-            $this->failure(ERROR_RUN_SQL_FAILED, '内部数据库错误');
+        if ($this->checkIfSQLResWrong($ok)) {
+            return;
         }
+        $this->succeed();
     }
 
     protected function checkIfParamsNotExist($request, $params, $checkEmpty = true)

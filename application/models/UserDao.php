@@ -99,7 +99,7 @@ class UserDao extends BaseDao
         return array(KEY_ID, KEY_AVATAR_URL, KEY_USERNAME, KEY_TYPE);
     }
 
-    function publicFields($prefix = TABLE_USERS, $alias= false)
+    function publicFields($prefix = TABLE_USERS, $alias = false)
     {
         return $this->mergeFields($this->publicRawFields(), $prefix, $alias);
     }
@@ -168,6 +168,11 @@ class UserDao extends BaseDao
         return $this->findUser(KEY_ID, $id);
     }
 
+    function findUserByMobilePhoneNumber($mobilePhoneNumber, $cleanFields = true)
+    {
+        return $this->findUser(KEY_MOBILE_PHONE_NUMBER, $mobilePhoneNumber, $cleanFields);
+    }
+
     private function updateSessionToken($user)
     {
         $token = $this->genSessionToken();
@@ -180,20 +185,28 @@ class UserDao extends BaseDao
         }
     }
 
-    function updateSessionTokenIfNeeded($mobilePhoneNumber)
+    function updateSessionTokenIfNeeded($mobilePhoneNumber, $resetPassword = false)
     {
-        $user = $this->findUser(KEY_MOBILE_PHONE_NUMBER, $mobilePhoneNumber, false);
+        $user = $this->findUserByMobilePhoneNumber($mobilePhoneNumber, false);
         $created = strtotime($user->sessionTokenCreated);
         $now = dateWithMs();
         $nowMillis = strtotime($now);
         $duration = $nowMillis - $created;
         if ($user->sessionToken == null || $user->sessionTokenCreated == null
-            || $duration > 60 * 60 * 24 * 30
+            || $duration > 60 * 60 * 24 * 30 || $resetPassword
         ) {
             $this->updateSessionToken($user);
         }
         $this->cleanUserFieldsForAll($user);
         return $user;
+    }
+
+    function updatePassword($phone, $password)
+    {
+        $user = $this->findUserByMobilePhoneNumber($phone);
+        return $this->updateUser($user, array(
+            KEY_PASSWORD => sha1($password)
+        ));
     }
 
     function updateUser($user, $data)
@@ -203,6 +216,8 @@ class UserDao extends BaseDao
         $result = $this->db->update($tableName, $data);
         if ($result) {
             return $this->findUser(KEY_ID, $user->id);
+        } else {
+            return null;
         }
     }
 

@@ -23,9 +23,9 @@ class User extends BaseController
         $this->tagDao = new TagDao();
     }
 
-    private function checkSmsCodeWrong($mobilePhoneNumber, $smsCode)
+    private function checkIfSmsCodeWrong($mobilePhoneNumber, $smsCode)
     {
-        if ($smsCode == '5555') {
+        if ($smsCode == '5555' && isLocalDebug()) {
             // for test
             return false;
         }
@@ -40,6 +40,22 @@ class User extends BaseController
         }
     }
 
+    private function sendSmsCodeAndResponse($phone, $op = null)
+    {
+        $data = array(
+            KEY_MOBILE_PHONE_NUMBER => $phone
+        );
+        if ($op) {
+            $data['op'] = $op;
+        }
+        $return = $this->leancloud->curlLeanCloud('requestSmsCode', $data);
+        if ($return['status'] == 200) {
+            $this->succeed($return['result']);
+        } else {
+            $this->failure(ERROR_SMS_WRONG, $return['result']);
+        }
+    }
+
     public function requestSmsCode_post()
     {
         if ($this->checkIfParamsNotExist($_POST, array(KEY_MOBILE_PHONE_NUMBER))
@@ -47,15 +63,7 @@ class User extends BaseController
             return;
         }
         $mobilePhoneNumber = $_POST[KEY_MOBILE_PHONE_NUMBER];
-        $data = array(
-            KEY_MOBILE_PHONE_NUMBER => $mobilePhoneNumber
-        );
-        $return = $this->leancloud->curlLeanCloud('requestSmsCode', $data);
-        if ($return['status'] == 200) {
-            $this->succeed($return['result']);
-        } else {
-            $this->failure(ERROR_SMS_WRONG, $return['result']);
-        }
+        $this->sendSmsCodeAndResponse($mobilePhoneNumber, '注册');
     }
 
     private function checkIfWrongPasswordFormat($password)
@@ -83,7 +91,7 @@ class User extends BaseController
             return;
         } elseif ($this->userDao->checkIfMobilePhoneNumberUsed($mobilePhoneNumber)) {
             $this->failure(ERROR_MOBILE_PHONE_NUMBER_TAKEN, "手机号已被占用");
-        } else if ($this->checkSmsCodeWrong($mobilePhoneNumber, $smsCode)) {
+        } else if ($this->checkIfSmsCodeWrong($mobilePhoneNumber, $smsCode)) {
             return;
         } else if ($this->checkIfWrongPasswordFormat($password)) {
             return;
@@ -128,9 +136,9 @@ class User extends BaseController
         return array(TYPE_REVIEWER, TYPE_LEARNER);
     }
 
-    public function loginOrRegisterSucceed($mobilePhoneNumber)
+    public function loginOrRegisterSucceed($mobilePhoneNumber, $resetPassword = false)
     {
-        $user = $this->userDao->updateSessionTokenIfNeeded($mobilePhoneNumber);
+        $user = $this->userDao->updateSessionTokenIfNeeded($mobilePhoneNumber, $resetPassword);
         setCookieForever(KEY_COOKIE_TOKEN, $user->sessionToken);
         $this->succeed($user);
     }
@@ -215,11 +223,51 @@ class User extends BaseController
         $this->succeed($this->tagDao->getUserTags($user->id));
     }
 
-    function resetPassword()
+    protected function checkIfPhoneNotExist($phone)
     {
-        if ($this->checkIfNotAdmin()) {
-
+        $user = $this->userDao->findUserByMobilePhoneNumber($phone);
+        if (!$user) {
+            $this->failure(ERROR_OBJECT_NOT_EXIST, '该手机号码未注册');
+            return true;
+        } else {
+            return false;
         }
+    }
+
+    function requestResetPassword_post()
+    {
+        if ($this->checkIfParamsNotExist($this->post(), array(KEY_MOBILE_PHONE_NUMBER))) {
+            return;
+        }
+        $phone = $this->post(KEY_MOBILE_PHONE_NUMBER);
+        if ($this->checkIfPhoneNotExist($phone)) {
+            return;
+        }
+        $this->sendSmsCodeAndResponse($phone, '重置密码');
+    }
+
+    function resetPassword_post()
+    {
+        if ($this->checkIfParamsNotExist($this->post(), array(KEY_MOBILE_PHONE_NUMBER, KEY_PASSWORD, KEY_SMS_CODE))) {
+            return;
+        }
+        $phone = $this->post(KEY_MOBILE_PHONE_NUMBER);
+        $password = $this->post(KEY_PASSWORD);
+        $smsCode = $this->post(KEY_SMS_CODE);
+        if ($this->checkIfPhoneNotExist($phone)) {
+            return;
+        }
+        if ($this->checkIfWrongPasswordFormat($password)) {
+            return;
+        }
+        if ($this->checkIfSmsCodeWrong($phone, $smsCode)) {
+            return;
+        }
+        $newUser = $this->userDao->updatePassword($phone, $password);
+        if ($this->checkIfSQLResWrong($newUser)) {
+            return;
+        }
+        $this->loginOrRegisterSucceed($newUser->mobilePhoneNumber, true);
     }
 
 }

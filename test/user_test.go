@@ -31,6 +31,7 @@ func TestUser_RegisterAndLogin(t *testing.T) {
 }
 
 func TestUser_Update(t *testing.T) {
+	setUp()
 	c := NewClient()
 	learner := registerLearner(c)
 	updated := learner["updated"].(string)
@@ -56,6 +57,7 @@ func TestUser_Update(t *testing.T) {
 }
 
 func TestUser_ReviewerUpdate(t *testing.T) {
+	setUp()
 	c := NewClient()
 	reviewer := registerReviewer(c)
 	assert.NotNil(t, reviewer["maxOrders"])
@@ -90,6 +92,7 @@ func TestUser_ReviewerRegisterAndLogin(t *testing.T) {
 }
 
 func TestUser_Self(t *testing.T) {
+	setUp()
 	c := NewClient()
 	_, learner := registerUsers(c)
 	self := c.getData("user/self", url.Values{})
@@ -98,6 +101,7 @@ func TestUser_Self(t *testing.T) {
 }
 
 func TestUser_SelfWithSessionToken(t *testing.T) {
+	setUp()
 	c := NewClient()
 	reviewer, _ := registerUsers(c)
 
@@ -107,7 +111,34 @@ func TestUser_SelfWithSessionToken(t *testing.T) {
 }
 
 func TestUser_requestSmsCode(t *testing.T) {
+	setUp()
 	c := NewClient()
 	res := c.post("user/requestSmsCode", url.Values{"mobilePhoneNumber": {"xx"}})
 	fmt.Println(res)
+}
+
+func TestUser_requestResetPassword(t *testing.T) {
+	setUp()
+	c := NewClient()
+	reviewer := registerReviewer(c)
+	phone := reviewer["mobilePhoneNumber"].(string)
+	res := c.post("user/requestResetPassword",
+		url.Values{"mobilePhoneNumber":{phone + "xx"}})
+	assert.NotNil(t, res);
+	assert.Equal(t, 8, toInt(res["code"]));
+}
+
+func TestUser_resetPassword(t *testing.T) {
+	setUp()
+	c := NewClient()
+	reviewer := registerReviewer(c)
+	phone := reviewer["mobilePhoneNumber"].(string)
+
+	newUser := c.postData("user/resetPassword", url.Values{"mobilePhoneNumber": {phone}, "smsCode":{"5555"},
+		"password": {md5password("new123456")}})
+	assert.NotNil(t, newUser)
+	assert.NotEqual(t, newUser["sessionToken"], reviewer["sessionToken"])
+
+	res := login(c, phone, "new123456")
+	assert.NotNil(t, res)
 }
