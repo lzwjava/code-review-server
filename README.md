@@ -33,7 +33,7 @@ Install dependencies: composer install, composer update
 记录案例页阅读数|POST|/reviews/:reviewId/visits|referrer|
 获取视频列表|GET|/videos||
 记录视频访问次数|POST|/videos/:videoId/visits|referrer|
-
+未付款时取消订单|DELETE|/orders/:orderId||
 
 ## user
 
