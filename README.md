@@ -34,6 +34,8 @@ Install dependencies: composer install, composer update
 获取视频列表|GET|/videos||
 记录视频访问次数|POST|/videos/:videoId/visits|referrer|
 未付款时取消订单|DELETE|/orders/:orderId||
+请求重置密码|POST|/user/requestResetPassword|mobilePhoneNumber|
+重置密码|POST|/user/resetPassword|mobilePhoneNumber,smsCode,password|
 
 ## user
 
