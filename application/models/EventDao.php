@@ -20,4 +20,9 @@ class EventDao extends BaseDao
         $this->db->where(KEY_EVENT_ID, $eventId);
         $this->db->update(TABLE_EVENTS, $data);
     }
+
+    function getEvent()
+    {
+        
+    }
 }

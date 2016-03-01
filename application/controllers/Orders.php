@@ -144,64 +144,11 @@ class Orders extends BaseController
         }
         $reviewerName = $order->reviewer->username;
         $currentUsername = $user->username;
-        $orderNo = $this->getOrderNo();
-        $ipAddress = $this->input->ip_address();
-        if (!filter_var($ipAddress, FILTER_VALIDATE_IP)) {
-            $this->failure(ERROR_INVALID_IP, '无效的请求源');
-            return;
-        }
-        if ($ipAddress == '::1') {
-            // local debug case
-            $ipAddress = '127.0.0.1';
-        }
-        if (isLocalDebug()) {
-            // CodeReviewTest
-            $appId = 'app_nn9qHKPafHCSDKq5';
-            // $appId = 'app_jTSKu5CmXbHC0q5q';
-        } else {
-            // CodeReviewProd
-            // $appId = 'app_XzDynH4qX5u510mz';
-            $appId = 'app_jTSKu5CmXbHC0q5q';
-        }
         $subject = $this->truncateName($currentUsername) . " 打赏给 " .
             $this->truncateName($reviewerName) . "大神";
-        $ch = \Pingpp\Charge::create(
-            array(
-                'order_no' => $orderNo,
-                'app' => array('id' => $appId),
-                'channel' => 'alipay_pc_direct',
-                'amount' => $amount,
-                'client_ip' => $ipAddress,
-                'currency' => 'cny',
-                'subject' => $subject,
-                'body' => "$currentUsername 打赏给 $reviewerName 大神",
-                'metadata' => array(KEY_ORDER_ID => $order->orderId),
-                'extra' => array('success_url' => 'http://api.reviewcode.cn/rewards/success')
-            )
-        );
-        logInfo("created");
-        if ($ch == null || $ch->failure_code != null) {
-            logInfo("charge create failed\n");
-            if ($ch != null) {
-                logInfo("reason $ch->failure_message");
-            }
-            $this->failure(ERROR_PINGPP_CHARGE, "创建打赏失败");
-            return;
-        }
-
-        $chargeId = $this->chargeDao->add($orderNo, $amount, $user->id, $ipAddress);
-
-        //$this->rewardDao->add($order->orderId, $user->id, $chargeId);
-
-        $this->output->set_status_header(200);
-        $this->output->set_content_type('application/json', 'utf-8');
-        echo($ch);
-        // $this->succeed($ch);
-    }
-
-    private function getOrderNo()
-    {
-        return getToken(16);
+        $body = "$currentUsername 打赏给 $reviewerName 大神";
+        $metaData = array(KEY_ORDER_ID => $order->orderId);
+        $this->createChargeThenResponse($amount, $subject, $body, $metaData, $user);
     }
 
     public function update_post($orderId)

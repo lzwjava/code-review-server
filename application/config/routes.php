@@ -99,4 +99,5 @@ $route['notifications/(\d+)']['PATCH'] = 'notifications/markAsRead/$1';
 $route['notifications/count']['GET'] = 'notifications/count';
 
 $route['events']['POST'] = 'events/create';
-$route['user/events']['POST'] = 'userEvents/create';
+$route['events/(\d+)/attend']['POST'] = 'events/attend/$1';
+$route['events/(\d+)/pay']['POST'] = 'events/pay/$1';

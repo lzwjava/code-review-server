@@ -8,6 +8,7 @@ require_once APPPATH . '/libraries/REST_Controller.php';
 class BaseController extends REST_Controller
 {
     public $userDao;
+    public $chargeDao;
 
     function __construct()
     {
@@ -20,6 +21,8 @@ class BaseController extends REST_Controller
         }
         $this->load->model('UserDao');
         $this->userDao = new UserDao();
+        $this->load->model(ChargeDao::class);
+        $this->chargeDao = new ChargeDao();
     }
 
     protected function responseResult($code, $result = null, $error = null, $total = null)
@@ -271,6 +274,56 @@ class BaseController extends REST_Controller
         }
     }
 
+    private function getOrderNo()
+    {
+        return getToken(16);
+    }
+
+    protected function createChargeThenResponse($amount, $subject, $body, $metaData, $user)
+    {
+        $orderNo = $this->getOrderNo();
+        if (isLocalDebug()) {
+            // CodeReviewTest
+            $appId = 'app_nn9qHKPafHCSDKq5';
+            // $appId = 'app_jTSKu5CmXbHC0q5q';
+        } else {
+            // CodeReviewProd
+            // $appId = 'app_XzDynH4qX5u510mz';
+            $appId = 'app_jTSKu5CmXbHC0q5q';
+        }
+        $ipAddress = $this->input->ip_address();
+        if ($ipAddress == '::1') {
+            // local debug case
+            $ipAddress = '127.0.0.1';
+        }
+        $ch = \Pingpp\Charge::create(
+            array(
+                'order_no' => $orderNo,
+                'app' => array('id' => $appId),
+                'channel' => 'alipay_pc_direct',
+                'amount' => $amount,
+                'client_ip' => $ipAddress,
+                'currency' => 'cny',
+                'subject' => $subject,
+                'body' => $body,
+                'metadata' => $metaData,
+                'extra' => array('success_url' => 'http://api.reviewcode.cn/rewards/success')
+            )
+        );
+        if ($ch == null || $ch->failure_code != null) {
+            logInfo("charge create failed\n");
+            if ($ch != null) {
+                logInfo("reason $ch->failure_message");
+            }
+            $this->failure(ERROR_PINGPP_CHARGE, "创建支付失败");
+            return;
+        }
+        $this->chargeDao->add($orderNo, $amount, $user->id, $ipAddress);
+
+        $this->output->set_status_header(200);
+        $this->output->set_content_type('application/json', 'utf-8');
+        echo($ch);
+    }
 
 }
 
