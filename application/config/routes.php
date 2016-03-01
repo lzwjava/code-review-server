@@ -80,10 +80,6 @@ $route['reviews/(\d+)/visits']['POST'] = 'visits/visitReview/$1';
 
 $route['user']['PATCH'] = 'user/update';
 
-$route['api/example/users/(:num)'] = 'api/example/users/id/$1'; // Example 4
-$route['api/example/users/(:num)(\.)([a-zA-Z0-9_-]+)(.*)'] = 'api/example/users/id/$1/format/$3$4'; // Example 8
-
-
 $route['videos']['POST'] = 'videos/createVideo';
 $route['videos']['GET'] = 'videos/getVideoList';
 $route['videos/(\d+)']['GET'] = 'videos/one/$1';
@@ -101,3 +97,6 @@ $route['notifications']['GET'] = 'notifications/list';
 $route['notifications']['PATCH'] = 'notifications/markAsRead';
 $route['notifications/(\d+)']['PATCH'] = 'notifications/markAsRead/$1';
 $route['notifications/count']['GET'] = 'notifications/count';
+
+$route['events']['POST'] = 'events/create';
+$route['user/events']['POST'] = 'userEvents/create';

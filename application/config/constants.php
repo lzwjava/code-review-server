@@ -255,3 +255,11 @@ define('TYPE_SYSTEM', 'system');
 
 // count
 define('KEY_COUNT', 'count');
+
+//events
+define('TABLE_EVENTS', 'events');
+define('KEY_NAME', 'name');
+define('KEY_EVENT_ID', 'eventId');
+
+// user_events
+define('TABLE_USER_EVENTS', 'user_events');
