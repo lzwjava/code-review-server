@@ -8,22 +8,22 @@
  */
 class Rewards extends BaseController
 {
-    public $chargeDao;
     public $orderDao;
     public $rewardDao;
     public $notify;
+    public $userEventDao;
 
     function __construct()
     {
         parent::__construct();
-        $this->load->model('chargeDao');
-        $this->chargeDao = new ChargeDao();
         $this->load->model('orderDao');
         $this->orderDao = new OrderDao();
         $this->load->model('RewardDao');
         $this->rewardDao = new RewardDao();
         $this->load->library(Notify::class);
         $this->notify = new Notify();
+        $this->load->model('UserEventDao');
+        $this->userEventDao = new UserEventDao();
     }
 
     public function callback_post()
@@ -32,6 +32,7 @@ class Rewards extends BaseController
         $content = file_get_contents("php://input");
         logInfo("content $content");
         $event = json_decode($content);
+        logInfo("after json encode event " . json_encode($event));
         if (!isset($event->type)) {
             $this->failure(ERROR_MISS_PARAMETERS, "please input event type");
             return;
@@ -67,33 +68,49 @@ class Rewards extends BaseController
             return;
         }
         $metadata = $object->metadata;
-        if (!isset($metadata->orderId)) {
-            $this->failure(ERROR_PARAMETER_ILLEGAL, "not set orderId in metadata");
-            return;
-        }
-        $orderId = $metadata->orderId;
-        $order = $this->orderDao->getOrder($orderId);
-        if ($order == null) {
-            $this->failure(ERROR_OBJECT_NOT_EXIST, "order with that orderId not exists");
-            return;
-        }
-        $this->chargeDao->updateChargeToPaid($orderNo);
-        $rewardId = $this->rewardDao->addReward($order->orderId, $charge->creator, $charge->chargeId);
-        $amount = $object->amount;
+        if (isset($metadata->orderId)) {
+            $orderId = $metadata->orderId;
+            $order = $this->orderDao->getOrder($orderId);
+            if ($order == null) {
+                $this->failure(ERROR_OBJECT_NOT_EXIST, "order with that orderId not exists");
+                return;
+            }
+            $this->chargeDao->updateChargeToPaid($orderNo);
+            $rewardId = $this->rewardDao->addReward($order->orderId, $charge->creator, $charge->chargeId);
+            $amount = $object->amount;
 
-        if ($order->status == ORDER_STATUS_NOT_PAID) {
-            if ($amount < LEAST_FIRST_REWARD) {
-                $info = 'status is not paid but amount less than 5000';
-                logInfo($info);
-                $this->failure(ERROR_PARAMETER_ILLEGAL, $info);
+            if ($order->status == ORDER_STATUS_NOT_PAID) {
+                if ($amount < LEAST_FIRST_REWARD) {
+                    $info = 'status is not paid but amount less than 5000';
+                    logInfo($info);
+                    $this->failure(ERROR_PARAMETER_ILLEGAL, $info);
+                } else {
+                    $this->orderDao->updateOrderToPaid($order->orderId, $rewardId);
+                    $this->notify->notifyNewOrder($order);
+                    $this->succeed();
+                }
             } else {
-                $this->orderDao->updateOrderToPaid($order->orderId, $rewardId);
-                $this->notify->notifyNewOrder($order);
                 $this->succeed();
             }
-        } else {
+        } else if (isset($metadata->userEventId)) {
+            $userEventId = $metadata->userEventId;
+            $userEvent = $this->userEventDao->getUserEventById($userEventId);
+            if ($this->checkIfObjectNotExists($userEvent)) {
+                return;
+            }
+            $this->db->trans_start();
+            $this->chargeDao->updateChargeToPaid($orderNo);
+            $charge = $this->chargeDao->getOneByOrderNo($orderNo);
+            $this->userEventDao->updateUserEventToPaid($userEventId, $charge->chargeId);
+            $this->db->trans_complete();
+            if ($this->checkIfSQLResWrong($this->db->trans_status())) {
+                return;
+            }
             $this->succeed();
+        } else {
+            $this->failure(ERROR_PARAMETER_ILLEGAL, "not set orderId or eventId in metadata");
         }
+
     }
 
     public function refund($orderId)

@@ -22,11 +22,12 @@ class Events extends BaseController
 
     function create_post()
     {
-        if ($this->checkIfParamsNotExist($this->post(), array(KEY_NAME))) {
+        if ($this->checkIfParamsNotExist($this->post(), array(KEY_NAME, KEY_AMOUNT))) {
             return;
         }
         $name = $this->post(KEY_NAME);
-        $id = $this->eventDao->addEvent($name);
+        $amount = $this->post(KEY_AMOUNT);
+        $id = $this->eventDao->addEvent($name, $amount);
         if ($this->checkIfSQLResWrong($id)) {
             return;
         }
@@ -39,8 +40,11 @@ class Events extends BaseController
         if (!$user) {
             return;
         }
-        $ok = $this->userEventDao->addUserEvent($user->id, $eventId);
-        $this->responseBySQLRes($ok);
+        $userEventId = $this->userEventDao->addUserEvent($user->id, $eventId);
+        if ($this->checkIfSQLResWrong($userEventId)) {
+            return;
+        }
+        $this->succeed(array(KEY_USER_EVENT_ID => $userEventId));
     }
 
     function pay_post($eventId)
@@ -49,5 +53,18 @@ class Events extends BaseController
         if (!$user) {
             return;
         }
+        $event = $this->eventDao->getEvent($eventId);
+        if ($this->checkIfObjectNotExists($event)) {
+            return;
+        }
+        $userEvent = $this->userEventDao->getUserEvent($user->id, $eventId);
+        if (!$userEvent) {
+            $this->failure(ERROR_OBJECT_NOT_EXIST, '您还没有报名该活动');
+            return;
+        }
+        $subject = truncate($user->username) . '参加' . truncate($event->name, 15);
+        $body = $user->username . ' 参加 ' . $event->name;
+        $metaData = array(KEY_USER_EVENT_ID => $userEvent->userEventId);
+        $this->createChargeThenResponse($event->amount, $subject, $body, $metaData, $user);
     }
 }

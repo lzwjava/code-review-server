@@ -8,9 +8,12 @@
  */
 class EventDao extends BaseDao
 {
-    function addEvent($name)
+    function addEvent($name, $amount)
     {
-        $data = array(KEY_NAME => $name);
+        $data = array(
+            KEY_NAME => $name,
+            KEY_AMOUNT => $amount
+        );
         $this->db->insert(TABLE_EVENTS, $data);
         return $this->db->insert_id();
     }
@@ -21,8 +24,14 @@ class EventDao extends BaseDao
         $this->db->update(TABLE_EVENTS, $data);
     }
 
-    function getEvent()
+    private function publicFields()
     {
-        
+        return $this->mergeFields(array(KEY_EVENT_ID, KEY_NAME, KEY_AMOUNT, KEY_CREATED));
+    }
+
+    function getEvent($eventId)
+    {
+        $fields = $this->publicFields();
+        return $this->getOneFromTable(TABLE_EVENTS, KEY_EVENT_ID, $eventId, $fields);
     }
 }

@@ -122,3 +122,17 @@ if (!function_exists('cleanFields')) {
         }
     }
 }
+
+if (!function_exists('truncate')) {
+    function truncate($string, $maxLength = 12)
+    {
+        if ($string == null) {
+            return $string;
+        }
+        if (strlen($string) > $maxLength) {
+            return substr($string, 0, $maxLength);
+        } else {
+            return $string;
+        }
+    }
+}

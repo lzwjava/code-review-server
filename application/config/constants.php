@@ -263,3 +263,4 @@ define('KEY_EVENT_ID', 'eventId');
 
 // user_events
 define('TABLE_USER_EVENTS', 'user_events');
+define('KEY_USER_EVENT_ID', 'userEventId');

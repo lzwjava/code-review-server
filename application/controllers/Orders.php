@@ -11,7 +11,6 @@ class Orders extends BaseController
 
     public $orderDao;
     public $reviewerDao;
-    public $chargeDao;
 
     function __construct()
     {
@@ -20,8 +19,6 @@ class Orders extends BaseController
         $this->orderDao = new OrderDao();
         $this->load->model('ReviewerDao');
         $this->reviewerDao = new ReviewerDao();
-        $this->load->model('ChargeDao');
-        $this->chargeDao = new ChargeDao();
     }
 
     function myOrders_get()
@@ -105,19 +102,6 @@ class Orders extends BaseController
         $this->succeed($order);
     }
 
-    private function truncateName($username)
-    {
-        if ($username == null) {
-            return $username;
-        }
-        $maxLength = 12;
-        if (strlen($username) > $maxLength) {
-            return substr($username, 0, $maxLength);
-        } else {
-            return $username;
-        }
-    }
-
     public function reward_post($orderId)
     {
         $user = $this->checkAndGetSessionUser();
@@ -144,8 +128,8 @@ class Orders extends BaseController
         }
         $reviewerName = $order->reviewer->username;
         $currentUsername = $user->username;
-        $subject = $this->truncateName($currentUsername) . " 打赏给 " .
-            $this->truncateName($reviewerName) . "大神";
+        $subject = truncate($currentUsername) . " 打赏给 " .
+            truncate($reviewerName) . "大神";
         $body = "$currentUsername 打赏给 $reviewerName 大神";
         $metaData = array(KEY_ORDER_ID => $order->orderId);
         $this->createChargeThenResponse($amount, $subject, $body, $metaData, $user);
