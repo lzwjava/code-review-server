@@ -34,6 +34,12 @@ func attendEvent(c *Client, eventId string) string {
 	return floatToStr(res["userEventId"])
 }
 
+func addAndAtendEvent(c *Client) (string, string) {
+	eventId := addEvent(c)
+	userEventId := attendEvent(c, eventId)
+	return eventId, userEventId;
+}
+
 func TestEvents_pay(t *testing.T) {
 	setUp()
 	c := NewClient()

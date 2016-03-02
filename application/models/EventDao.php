@@ -24,9 +24,13 @@ class EventDao extends BaseDao
         $this->db->update(TABLE_EVENTS, $data);
     }
 
-    private function publicFields()
+    function fields() {
+        return array(KEY_EVENT_ID, KEY_NAME, KEY_AMOUNT, KEY_CREATED);
+    }
+
+    function publicFields($prefix = TABLE_EVENTS, $alias = false)
     {
-        return $this->mergeFields(array(KEY_EVENT_ID, KEY_NAME, KEY_AMOUNT, KEY_CREATED));
+        return $this->mergeFields($this->fields(), $prefix, $alias);
     }
 
     function getEvent($eventId)
