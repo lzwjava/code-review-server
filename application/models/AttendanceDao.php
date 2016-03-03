@@ -17,68 +17,68 @@ class AttendanceDao extends BaseDao
         $this->eventDao = new EventDao();
     }
 
-    function addUserEvent($userId, $eventId)
+    function addAttendance($userId, $eventId)
     {
         $data = array(
             KEY_USER_ID => $userId,
             KEY_EVENT_ID => $eventId
         );
-        $this->db->insert(TABLE_USER_EVENTS, $data);
+        $this->db->insert(TABLE_ATTENDANCES, $data);
         return $this->db->insert_id();
     }
 
     private function publicFields()
     {
-        return $this->mergeFields(array(KEY_USER_EVENT_ID, KEY_USER_ID,
-            KEY_EVENT_ID, KEY_CHARGE_ID, KEY_CREATED), TABLE_USER_EVENTS);
+        return $this->mergeFields(array(KEY_ATTENDANCE_ID, KEY_USER_ID,
+            KEY_EVENT_ID, KEY_CHARGE_ID, KEY_CREATED), TABLE_ATTENDANCES);
     }
 
-    function getUserEvent($userId, $eventId)
+    function getAttendance($userId, $eventId)
     {
         $fields = $this->publicFields();
-        $sql = "select $fields from user_events where userId=? and eventId=?";
+        $sql = "select $fields from attendances where userId=? and eventId=?";
         $binds = array($userId, $eventId);
         return $this->db->query($sql, $binds)->row();
     }
 
-    function getUserEventById($userEventId)
+    function getAttendanceById($attendanceId)
     {
         $fields = $this->publicFields();
-        $sql = "select $fields from user_events where userEventId=?";
-        $binds = array($userEventId);
-        return $this->db->query($sql, $binds)->result();
+        $sql = "select $fields from attendances where attendanceId=?";
+        $binds = array($attendanceId);
+        return $this->db->query($sql, $binds)->row();
     }
 
-    private function update($userEventId, $data)
+    private function update($attendanceId, $data)
     {
-        $this->db->where(KEY_USER_EVENT_ID, $userEventId);
-        return $this->db->update(TABLE_USER_EVENTS, $data);
+        $this->db->where(KEY_ATTENDANCE_ID, $attendanceId);
+        return $this->db->update(TABLE_ATTENDANCES, $data);
     }
 
-    function updateUserEventToPaid($userEventId, $chargeId)
+    function updateAttendanceToPaid($attendanceId, $chargeId)
     {
-        return $this->update($userEventId, array(KEY_CHARGE_ID => $chargeId));
+        return $this->update($attendanceId, array(KEY_CHARGE_ID => $chargeId));
     }
 
-    function getUserEvents($userId, $skip = 0, $limit = 100)
+    function getAttendances($userId, $skip = 0, $limit = 100)
     {
         $fields = $this->publicFields();
         $eventFields = $this->eventDao->publicFields('e', true);
-        $sql = "select $fields,$eventFields from user_events
+        $sql = "select $fields,$eventFields from attendances
                 left join events as e USING(eventId)
                 where userId=?
                 limit $limit offset $skip";
         $binds = array($userId);
-        $userEvents = $this->db->query($sql, $binds)->result();
-        $this->handleUserEvents($userEvents);
-        return $userEvents;
+        $attendances = $this->db->query($sql, $binds)->result();
+        $this->handleAttendances($attendances);
+        return $attendances;
     }
 
-    protected function handleUserEvents($userEvents)
+    protected function handleAttendances($attendances)
     {
-        foreach ($userEvents as $userEvent) {
+        foreach ($attendances as $attendance) {
             $es = $this->prefixFields($this->eventDao->fields(), 'e');
-            $userEvent->event = extractFields($userEvent, $es, 'e');
+            $attendance->event = extractFields($attendance, $es, 'e');
         }
     }
 

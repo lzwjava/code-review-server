@@ -8,13 +8,16 @@
  */
 class Attendances extends BaseController
 {
-    public $userEventDao;
+    public $attendanceDao;
+    public $eventDao;
 
     function __construct()
     {
         parent::__construct();
+        $this->load->model(EventDao::class);
+        $this->eventDao = new EventDao();
         $this->load->model(AttendanceDao::class);
-        $this->userEventDao = new AttendanceDao();
+        $this->attendanceDao = new AttendanceDao();
     }
 
     function create_post()
@@ -27,37 +30,36 @@ class Attendances extends BaseController
         if (!$user) {
             return;
         }
-        $userEvent = $this->userEventDao->getUserEvent($user->id, $eventId);
-        if ($userEvent) {
+        $attendance = $this->attendanceDao->getAttendance($user->id, $eventId);
+        if ($attendance) {
             $this->failure(ERROR_ALREADY_DO_IT, '您已报名过该活动了');
             return;
         }
-        $userEventId = $this->userEventDao->addUserEvent($user->id, $eventId);
-        if ($this->checkIfSQLResWrong($userEventId)) {
+        $attendanceId = $this->attendanceDao->addAttendance($user->id, $eventId);
+        if ($this->checkIfSQLResWrong($attendanceId)) {
             return;
         }
-        $this->succeed(array(KEY_USER_EVENT_ID => $userEventId));
+        $this->succeed(array(KEY_ATTENDANCE_ID => $attendanceId));
     }
 
-
-    function pay_post($eventId)
+    function pay_post($attendanceId)
     {
         $user = $this->checkAndGetSessionUser();
         if (!$user) {
             return;
         }
-        $event = $this->eventDao->getEvent($eventId, $user);
-        if ($this->checkIfObjectNotExists($event)) {
+        $attendance = $this->attendanceDao->getAttendanceById($attendanceId);
+        if (!$attendance) {
+            $this->failure(ERROR_OBJECT_NOT_EXIST, '您还没有报名该活动');
             return;
         }
-        $userEvent = $this->userEventDao->getUserEvent($user->id, $eventId);
-        if (!$userEvent) {
-            $this->failure(ERROR_OBJECT_NOT_EXIST, '您还没有报名该活动');
+        $event = $this->eventDao->getEvent($attendance->eventId, $user);
+        if ($this->checkIfObjectNotExists($event)) {
             return;
         }
         $subject = truncate($user->username) . '参加' . truncate($event->name, 15);
         $body = $user->username . ' 参加 ' . $event->name;
-        $metaData = array(KEY_USER_EVENT_ID => $userEvent->userEventId);
+        $metaData = array(KEY_ATTENDANCE_ID => $attendance->attendanceId);
         $this->createChargeThenResponse($event->amount, $subject, $body, $metaData, $user);
     }
 
@@ -67,11 +69,11 @@ class Attendances extends BaseController
         if (!$user) {
             return;
         }
-        $userEvent = $this->userEventDao->getUserEvent($user->id, $eventId);
-        if ($this->checkIfObjectNotExists($userEvent)) {
+        $attendance = $this->attendanceDao->getAttendance($user->id, $eventId);
+        if ($this->checkIfObjectNotExists($attendance)) {
             return;
         }
-        $this->succeed($userEvent);
+        $this->succeed($attendance);
     }
 
     function list_get()
@@ -82,7 +84,7 @@ class Attendances extends BaseController
         }
         $skip = $this->getSkip();
         $limit = $this->getLimit();
-        $userEvents = $this->userEventDao->getUserEvents($user->id, $skip, $limit);
-        $this->succeed($userEvents);
+        $attendances = $this->attendanceDao->getAttendances($user->id, $skip, $limit);
+        $this->succeed($attendances);
     }
 }

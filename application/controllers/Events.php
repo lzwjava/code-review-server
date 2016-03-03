@@ -9,15 +9,15 @@
 class Events extends BaseController
 {
     public $eventDao;
-    public $userEventDao;
+    public $attendanceDao;
 
     function __construct()
     {
         parent::__construct();
-        $this->load->model('EventDao');
+        $this->load->model(EventDao::class);
         $this->eventDao = new EventDao();
-        $this->load->model('UserEventDao');
-        $this->userEventDao = new AttendanceDao();
+        $this->load->model(AttendanceDao::class);
+        $this->attendanceDao = new AttendanceDao();
     }
 
     function create_post()

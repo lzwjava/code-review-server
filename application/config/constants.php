@@ -261,6 +261,6 @@ define('TABLE_EVENTS', 'events');
 define('KEY_NAME', 'name');
 define('KEY_EVENT_ID', 'eventId');
 
-// user_events
-define('TABLE_USER_EVENTS', 'user_events');
-define('KEY_USER_EVENT_ID', 'userEventId');
+// attendances
+define('TABLE_ATTENDANCES', 'attendances');
+define('KEY_ATTENDANCE_ID', 'attendanceId');

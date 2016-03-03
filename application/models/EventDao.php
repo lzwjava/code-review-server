@@ -42,10 +42,10 @@ class EventDao extends BaseDao
             $userId = 'null';
         }
         $fields = $this->publicFields('e');
-        $sql = "SELECT $fields,uv.userEventId FROM events as e
-                left join user_events as uv on uv.userId=$userId and uv.eventId=e.eventId
+        $sql = "SELECT $fields,a.attendanceId FROM events as e
+                left join attendances as a on a.userId=? and a.eventId=e.eventId
                 where e.eventId=?";
-        $binds = array($eventId);
+        $binds = array($userId, $eventId);
         return $this->db->query($sql, $binds)->row();
     }
 }

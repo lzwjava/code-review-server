@@ -11,19 +11,19 @@ class Rewards extends BaseController
     public $orderDao;
     public $rewardDao;
     public $notify;
-    public $userEventDao;
+    public $attendanceDao;
 
     function __construct()
     {
         parent::__construct();
-        $this->load->model('orderDao');
+        $this->load->model(OrderDao::class);
         $this->orderDao = new OrderDao();
-        $this->load->model('RewardDao');
+        $this->load->model(RewardDao::class);
         $this->rewardDao = new RewardDao();
         $this->load->library(Notify::class);
         $this->notify = new Notify();
-        $this->load->model('UserEventDao');
-        $this->userEventDao = new AttendanceDao();
+        $this->load->model(AttendanceDao::class);
+        $this->attendanceDao = new AttendanceDao();
     }
 
     public function callback_post()
@@ -92,16 +92,16 @@ class Rewards extends BaseController
             } else {
                 $this->succeed();
             }
-        } else if (isset($metadata->userEventId)) {
-            $userEventId = $metadata->userEventId;
-            $userEvent = $this->userEventDao->getUserEventById($userEventId);
-            if ($this->checkIfObjectNotExists($userEvent)) {
+        } else if (isset($metadata->attendanceId)) {
+            $attendanceId = $metadata->attendanceId;
+            $attendance = $this->attendanceDao->getAttendanceById($attendanceId);
+            if ($this->checkIfObjectNotExists($attendance)) {
                 return;
             }
             $this->db->trans_start();
             $this->chargeDao->updateChargeToPaid($orderNo);
             $charge = $this->chargeDao->getOneByOrderNo($orderNo);
-            $this->userEventDao->updateUserEventToPaid($userEventId, $charge->chargeId);
+            $this->attendanceDao->updateAttendanceToPaid($attendanceId, $charge->chargeId);
             $this->db->trans_complete();
             if ($this->checkIfSQLResWrong($this->db->trans_status())) {
                 return;
