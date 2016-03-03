@@ -34,7 +34,7 @@ func attendEvent(c *Client, eventId string) string {
 	return floatToStr(res["userEventId"])
 }
 
-func addAndAtendEvent(c *Client) (string, string) {
+func addAndAttendEvent(c *Client) (string, string) {
 	eventId := addEvent(c)
 	userEventId := attendEvent(c, eventId)
 	return eventId, userEventId;
@@ -56,4 +56,16 @@ func TestEvents_pay(t *testing.T) {
 
 func eventCallbackStr(orderNo string, userEventId string, amount int) string {
 	return callbackStr(orderNo, "\"userEventId\":" + userEventId, amount);
+}
+
+func TestEvents_get(t *testing.T) {
+	setUp()
+	c := NewClient()
+	eventId := addEvent(c)
+	event := c.getData("events/" + eventId, url.Values{})
+	assert.NotNil(t, event)
+	assert.NotNil(t, event["amount"])
+	assert.NotNil(t, event["eventId"])
+	assert.NotNil(t, event["name"])
+	assert.NotNil(t, event["created"])
 }

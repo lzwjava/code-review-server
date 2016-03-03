@@ -67,4 +67,13 @@ class Events extends BaseController
         $metaData = array(KEY_USER_EVENT_ID => $userEvent->userEventId);
         $this->createChargeThenResponse($event->amount, $subject, $body, $metaData, $user);
     }
+
+    function one_get($eventId)
+    {
+        $event = $this->eventDao->getEvent($eventId);
+        if ($this->checkIfObjectNotExists($event)) {
+            return;
+        }
+        $this->succeed($event);
+    }
 }
