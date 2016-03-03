@@ -40,6 +40,11 @@ class Events extends BaseController
         if (!$user) {
             return;
         }
+        $userEvent = $this->userEventDao->getUserEvent($user->id, $eventId);
+        if ($userEvent) {
+            $this->failure(ERROR_ALREADY_DO_IT, '您已报名过该活动了');
+            return;
+        }
         $userEventId = $this->userEventDao->addUserEvent($user->id, $eventId);
         if ($this->checkIfSQLResWrong($userEventId)) {
             return;
