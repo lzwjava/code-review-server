@@ -24,7 +24,8 @@ class EventDao extends BaseDao
         $this->db->update(TABLE_EVENTS, $data);
     }
 
-    function fields() {
+    function fields()
+    {
         return array(KEY_EVENT_ID, KEY_NAME, KEY_AMOUNT, KEY_CREATED);
     }
 
@@ -33,9 +34,18 @@ class EventDao extends BaseDao
         return $this->mergeFields($this->fields(), $prefix, $alias);
     }
 
-    function getEvent($eventId)
+    function getEvent($eventId, $user)
     {
-        $fields = $this->publicFields();
-        return $this->getOneFromTable(TABLE_EVENTS, KEY_EVENT_ID, $eventId, $fields);
+        if ($user) {
+            $userId = $user->id;
+        } else {
+            $userId = 'null';
+        }
+        $fields = $this->publicFields('e');
+        $sql = "SELECT $fields,uv.userEventId FROM events as e
+                left join user_events as uv on uv.userId=$userId and uv.eventId=e.eventId
+                where e.eventId=?";
+        $binds = array($eventId);
+        return $this->db->query($sql, $binds)->row();
     }
 }

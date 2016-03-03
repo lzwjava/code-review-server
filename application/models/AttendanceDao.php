@@ -6,7 +6,7 @@
  * Date: 16/3/2
  * Time: 上午1:03
  */
-class UserEventDao extends BaseDao
+class AttendanceDao extends BaseDao
 {
     public $eventDao;
 

@@ -23,7 +23,7 @@ class Rewards extends BaseController
         $this->load->library(Notify::class);
         $this->notify = new Notify();
         $this->load->model('UserEventDao');
-        $this->userEventDao = new UserEventDao();
+        $this->userEventDao = new AttendanceDao();
     }
 
     public function callback_post()
