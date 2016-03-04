@@ -29,6 +29,7 @@ func TestEvents_get(t *testing.T) {
 	assert.NotNil(t, event["eventId"])
 	assert.NotNil(t, event["name"])
 	assert.NotNil(t, event["created"])
+	assert.Equal(t, "none", event["status"])
 	_, ok := event["attendanceId"]
 	assert.True(t, ok);
 }

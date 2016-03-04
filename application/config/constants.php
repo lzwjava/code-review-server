@@ -264,3 +264,7 @@ define('KEY_EVENT_ID', 'eventId');
 // attendances
 define('TABLE_ATTENDANCES', 'attendances');
 define('KEY_ATTENDANCE_ID', 'attendanceId');
+
+define('EVENT_STATUS_NONE', 'none');
+define('EVENT_STATUS_ATTENDED', 'attended');
+define('EVENT_STATUS_PAID', 'paid');
