@@ -62,7 +62,7 @@ class EventDao extends BaseDao
             } else {
                 $event->status = EVENT_STATUS_PAID;
             }
-            $event->attendance = extractFields()
+            $event->attendance = extractFields($event, array(KEY_ATTENDANCE_ID, KEY_CHARGE_ID));
         }
     }
 }
