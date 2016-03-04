@@ -57,7 +57,7 @@ class Attendances extends BaseController
         if ($this->checkIfObjectNotExists($event)) {
             return;
         }
-        $subject = truncate($user->username) . '参加' . truncate($event->name, 15);
+        $subject = truncate($user->username, 18) . '参加活动' . $event->eventId;
         $body = $user->username . ' 参加 ' . $event->name;
         $metaData = array(KEY_ATTENDANCE_ID => $attendance->attendanceId);
         $this->createChargeThenResponse($event->amount, $subject, $body, $metaData, $user);
