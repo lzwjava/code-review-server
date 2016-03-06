@@ -28,14 +28,17 @@ func addEventAndPay(c *Client, user map[string]interface{}) string {
 func TestEvents_get(t *testing.T) {
 	setUp()
 	c := NewClient()
-	eventId := addEvent(c)
+	user := registerLearner(c)
+	eventId := addEventAndPay(c, user)
 	event := c.getData("events/" + eventId, url.Values{})
 	assert.NotNil(t, event)
 	assert.NotNil(t, event["amount"])
 	assert.NotNil(t, event["eventId"])
 	assert.NotNil(t, event["name"])
 	assert.NotNil(t, event["created"])
-	assert.Equal(t, "none", event["status"])
+	assert.NotNil(t, event["restCount"])
+	assert.NotNil(t, event["attendCount"])
+	assert.NotNil(t, event["maxPeople"])
 	_, ok := event["attendance"]
 	assert.True(t, ok);
 }

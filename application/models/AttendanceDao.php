@@ -28,15 +28,9 @@ class AttendanceDao extends BaseDao
         return $this->db->insert_id();
     }
 
-    private function publicFields()
-    {
-        return $this->mergeFields(array(KEY_ATTENDANCE_ID, KEY_USER_ID,
-            KEY_EVENT_ID, KEY_CHARGE_ID, KEY_CREATED), TABLE_ATTENDANCES);
-    }
-
     function getAttendance($userId, $eventId)
     {
-        $fields = $this->publicFields();
+        $fields = $this->attendancePublicFields();
         $sql = "select $fields from attendances where userId=? and eventId=?";
         $binds = array($userId, $eventId);
         return $this->db->query($sql, $binds)->row();
@@ -44,7 +38,7 @@ class AttendanceDao extends BaseDao
 
     function getAttendanceById($attendanceId)
     {
-        $fields = $this->publicFields();
+        $fields = $this->attendancePublicFields();
         $sql = "select $fields from attendances where attendanceId=?";
         $binds = array($attendanceId);
         return $this->db->query($sql, $binds)->row();
@@ -58,8 +52,8 @@ class AttendanceDao extends BaseDao
 
     function getAttendances($userId, $skip = 0, $limit = 100)
     {
-        $fields = $this->publicFields();
-        $eventFields = $this->eventDao->publicFields('e', true);
+        $fields = $this->attendancePublicFields();
+        $eventFields = $this->eventDao->eventPublicFields('e', true);
         $sql = "select $fields,$eventFields from attendances
                 left join events as e USING(eventId)
                 where userId=?
@@ -73,7 +67,7 @@ class AttendanceDao extends BaseDao
     protected function handleAttendances($attendances)
     {
         foreach ($attendances as $attendance) {
-            $es = $this->prefixFields($this->eventDao->fields(), 'e');
+            $es = $this->prefixFields($this->eventDao->eventFields(), 'e');
             $attendance->event = extractFields($attendance, $es, 'e');
         }
     }

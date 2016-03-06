@@ -73,5 +73,24 @@ class BaseDao extends CI_Model
         return $result->cnt;
     }
 
+    protected function eventFields()
+    {
+        return array(KEY_EVENT_ID, KEY_NAME, KEY_AMOUNT, KEY_CREATED, KEY_MAX_PEOPLE);
+    }
+
+    protected function eventPublicFields($prefix = TABLE_EVENTS, $alias = false)
+    {
+        return $this->mergeFields($this->eventFields(), $prefix, $alias);
+    }
+
+    protected function attendanceFields()
+    {
+        return array(KEY_ATTENDANCE_ID, KEY_USER_ID, KEY_EVENT_ID, KEY_CHARGE_ID, KEY_CREATED);
+    }
+
+    protected function attendancePublicFields($prefix = TABLE_ATTENDANCES, $alias = false)
+    {
+        return $this->mergeFields($this->attendanceFields(), $prefix, $alias);
+    }
 
 }

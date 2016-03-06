@@ -265,6 +265,3 @@ define('KEY_MAX_PEOPLE', 'maxPeople');
 // attendances
 define('TABLE_ATTENDANCES', 'attendances');
 define('KEY_ATTENDANCE_ID', 'attendanceId');
-
-define('EVENT_STATUS_NONE', 'none');
-define('EVENT_STATUS_ATTENDED', 'attended');

@@ -8,6 +8,7 @@
  */
 class EventDao extends BaseDao
 {
+
     function addEvent($name, $amount, $maxPeople)
     {
         $data = array(
@@ -25,16 +26,6 @@ class EventDao extends BaseDao
         $this->db->update(TABLE_EVENTS, $data);
     }
 
-    function fields()
-    {
-        return array(KEY_EVENT_ID, KEY_NAME, KEY_AMOUNT, KEY_CREATED);
-    }
-
-    function publicFields($prefix = TABLE_EVENTS, $alias = false)
-    {
-        return $this->mergeFields($this->fields(), $prefix, $alias);
-    }
-
     function getEvent($eventId, $user)
     {
         if ($user) {
@@ -42,10 +33,13 @@ class EventDao extends BaseDao
         } else {
             $userId = 'null';
         }
-        $fields = $this->publicFields('e');
-        $sql = "SELECT $fields,a.attendanceId,a.chargeId
+        $fields = $this->eventPublicFields('e');
+        $aFields = $this->attendancePublicFields('a', true);
+        $sql = "SELECT $fields,$aFields,
+                count(aa.attendanceId) as attendCount
                 FROM events as e
                 left join attendances as a on a.userId=? and a.eventId=e.eventId
+                left join attendances as aa on aa.eventId=e.eventId
                 where e.eventId=?";
         $binds = array($userId, $eventId);
         $event = $this->db->query($sql, $binds)->row();
@@ -56,12 +50,9 @@ class EventDao extends BaseDao
     private function handleEvents($events)
     {
         foreach ($events as $event) {
-            if ($event->attendanceId == null) {
-                $event->status = EVENT_STATUS_NONE;
-            } else {
-                $event->status = EVENT_STATUS_ATTENDED;
-            }
-            $event->attendance = extractFields($event, array(KEY_ATTENDANCE_ID, KEY_CHARGE_ID));
+            $prefixFields = $this->prefixFields($this->attendanceFields(), 'a');
+            $event->attendance = extractFields($event, $prefixFields, 'a');
+            $event->restCount = $event->maxPeople - $event->attendCount;
         }
     }
 }
