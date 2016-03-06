@@ -100,8 +100,8 @@ $route['notifications/count']['GET'] = 'notifications/count';
 
 $route['events']['POST'] = 'events/create';
 $route['events/(\d+)']['GET'] = 'events/one/$1';
+$route['events/(\d+)/pay']['POST'] = 'events/pay/$1';
 
 $route['attendances']['POST'] = 'attendances/create';
 $route['attendances/(\d+)']['GET'] = 'attendances/one/$1';
-$route['attendances/(\d+)/pay']['POST'] = 'attendances/pay/$1';
 $route['attendances']['GET'] = 'attendances/list';

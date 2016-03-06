@@ -260,6 +260,7 @@ define('KEY_COUNT', 'count');
 define('TABLE_EVENTS', 'events');
 define('KEY_NAME', 'name');
 define('KEY_EVENT_ID', 'eventId');
+define('KEY_MAX_PEOPLE', 'maxPeople');
 
 // attendances
 define('TABLE_ATTENDANCES', 'attendances');
@@ -267,4 +268,3 @@ define('KEY_ATTENDANCE_ID', 'attendanceId');
 
 define('EVENT_STATUS_NONE', 'none');
 define('EVENT_STATUS_ATTENDED', 'attended');
-define('EVENT_STATUS_PAID', 'paid');

@@ -8,11 +8,12 @@
  */
 class EventDao extends BaseDao
 {
-    function addEvent($name, $amount)
+    function addEvent($name, $amount, $maxPeople)
     {
         $data = array(
             KEY_NAME => $name,
-            KEY_AMOUNT => $amount
+            KEY_AMOUNT => $amount,
+            KEY_MAX_PEOPLE => $maxPeople
         );
         $this->db->insert(TABLE_EVENTS, $data);
         return $this->db->insert_id();
@@ -57,10 +58,8 @@ class EventDao extends BaseDao
         foreach ($events as $event) {
             if ($event->attendanceId == null) {
                 $event->status = EVENT_STATUS_NONE;
-            } else if ($event->chargeId == null) {
-                $event->status = EVENT_STATUS_ATTENDED;
             } else {
-                $event->status = EVENT_STATUS_PAID;
+                $event->status = EVENT_STATUS_ATTENDED;
             }
             $event->attendance = extractFields($event, array(KEY_ATTENDANCE_ID, KEY_CHARGE_ID));
         }

@@ -9,14 +9,20 @@ import (
 func TestEvents_add(t *testing.T) {
 	setUp()
 	c := NewClient()
-	res := c.postData("events", url.Values{"name":{"3月12号线下活动"}, "amount":{"20000"}})
+	res := c.postData("events", url.Values{"name":{"3月12号线下活动"}, "amount":{"20000"}, "maxPeople":{"50"}})
 	assert.NotNil(t, res);
 	assert.NotNil(t, res["eventId"])
 }
 
 func addEvent(c *Client) string {
-	res := c.postData("events", url.Values{"name":{"3月12号线下活动"}, "amount":{"20000"}})
+	res := c.postData("events", url.Values{"name":{"3月12号线下活动"}, "amount":{"20000"}, "maxPeople":{"50"}})
 	return floatToStr(res["eventId"])
+}
+
+func addEventAndPay(c *Client, user map[string]interface{}) string {
+	eventId := addEvent(c)
+	payEvent(c, eventId, user["id"].(string))
+	return eventId
 }
 
 func TestEvents_get(t *testing.T) {

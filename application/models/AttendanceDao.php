@@ -17,11 +17,12 @@ class AttendanceDao extends BaseDao
         $this->eventDao = new EventDao();
     }
 
-    function addAttendance($userId, $eventId)
+    function addAttendance($userId, $eventId, $chargeId)
     {
         $data = array(
             KEY_USER_ID => $userId,
-            KEY_EVENT_ID => $eventId
+            KEY_EVENT_ID => $eventId,
+            KEY_CHARGE_ID => $chargeId
         );
         $this->db->insert(TABLE_ATTENDANCES, $data);
         return $this->db->insert_id();
@@ -53,11 +54,6 @@ class AttendanceDao extends BaseDao
     {
         $this->db->where(KEY_ATTENDANCE_ID, $attendanceId);
         return $this->db->update(TABLE_ATTENDANCES, $data);
-    }
-
-    function updateAttendanceToPaid($attendanceId, $chargeId)
-    {
-        return $this->update($attendanceId, array(KEY_CHARGE_ID => $chargeId));
     }
 
     function getAttendances($userId, $skip = 0, $limit = 100)

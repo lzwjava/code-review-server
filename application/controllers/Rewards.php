@@ -92,16 +92,13 @@ class Rewards extends BaseController
             } else {
                 $this->succeed();
             }
-        } else if (isset($metadata->attendanceId)) {
-            $attendanceId = $metadata->attendanceId;
-            $attendance = $this->attendanceDao->getAttendanceById($attendanceId);
-            if ($this->checkIfObjectNotExists($attendance)) {
-                return;
-            }
+        } else if (isset($metadata->eventId)) {
+            $eventId = $metadata->eventId;
+            $userId = $metadata->userId;
             $this->db->trans_start();
             $this->chargeDao->updateChargeToPaid($orderNo);
             $charge = $this->chargeDao->getOneByOrderNo($orderNo);
-            $this->attendanceDao->updateAttendanceToPaid($attendanceId, $charge->chargeId);
+            $this->attendanceDao->addAttendance($userId, $eventId, $charge->chargeId);
             $this->db->trans_complete();
             if ($this->checkIfSQLResWrong($this->db->trans_status())) {
                 return;

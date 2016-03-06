@@ -1,0 +1,4 @@
+ALTER TABLE `events` ADD COLUMN `maxPeople` SMALLINT UNSIGNED NOT NULL
+AFTER `amount` /
+
+ALTER TABLE `attendances` MODIFY COLUMN `chargeId` INT(11) NOT NULL
