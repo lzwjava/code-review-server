@@ -9,12 +9,15 @@
 class AttendanceDao extends BaseDao
 {
     public $eventDao;
+    public $userDao;
 
     function __construct()
     {
         parent::__construct();
         $this->load->model(EventDao::class);
         $this->eventDao = new EventDao();
+        $this->load->model(UserDao::class);
+        $this->userDao = new UserDao();
     }
 
     function addAttendance($userId, $eventId, $chargeId)
@@ -50,15 +53,28 @@ class AttendanceDao extends BaseDao
         return $this->db->update(TABLE_ATTENDANCES, $data);
     }
 
-    function getAttendances($userId, $skip = 0, $limit = 100)
+    function getAttendancesByUserId($userId, $skip, $limit)
     {
-        $fields = $this->attendancePublicFields();
+        return $this->getAttendances(KEY_USER_ID, $userId, $skip, $limit);
+    }
+
+    function getAttendancesByEventId($eventId, $skip, $limit)
+    {
+        return $this->getAttendances(KEY_EVENT_ID, $eventId, $skip, $limit);
+    }
+
+    private function getAttendances($field, $value, $skip = 0, $limit = 100)
+    {
+        $fields = $this->attendancePublicFields('a');
         $eventFields = $this->eventDao->eventPublicFields('e', true);
-        $sql = "select $fields,$eventFields from attendances
+        $userFields = $this->userDao->publicFields('u', true);
+        $sql = "select $fields,$eventFields,$userFields
+                from attendances as a
                 left join events as e USING(eventId)
-                where userId=?
+                left join users as u on u.id=a.userId
+                where a.$field=?
                 limit $limit offset $skip";
-        $binds = array($userId);
+        $binds = array($value);
         $attendances = $this->db->query($sql, $binds)->result();
         $this->handleAttendances($attendances);
         return $attendances;
@@ -69,6 +85,8 @@ class AttendanceDao extends BaseDao
         foreach ($attendances as $attendance) {
             $es = $this->prefixFields($this->eventDao->eventFields(), 'e');
             $attendance->event = extractFields($attendance, $es, 'e');
+            $us = $this->prefixFields($this->userDao->publicRawFields(), 'u');
+            $attendance->user = extractFields($attendance, $us, 'u');
         }
     }
 

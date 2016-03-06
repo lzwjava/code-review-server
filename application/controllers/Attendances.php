@@ -39,9 +39,17 @@ class Attendances extends BaseController
         if (!$user) {
             return;
         }
-        $skip = $this->getSkip();
-        $limit = $this->getLimit();
-        $attendances = $this->attendanceDao->getAttendances($user->id, $skip, $limit);
+        $skip = $this->skip();
+        $limit = $this->limit();
+        $attendances = $this->attendanceDao->getAttendancesByUserId($user->id, $skip, $limit);
+        $this->succeed($attendances);
+    }
+
+    function eventList_get($eventId)
+    {
+        $skip = $this->skip();
+        $limit = $this->limit();
+        $attendances = $this->attendanceDao->getAttendancesByEventId($eventId, $skip, $limit);
         $this->succeed($attendances);
     }
 }

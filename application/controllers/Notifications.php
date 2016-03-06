@@ -19,8 +19,8 @@ class Notifications extends BaseController
 
     function list_get()
     {
-        $skip = $this->getSkip();
-        $limit = $this->getLimit();
+        $skip = $this->skip();
+        $limit = $this->limit();
         $user = $this->checkAndGetSessionUser();
         if (!$user) {
             return;

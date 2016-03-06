@@ -219,7 +219,7 @@ class BaseController extends REST_Controller
         }
     }
 
-    protected function getSkip()
+    protected function skip()
     {
         $skip = 0;
         if (isset($_GET[KEY_SKIP])) {
@@ -228,7 +228,7 @@ class BaseController extends REST_Controller
         return $skip;
     }
 
-    protected function getLimit()
+    protected function limit()
     {
         $limit = 100;
         if (isset($_GET[KEY_LIMIT])) {

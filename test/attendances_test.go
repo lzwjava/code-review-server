@@ -20,8 +20,7 @@ import (
 func TestAttendances_list(t *testing.T) {
 	setUp()
 	c := NewClient()
-	user := registerLearner(c)
-	eventId := addEventAndPay(c, user)
+	eventId := addEventAndPay(c)
 	attendances := c.getArrayData("attendances", url.Values{})
 	assert.NotNil(t, attendances);
 	attendance := attendances[0].(map[string]interface{})

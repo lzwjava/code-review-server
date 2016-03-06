@@ -23,7 +23,8 @@ func addEvent(c *Client) string {
 	return addEventWithPeople(c, 50)
 }
 
-func addEventAndPay(c *Client, user map[string]interface{}) string {
+func addEventAndPay(c *Client) string {
+	user := registerLearner(c)
 	eventId := addEvent(c)
 	payEvent(c, eventId, user["id"].(string))
 	return eventId
@@ -32,8 +33,7 @@ func addEventAndPay(c *Client, user map[string]interface{}) string {
 func TestEvents_get(t *testing.T) {
 	setUp()
 	c := NewClient()
-	user := registerLearner(c)
-	eventId := addEventAndPay(c, user)
+	eventId := addEventAndPay(c)
 	event := c.getData("events/" + eventId, url.Values{})
 	assert.NotNil(t, event)
 	assert.NotNil(t, event["amount"])
@@ -81,4 +81,16 @@ func TestEvents_payExceed(t *testing.T) {
 	payRes := c.post("events/" + eventId + "/pay", url.Values{})
 	assert.NotNil(t, payRes)
 	assert.Equal(t, toInt(payRes["code"]), 20)
+}
+
+func TestEvents_attendances(t *testing.T) {
+	setUp()
+	c := NewClient()
+	eventId := addEventAndPay(c)
+	attendances := c.getArrayData("events/" + eventId + "/attendances", url.Values{})
+	assert.NotNil(t, attendances)
+	assert.Equal(t, len(attendances), 1)
+	attendance := attendances[0].(map[string]interface{})
+	assert.NotNil(t, attendance["user"])
+	assert.NotNil(t, attendance["event"])
 }

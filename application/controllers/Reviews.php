@@ -116,8 +116,8 @@ class Reviews extends BaseController
         if (isset($_GET[KEY_DISPLAYING])) {
             $displaying = $_GET[KEY_DISPLAYING];
         }
-        $skip = $this->getSkip();
-        $limit = $this->getLimit();
+        $skip = $this->skip();
+        $limit = $this->limit();
         $reviews = $this->reviewDao->getDisplayingReviews($displaying, $skip, $limit);
         $count = $this->reviewDao->countReviews($displaying);
         $this->succeed($reviews, $count);
@@ -138,7 +138,7 @@ class Reviews extends BaseController
     public function userReviews_get($reviewerId)
     {
         $reviews = $this->reviewDao->getListForReviewer($reviewerId,
-            $this->getSkip(), $this->getLimit());
+            $this->skip(), $this->limit());
         $this->succeed($reviews);
     }
 

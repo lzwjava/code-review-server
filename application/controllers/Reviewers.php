@@ -29,8 +29,8 @@ class Reviewers extends BaseController
 
     public function index_get()
     {
-        $skip = $this->getSkip();
-        $limit = $this->getLimit();
+        $skip = $this->skip();
+        $limit = $this->limit();
         $page = $this->get(KEY_PAGE);
         if ($page == 'home') {
             $list = $this->reviewerDao->getHomeList();

@@ -32,8 +32,8 @@ class Orders extends BaseController
             $status = $_GET[KEY_STATUS];
         }
 
-        $skip = $this->getSkip();
-        $limit = $this->getLimit();
+        $skip = $this->skip();
+        $limit = $this->limit();
         if ($user->type == TYPE_LEARNER) {
             $orders = $this->orderDao->getOrdersOfLearner($user->id, $status, $skip, $limit);
         } else {

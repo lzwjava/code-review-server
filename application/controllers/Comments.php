@@ -45,8 +45,8 @@ class Comments extends BaseController
 
     function list_get($reviewId)
     {
-        $skip = $this->getSkip();
-        $limit = $this->getLimit();
+        $skip = $this->skip();
+        $limit = $this->limit();
         $comments = $this->commentDao->getComments($reviewId, $skip, $limit);
         $this->succeed($comments);
     }
