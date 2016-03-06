@@ -73,7 +73,7 @@ class Orders extends BaseController
 //            return;
 //        }
         if ($reviewer->busy) {
-            $this->failure(ERROR_EXCEED_MAX_ORDERS, "该大神 Review 申请已满,请稍后再申请");
+            $this->failure(ERROR_EXCEED_MAX, "该大神 Review 申请已满,请稍后再申请");
             return;
         }
         if ($codeLines <= 0) {
