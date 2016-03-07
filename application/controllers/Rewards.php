@@ -100,6 +100,7 @@ class Rewards extends BaseController
             $charge = $this->chargeDao->getOneByOrderNo($orderNo);
             $this->attendanceDao->addAttendance($userId, $eventId, $charge->chargeId);
             $this->db->trans_complete();
+            $this->notify->notifyAttended($userId, $eventId);
             if ($this->checkIfSQLResWrong($this->db->trans_status())) {
                 return;
             }
@@ -107,7 +108,6 @@ class Rewards extends BaseController
         } else {
             $this->failure(ERROR_PARAMETER_ILLEGAL, "not set orderId or eventId in metadata");
         }
-
     }
 
     public function refund($orderId)

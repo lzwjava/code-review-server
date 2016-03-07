@@ -54,4 +54,15 @@ class Sms extends BaseDao
         $user = $this->userDao->findUserById($learner->id);
         $this->leanCloud->sendTemplateSms($user->mobilePhoneNumber, 'ReviewFinish', $data);
     }
+
+    function notifyAttendEvent($userId, $eventId)
+    {
+        $user = $this->userDao->findUserById($userId);
+        $data = array(
+            SMS_USER => $user->username,
+            SMS_LOCATION => '中关村 e 世界联合创业办公社',
+            SMS_DATE => '3月13日'
+        );
+        $this->leanCloud->sendTemplateSms($user->mobilePhoneNumber, 'AttendEvent', $data);
+    }
 }
