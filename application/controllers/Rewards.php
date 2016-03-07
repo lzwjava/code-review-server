@@ -129,6 +129,16 @@ class Rewards extends BaseController
         $params = $this->get();
         $paramsStr = json_encode($params);
         logInfo("reward success $paramsStr");
+        $totalFee = $this->get("total_fee");
+        if ($totalFee != null) {
+            $feeNum = intval($this->castToNumber($totalFee));
+            if ($feeNum == 288) {
+                header("Location: http://reviewcode.cn/paid.html?type=event");
+            } else {
+                header("Location: http://reviewcode.cn/paid.html?type=order");
+            }
+            return;
+        }
         header("Location: http://reviewcode.cn/paid.html");
     }
 }
