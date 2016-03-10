@@ -73,8 +73,6 @@ class Sms extends BaseDao
     private function formatDate($date)
     {
         $time = strtotime($date);
-        logInfo("type " . gettype($time));
-        logInfo("time " . $time);
         return mdate('%m-%d %D %h:%i%a', $time);
     }
 
