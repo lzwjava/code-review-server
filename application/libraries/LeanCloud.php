@@ -51,8 +51,10 @@ class LeanCloud
             } else {
                 logInfo("send sms code succeed. data: " . json_encode($data));
             }
+            return $result;
         } else {
             logInfo("imitate requestSmsCode data: " . json_encode($data));
+            return array();
         }
     }
 }

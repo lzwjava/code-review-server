@@ -10,14 +10,18 @@ class Sms extends BaseDao
 {
     public $leanCloud;
     public $userDao;
+    public $eventDao;
 
     function __construct()
     {
         parent::__construct();
-        $this->load->library('LeanCloud');
-        $this->load->model('UserDao');
+        $this->load->library(LeanCloud::class);
+        $this->load->model(UserDao::class);
+        $this->load->model(EventDao::class);
         $this->leanCloud = new LeanCloud();
         $this->userDao = new UserDao();
+        $this->eventDao = new EventDao();
+        $this->load->helper('date');
     }
 
     function notifyNewOrderBySms($order)
@@ -60,9 +64,32 @@ class Sms extends BaseDao
         $user = $this->userDao->findUserById($userId);
         $data = array(
             SMS_USER => $user->username,
-            SMS_LOCATION => '中关村 e 世界联合创业办公社',
+            SMS_LOCAION => '中关村 e 世界联合创业办公社',
             SMS_DATE => '3月13日'
         );
         $this->leanCloud->sendTemplateSms($user->mobilePhoneNumber, 'AttendEvent', $data);
+    }
+
+    private function formatDate($date)
+    {
+        $time = strtotime($date);
+        logInfo("type " . gettype($time));
+        logInfo("time " . $time);
+        return mdate('%m-%d %D %h:%i%a', $time);
+    }
+
+    function notifyEventComing($userId, $eventId)
+    {
+        $user = $this->userDao->findUserById($userId);
+        $event = $this->eventDao->getEvent($eventId, null);
+
+        $data = array(
+            SMS_USER => $user->username,
+            SMS_EVENT => $event->name,
+            SMS_LOCATION => $event->location,
+            SMS_DATE => $this->formatDate($event->startDate),
+            SMS_OTHER_TIPS => ''
+        );
+        $this->leanCloud->sendTemplateSms($user->mobilePhoneNumber, 'EventComing', $data);
     }
 }

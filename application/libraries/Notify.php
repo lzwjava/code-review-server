@@ -38,10 +38,14 @@ class Notify extends CI_Model
         $this->notificationDao->notifyOrderFinish($order);
     }
 
-
     function notifyAttended($userId, $eventId)
     {
         $this->sms->notifyAttendEvent($userId, $eventId);
+    }
+
+    function notifyEventComing($userId, $eventId)
+    {
+        $this->sms->notifyEventComing($userId, $eventId);
     }
 
 }

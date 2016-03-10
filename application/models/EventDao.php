@@ -9,12 +9,14 @@
 class EventDao extends BaseDao
 {
 
-    function addEvent($name, $amount, $maxPeople)
+    function addEvent($name, $amount, $maxPeople, $location, $startDate)
     {
         $data = array(
             KEY_NAME => $name,
             KEY_AMOUNT => $amount,
-            KEY_MAX_PEOPLE => $maxPeople
+            KEY_MAX_PEOPLE => $maxPeople,
+            KEY_LOCATION => $location,
+            KEY_START_DATE => $startDate
         );
         $this->db->insert(TABLE_EVENTS, $data);
         return $this->db->insert_id();

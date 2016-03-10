@@ -10,6 +10,7 @@ class Events extends BaseController
 {
     public $eventDao;
     public $attendanceDao;
+    public $notify;
 
     function __construct()
     {
@@ -18,17 +19,23 @@ class Events extends BaseController
         $this->eventDao = new EventDao();
         $this->load->model(AttendanceDao::class);
         $this->attendanceDao = new AttendanceDao();
+        $this->load->library(Notify::class);
+        $this->notify = new Notify();
     }
 
     function create_post()
     {
-        if ($this->checkIfParamsNotExist($this->post(), array(KEY_NAME, KEY_AMOUNT, KEY_MAX_PEOPLE))) {
+        if ($this->checkIfParamsNotExist($this->post(), array(KEY_NAME, KEY_AMOUNT,
+            KEY_MAX_PEOPLE, KEY_START_DATE, KEY_LOCATION))
+        ) {
             return;
         }
         $name = $this->post(KEY_NAME);
         $amount = $this->post(KEY_AMOUNT);
         $maxPeople = $this->post(KEY_MAX_PEOPLE);
-        $id = $this->eventDao->addEvent($name, $amount, $maxPeople);
+        $location = $this->post(KEY_LOCATION);
+        $startDate = $this->post(KEY_START_DATE);
+        $id = $this->eventDao->addEvent($name, $amount, $maxPeople, $location, $startDate);
         if ($this->checkIfSQLResWrong($id)) {
             return;
         }
@@ -67,5 +74,14 @@ class Events extends BaseController
             return;
         }
         $this->succeed($event);
+    }
+
+    function adminNotifyComing_get($eventId)
+    {
+        $attendances = $this->attendanceDao->getAttendancesByEventId($eventId, 0, 1000);
+        foreach ($attendances as $attendance) {
+            $this->notify->notifyEventComing($attendance->userId, $eventId);
+        }
+        $this->succeed();
     }
 }

@@ -9,13 +9,16 @@ import (
 func TestEvents_add(t *testing.T) {
 	setUp()
 	c := NewClient()
-	res := c.postData("events", url.Values{"name":{"3月12号线下活动"}, "amount":{"20000"}, "maxPeople":{"50"}})
+	res := c.postData("events", url.Values{"name":{"CRViewController 交流会"}, "amount":{"20000"},
+		"maxPeople":{"50"}, "location": {"中关村 e 世界·联合创业办公社(世界财富中心B2层)"}, "startDate":{"2016-03-13 13:00"}})
 	assert.NotNil(t, res);
 	assert.NotNil(t, res["eventId"])
 }
 
 func addEventWithPeople(c *Client, maxPeople int) string {
-	res := c.postData("events", url.Values{"name":{"3月12号线下活动"}, "amount":{"20000"}, "maxPeople":{floatToStr(maxPeople)}})
+	res := c.postData("events", url.Values{"name":{"CRViewController 交流会"}, "amount":{"20000"},
+		"maxPeople":{floatToStr(maxPeople)}, "location": {"中关村 e 世界·联合创业办公社(世界财富中心B2层)"},
+		"startDate":{"2016-03-13 13:00"}})
 	return floatToStr(res["eventId"])
 }
 
@@ -24,7 +27,7 @@ func addEvent(c *Client) string {
 }
 
 func addEventAndPay(c *Client) string {
-	user := registerLearner(c)
+	user := registerReviewer(c)
 	eventId := addEvent(c)
 	payEvent(c, eventId, user["id"].(string))
 	return eventId
@@ -43,10 +46,11 @@ func TestEvents_get(t *testing.T) {
 	assert.NotNil(t, event["restCount"])
 	assert.NotNil(t, event["attendCount"])
 	assert.NotNil(t, event["maxPeople"])
+	assert.NotNil(t, event["startDate"])
+	assert.NotNil(t, event["location"])
 	_, ok := event["attendance"]
 	assert.True(t, ok);
 }
-
 
 func payEvent(c *Client, eventId string, userId string) {
 	payRes := c.post("events/" + eventId + "/pay", url.Values{})
@@ -83,14 +87,10 @@ func TestEvents_payExceed(t *testing.T) {
 	assert.Equal(t, toInt(payRes["code"]), 20)
 }
 
-func TestEvents_attendances(t *testing.T) {
+func TestEvents_notifyComing(t *testing.T) {
 	setUp()
 	c := NewClient()
 	eventId := addEventAndPay(c)
-	attendances := c.getArrayData("events/" + eventId + "/attendances", url.Values{})
-	assert.NotNil(t, attendances)
-	assert.Equal(t, len(attendances), 1)
-	attendance := attendances[0].(map[string]interface{})
-	assert.NotNil(t, attendance["user"])
-	assert.NotNil(t, attendance["event"])
+	res := c.getData("admin/events/" + eventId + "/notifyComing", url.Values{})
+	assert.NotNil(t, res)
 }

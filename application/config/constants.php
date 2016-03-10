@@ -232,8 +232,11 @@ define('SMS_LEARNER', 'learner');
 define('SMS_CODE_URL', 'codeUrl');
 define('SMS_REVIEW_URL', 'reviewUrl');
 define('SMS_USER', 'user');
-define('SMS_LOCATION', 'locaion');
+define('SMS_LOCAION', 'locaion');
+define('SMS_LOCATION', 'location');
+define('SMS_EVENT', 'event');
 define('SMS_DATE', 'date');
+define('SMS_OTHER_TIPS', 'otherTips');
 
 
 define('KEY_PAGE', 'page');
@@ -264,6 +267,8 @@ define('TABLE_EVENTS', 'events');
 define('KEY_NAME', 'name');
 define('KEY_EVENT_ID', 'eventId');
 define('KEY_MAX_PEOPLE', 'maxPeople');
+define('KEY_LOCATION', 'location');
+define('KEY_START_DATE', 'startDate');
 
 // attendances
 define('TABLE_ATTENDANCES', 'attendances');

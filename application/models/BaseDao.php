@@ -75,7 +75,8 @@ class BaseDao extends CI_Model
 
     protected function eventFields()
     {
-        return array(KEY_EVENT_ID, KEY_NAME, KEY_AMOUNT, KEY_CREATED, KEY_MAX_PEOPLE);
+        return array(KEY_EVENT_ID, KEY_NAME, KEY_AMOUNT, KEY_CREATED,
+            KEY_MAX_PEOPLE, KEY_LOCATION, KEY_START_DATE);
     }
 
     protected function eventPublicFields($prefix = TABLE_EVENTS, $alias = false)

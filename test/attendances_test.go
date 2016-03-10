@@ -26,3 +26,15 @@ func TestAttendances_list(t *testing.T) {
 	attendance := attendances[0].(map[string]interface{})
 	assert.Equal(t, floatToStr(attendance["eventId"]), eventId)
 }
+
+func TestAttendances_listByEvent(t *testing.T) {
+	setUp()
+	c := NewClient()
+	eventId := addEventAndPay(c)
+	attendances := c.getArrayData("events/" + eventId + "/attendances", url.Values{})
+	assert.NotNil(t, attendances)
+	assert.Equal(t, len(attendances), 1)
+	attendance := attendances[0].(map[string]interface{})
+	assert.NotNil(t, attendance["user"])
+	assert.NotNil(t, attendance["event"])
+}
