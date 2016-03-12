@@ -62,10 +62,11 @@ class Sms extends BaseDao
     function notifyAttendEvent($userId, $eventId)
     {
         $user = $this->userDao->findUserById($userId);
+        $event = $this->eventDao->getEvent($eventId, null);
         $data = array(
             SMS_USER => $user->username,
-            SMS_LOCAION => '中关村 e 世界联合创业办公社',
-            SMS_DATE => '3月13日'
+            SMS_LOCAION => $event->location,
+            SMS_DATE => $this->formatDate($event->startDate),
         );
         $this->leanCloud->sendTemplateSms($user->mobilePhoneNumber, 'AttendEvent', $data);
     }
@@ -76,7 +77,7 @@ class Sms extends BaseDao
         return mdate('%m-%d %D %h:%i%a', $time);
     }
 
-    function notifyEventComing($userId, $eventId)
+    function notifyEventComing($userId, $eventId, $otherTips = '')
     {
         $user = $this->userDao->findUserById($userId);
         $event = $this->eventDao->getEvent($eventId, null);
@@ -86,7 +87,7 @@ class Sms extends BaseDao
             SMS_EVENT => $event->name,
             SMS_LOCATION => $event->location,
             SMS_DATE => $this->formatDate($event->startDate),
-            SMS_OTHER_TIPS => ''
+            SMS_OTHER_TIPS => $otherTips
         );
         $this->leanCloud->sendTemplateSms($user->mobilePhoneNumber, 'EventComing', $data);
     }

@@ -45,7 +45,7 @@ class Notify extends CI_Model
 
     function notifyEventComing($userId, $eventId)
     {
-        $this->sms->notifyEventComing($userId, $eventId);
+        $this->sms->notifyEventComing($userId, $eventId, '抱歉，场地改动了，请注意。');
     }
 
 }

@@ -10,14 +10,14 @@ func TestEvents_add(t *testing.T) {
 	setUp()
 	c := NewClient()
 	res := c.postData("events", url.Values{"name":{"CRViewController 交流会"}, "amount":{"20000"},
-		"maxPeople":{"50"}, "location": {"中关村 e 世界·联合创业办公社(世界财富中心B2层)"}, "startDate":{"2016-03-13 13:00"}})
+		"maxPeople":{"50"}, "location": {"中关村创业大街 3W 咖啡二层"}, "startDate":{"2016-03-13 13:00"}})
 	assert.NotNil(t, res);
 	assert.NotNil(t, res["eventId"])
 }
 
 func addEventWithPeople(c *Client, maxPeople int) string {
 	res := c.postData("events", url.Values{"name":{"CRViewController 交流会"}, "amount":{"20000"},
-		"maxPeople":{floatToStr(maxPeople)}, "location": {"中关村 e 世界·联合创业办公社(世界财富中心B2层)"},
+		"maxPeople":{floatToStr(maxPeople)}, "location": {"中关村创业大街 3W 咖啡二层"},
 		"startDate":{"2016-03-13 13:00"}})
 	return floatToStr(res["eventId"])
 }
