@@ -58,7 +58,6 @@ class Workshops extends BaseController
         $this->createChargeThenResponse($workshop->amount, $subject, $body, $metaData, $user);
     }
 
-
     function one_get($workshopId)
     {
         $user = $this->getSessionUser();
