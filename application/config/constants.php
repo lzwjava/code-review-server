@@ -273,3 +273,12 @@ define('KEY_START_DATE', 'startDate');
 // attendances
 define('TABLE_ATTENDANCES', 'attendances');
 define('KEY_ATTENDANCE_ID', 'attendanceId');
+
+// workshops
+define('TABLE_WORKSHOPS', 'workshops');
+define('KEY_WORKSHOP_ID', 'workshopId');
+
+// enrollments
+define('TABLE_ENROLLMENTS', 'enrollments');
+define('KEY_ENROLLMENT_ID', 'enrollmentId');
+

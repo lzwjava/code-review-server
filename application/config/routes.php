@@ -107,3 +107,6 @@ $route['admin/events/(\d+)/notifyComing']['GET'] = 'events/adminNotifyComing/$1'
 $route['attendances']['POST'] = 'attendances/create';
 $route['attendances/(\d+)']['GET'] = 'attendances/one/$1';
 $route['attendances']['GET'] = 'attendances/list';
+
+$route['workshops']['POST'] = 'workshops/create';
+$route['workshops/(\d+)']['GET'] = 'workshops/one/$1';

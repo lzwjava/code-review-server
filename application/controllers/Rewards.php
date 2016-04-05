@@ -12,6 +12,7 @@ class Rewards extends BaseController
     public $rewardDao;
     public $notify;
     public $attendanceDao;
+    public $enrollmentDao;
 
     function __construct()
     {
@@ -24,6 +25,8 @@ class Rewards extends BaseController
         $this->notify = new Notify();
         $this->load->model(AttendanceDao::class);
         $this->attendanceDao = new AttendanceDao();
+        $this->load->model(EnrollmentDao::class);
+        $this->enrollmentDao = new EnrollmentDao();
     }
 
     public function callback_post()
@@ -101,6 +104,19 @@ class Rewards extends BaseController
             $this->attendanceDao->addAttendance($userId, $eventId, $charge->chargeId);
             $this->db->trans_complete();
             $this->notify->notifyAttended($userId, $eventId);
+            if ($this->checkIfSQLResWrong($this->db->trans_status())) {
+                return;
+            }
+            $this->succeed();
+        } else if (isset($metadata->workshopId)) {
+            $workshopId = $metadata->workshopId;
+            $userId = $metadata->userId;
+            $this->db->trans_start();
+            $this->chargeDao->updateChargeToPaid($orderNo);
+            $charge = $this->chargeDao->getOneByOrderNo($orderNo);
+            $this->enrollmentDao->addEnrollment($userId, $workshopId, $charge->chargeId);
+            $this->db->trans_complete();
+//            $this->notify->notifyAttended($userId, $eventId);
             if ($this->checkIfSQLResWrong($this->db->trans_status())) {
                 return;
             }

@@ -94,4 +94,23 @@ class BaseDao extends CI_Model
         return $this->mergeFields($this->attendanceFields(), $prefix, $alias);
     }
 
+    protected function workshopFields()
+    {
+        return array(KEY_WORKSHOP_ID, KEY_NAME, KEY_AMOUNT, KEY_MAX_PEOPLE, KEY_CREATED);
+    }
+
+    protected function workshopPublicFields($prefix = TABLE_WORKSHOPS, $alias = false)
+    {
+        return $this->mergeFields($this->workshopFields(), $prefix, $alias);
+    }
+
+    protected function enrollmentFields()
+    {
+        return array(KEY_ENROLLMENT_ID, KEY_USER_ID, KEY_WORKSHOP_ID, KEY_CHARGE_ID, KEY_CREATED);
+    }
+
+    protected function enrollmentPublicFields($prefix = TABLE_ENROLLMENTS, $alias = false)
+    {
+        return $this->mergeFields($this->enrollmentFields(), $prefix, $alias);
+    }
 }
