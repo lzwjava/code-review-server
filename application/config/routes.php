@@ -111,3 +111,4 @@ $route['attendances']['GET'] = 'attendances/list';
 $route['workshops']['POST'] = 'workshops/create';
 $route['workshops/(\d+)']['GET'] = 'workshops/one/$1';
 $route['workshops/(\d+)/pay']['POST'] = 'workshops/pay/$1';
+$route['workshops/(\d+)/enrollments']['GET'] = 'enrollments/workshopList/$1';

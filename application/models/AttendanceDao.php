@@ -8,14 +8,11 @@
  */
 class AttendanceDao extends BaseDao
 {
-    public $eventDao;
     public $userDao;
 
     function __construct()
     {
         parent::__construct();
-        $this->load->model(EventDao::class);
-        $this->eventDao = new EventDao();
         $this->load->model(UserDao::class);
         $this->userDao = new UserDao();
     }
@@ -66,7 +63,7 @@ class AttendanceDao extends BaseDao
     private function getAttendances($field, $value, $skip = 0, $limit = 100)
     {
         $fields = $this->attendancePublicFields('a');
-        $eventFields = $this->eventDao->eventPublicFields('e', true);
+        $eventFields = $this->eventPublicFields('e', true);
         $userFields = $this->userDao->publicFields('u', true);
         $sql = "select $fields,$eventFields,$userFields
                 from attendances as a
@@ -83,7 +80,7 @@ class AttendanceDao extends BaseDao
     protected function handleAttendances($attendances)
     {
         foreach ($attendances as $attendance) {
-            $es = $this->prefixFields($this->eventDao->eventFields(), 'e');
+            $es = $this->prefixFields($this->eventFields(), 'e');
             $attendance->event = extractFields($attendance, $es, 'e');
             $us = $this->prefixFields($this->userDao->publicRawFields(), 'u');
             $attendance->user = extractFields($attendance, $us, 'u');

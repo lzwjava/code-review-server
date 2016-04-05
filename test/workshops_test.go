@@ -37,15 +37,25 @@ func TestWorkshops_pay(t *testing.T) {
 	learner := registerLearner(c)
 	learnerId := learner["id"].(string)
 	workshopId := addWorkshop(c)
-	payRes := c.post("workshops/" + workshopId + "/pay", url.Values{})
-	assert.NotNil(t, payRes)
-
-	orderNo := payRes["order_no"].(string)
-	callbackRes := c.postWithStr("rewards/callback", workshopCallbackStr(orderNo, workshopId, learnerId, 5000))
-	assert.Equal(t, toInt(callbackRes["code"]), 0);
+	payRes := payWorkshop(c, workshopId, learnerId)
+	assert.Equal(t, toInt(payRes["code"]), 0);
 }
 
 func workshopCallbackStr(orderNo string, eventId string, userId string, amount int) string {
 	meta := map[string]interface{}{"workshopId": eventId, "userId":userId}
 	return callbackStr(orderNo, meta, amount);
+}
+
+func payWorkshop(c *Client, workshopId string, userId string) map[string]interface{} {
+	payRes := c.post("workshops/" + workshopId + "/pay", url.Values{})
+	orderNo := payRes["order_no"].(string)
+	return c.postWithStr("rewards/callback", workshopCallbackStr(orderNo, workshopId, userId, 5000))
+}
+
+func addWorkshopAndPay(c *Client) string {
+	learner := registerLearner(c)
+	learnerId := learner["id"].(string)
+	workshopId := addWorkshop(c)
+	payWorkshop(c,workshopId,learnerId)
+	return workshopId
 }
