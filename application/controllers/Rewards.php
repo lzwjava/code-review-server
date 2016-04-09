@@ -146,10 +146,14 @@ class Rewards extends BaseController
         $paramsStr = json_encode($params);
         logInfo("reward success $paramsStr");
         $totalFee = $this->get("total_fee");
+        $eventFee = 288;
+        $workshopFee = 20000;
         if ($totalFee != null) {
             $feeNum = intval($this->castToNumber($totalFee));
-            if ($feeNum == 288) {
+            if ($feeNum == $eventFee) {
                 header("Location: http://reviewcode.cn/paid.html?type=event");
+            } else if ($feeNum == $workshopFee) {
+                header("Location: http://reviewcode.cn/paid.html?type=workshop");
             } else {
                 header("Location: http://reviewcode.cn/paid.html?type=order");
             }
