@@ -152,7 +152,7 @@ class Rewards extends BaseController
             $feeNum = intval($this->castToNumber($totalFee));
             if ($feeNum == $eventFee) {
                 header("Location: http://reviewcode.cn/paid.html?type=event");
-            } else if ($feeNum == $workshopFee) {
+            } else if ($feeNum == $workshopFee || $feeNum == 5000) {
                 header("Location: http://reviewcode.cn/paid.html?type=workshop");
             } else {
                 header("Location: http://reviewcode.cn/paid.html?type=order");

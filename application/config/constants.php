@@ -283,3 +283,4 @@ define('TABLE_ENROLLMENTS', 'enrollments');
 define('KEY_ENROLLMENT_ID', 'enrollmentId');
 
 define('PAY_TYPE_PART', 'part');
+define('PAY_TYPE_FULL', 'full');

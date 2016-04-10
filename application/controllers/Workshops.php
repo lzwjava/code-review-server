@@ -41,6 +41,9 @@ class Workshops extends BaseController
             return;
         }
         $type = $this->post(KEY_TYPE);
+        if (!$type) {
+            $type = PAY_TYPE_FULL;
+        }
         $workshop = $this->workshopDao->getWorkshop($workshopId, $user);
         if ($this->checkIfObjectNotExists($workshop)) {
             return;
