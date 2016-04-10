@@ -4,6 +4,7 @@ import (
 	"github.com/stretchr/testify/assert"
 	"testing"
 	"net/url"
+	"fmt"
 )
 
 func TestWorkshops_add(t *testing.T) {
@@ -41,6 +42,21 @@ func TestWorkshops_pay(t *testing.T) {
 	assert.Equal(t, toInt(payRes["code"]), 0);
 }
 
+func TestWorkshops_payPart(t *testing.T) {
+	setUp()
+	c := NewClient()
+	learner := registerLearner(c)
+	learnerId := learner["id"].(string)
+	workshopId := addWorkshop(c)
+	payRes := c.post("workshops/" + workshopId + "/pay", url.Values{"type": {"part"}})
+	orderNo := payRes["order_no"].(string)
+	fmt.Println(payRes)
+	amount := toInt(payRes["amount"]);
+	assert.Equal(t, amount, 500000)
+
+	c.postWithStr("rewards/callback", workshopCallbackStr(orderNo, workshopId, learnerId, 5000))
+}
+
 func workshopCallbackStr(orderNo string, eventId string, userId string, amount int) string {
 	meta := map[string]interface{}{"workshopId": eventId, "userId":userId}
 	return callbackStr(orderNo, meta, amount);
@@ -56,6 +72,6 @@ func addWorkshopAndPay(c *Client) string {
 	learner := registerLearner(c)
 	learnerId := learner["id"].(string)
 	workshopId := addWorkshop(c)
-	payWorkshop(c,workshopId,learnerId)
+	payWorkshop(c, workshopId, learnerId)
 	return workshopId
 }

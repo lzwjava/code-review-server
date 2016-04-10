@@ -282,3 +282,4 @@ define('KEY_WORKSHOP_ID', 'workshopId');
 define('TABLE_ENROLLMENTS', 'enrollments');
 define('KEY_ENROLLMENT_ID', 'enrollmentId');
 
+define('PAY_TYPE_PART', 'part');
