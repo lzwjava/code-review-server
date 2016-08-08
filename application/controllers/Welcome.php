@@ -1,6 +1,7 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 
+define('QUEUE', 21671);
 
 class Welcome extends BaseController
 {
@@ -24,6 +25,38 @@ class Welcome extends BaseController
     public function index_get()
     {
         $this->load->view('welcome_message');
+        $op = $this->get('op');
+        if ($op == 'get') {
+            $this->getMessageQueue();
+        } else {
+            $this->addMessageQueue();
+        }
+    }
+
+    private function getMessageQueue()
+    {
+        $queue = msg_get_queue(QUEUE);
+        $msg = NULL;
+        $msgType = NULL;
+        if (msg_receive($queue, 1, $msgType, 1024, $msg)) {
+            logInfo("receive msg type:" . $msgType . " mgs:" . json_encode($msg));
+        } else {
+            logInfo("could not receive");
+        }
+    }
+
+    private function addMessageQueue()
+    {
+        $queue = msg_get_queue(QUEUE);
+
+        $object = new stdclass;
+        $object->name = 'foo';
+        $object->id = uniqid();
+        if (msg_send($queue, 1, $object)) {
+            logInfo("added to queue, stat: " . json_encode(msg_stat_queue($queue)));
+        } else {
+            logInfo("could not add message to queue \n");
+        }
     }
 
 }
