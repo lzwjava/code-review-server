@@ -1,5 +1,12 @@
 # code-review-server
 
+![img](./img/code-review.png)
+
+* [code-review-server](https://github.com/lzwjava/code-review-server)
+* [code-review-web](https://github.com/lzwjava/code-review-web)
+
+# deploy
+
 Deploy: fab -H root@reviewcode.cn deploy
 
 Install dependencies: composer install, composer update
