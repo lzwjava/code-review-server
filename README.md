@@ -1,6 +1,8 @@
 # code-review-server
 
-![img](./img/code-review.png)
+![img](./img/cr1.jpg)
+
+![img](./img/cr2.jpg)
 
 # Projects
 
